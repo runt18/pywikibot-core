@@ -177,14 +177,14 @@ class IntegerOption(Option):
 
     """An option allowing a range of integers."""
 
-    def __init__(self, minimum=1, maximum=None, prefix=''):
+    def __init__(self, minimum=1, maximum=None, prefix='', allowemptyrange=False):
         """Constructor."""
         super(IntegerOption, self).__init__()
         if not ((minimum is None or isinstance(minimum, int)) and
                 (maximum is None or isinstance(maximum, int))):
             raise ValueError(
                 'The minimum and maximum parameters must be int or None.')
-        if minimum is not None and maximum is not None and minimum > maximum:
+        if minimum is not None and maximum is not None and minimum > maximum and not allowemptyrange:
             raise ValueError('The minimum must be lower than the maximum.')
         self._min = minimum
         self._max = maximum
@@ -287,7 +287,7 @@ class ListOption(IntegerOption):
         """Constructor."""
         self._list = sequence
         try:
-            super(ListOption, self).__init__(1, self.maximum, prefix)
+            super(ListOption, self).__init__(1, self.maximum, prefix, allowemptyrange = True)
         except ValueError:
             raise ValueError('The sequence is empty.')
         del self._max
@@ -295,7 +295,7 @@ class ListOption(IntegerOption):
     def format(self, default):
         """Return a string showing the range."""
         if not self._list:
-            raise ValueError('The sequence is empty.')
+            return ("")
         else:
             return super(ListOption, self).format(default)
 
