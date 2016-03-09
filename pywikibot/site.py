@@ -3669,12 +3669,12 @@ class APISite(BaseSite):
             raise ValueError("categorymembers: "
                              "invalid combination of 'sortby' and 'endtime'")
         if startsort and sortby != "timestamp":
-            cmargs["gcmstartsortkey"] = startsort
+            cmargs["gcmstarthexsortkey"] = startsort
         elif startsort:
             raise ValueError("categorymembers: "
                              "invalid combination of 'sortby' and 'startsort'")
         if endsort and sortby != "timestamp":
-            cmargs["gcmendsortkey"] = endsort
+            cmargs["gcmendhexsortkey"] = endsort
         elif endsort:
             raise ValueError("categorymembers: "
                              "invalid combination of 'sortby' and 'endsort'")
@@ -6757,7 +6757,7 @@ class DataSite(APISite):
     def _get_baserevid(self, claim, baserevid):
         """Check that claim.on_item is set and matches baserevid if used."""
         if not claim.on_item:
-            issue_deprecation_warning('claim without on_item set', 3)
+            issue_deprecation_warning('claim without on_item set', None, 3)
             if not baserevid:
                 warn('Neither claim.on_item nor baserevid provided',
                      UserWarning, 3)
