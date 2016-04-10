@@ -217,7 +217,7 @@ def str2size(string):
     return val, unit
 
 
-def generate_transclusions(site, template, namespaces=[]):
+def generate_transclusions(site, template, namespaces=None):
     """
     Generate transclusions.
 
@@ -228,6 +228,8 @@ def generate_transclusions(site, template, namespaces=[]):
     @param namespace: namespace filter for transcluded pages
     @type ns: list
     """
+    if namespaces is None:
+        namespaces = []
     pywikibot.output(u'Fetching template transclusions...')
     transclusion_page = pywikibot.Page(site, template, ns=10)
     return transclusion_page.getReferences(onlyTemplateInclusion=True,

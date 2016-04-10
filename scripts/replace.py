@@ -480,7 +480,7 @@ class ReplaceRobot(Bot):
     """A bot that can do text replacements."""
 
     @deprecated_args(acceptall='always')
-    def __init__(self, generator, replacements, exceptions={},
+    def __init__(self, generator, replacements, exceptions=None,
                  always=False, allowoverlap=False, recursive=False,
                  addedCat=None, sleep=None, summary='', site=None, **kwargs):
         """
@@ -521,6 +521,8 @@ class ReplaceRobot(Bot):
                 exceptionRegexes dictionary in textlib.replaceExcept().
 
         """
+        if exceptions is None:
+                exceptions = {}
         super(ReplaceRobot, self).__init__(generator=generator,
                                            always=always,
                                            site=site,

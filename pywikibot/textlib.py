@@ -411,7 +411,7 @@ def replaceExcept(text, old, new, exceptions, caseInsensitive=False,
     return text
 
 
-def removeDisabledParts(text, tags=['*'], include=[]):
+def removeDisabledParts(text, tags=None, include=None):
     """
     Return text without portions where wiki markup is disabled.
 
@@ -427,6 +427,10 @@ def removeDisabledParts(text, tags=['*'], include=[]):
     specified in the 'include' param.
 
     """
+    if tags is None:
+        tags = ['*']
+    if include is None:
+        include = []
     regexes = {
         'comments':        r'<!--.*?-->',
         'includeonly':     r'<includeonly>.*?</includeonly>',
@@ -446,7 +450,7 @@ def removeDisabledParts(text, tags=['*'], include=[]):
     return toRemoveR.sub('', text)
 
 
-def removeHTMLParts(text, keeptags=['tt', 'nowiki', 'small', 'sup']):
+def removeHTMLParts(text, keeptags=None):
     """
     Return text without portions where HTML markup is disabled.
 
@@ -457,6 +461,8 @@ def removeHTMLParts(text, keeptags=['tt', 'nowiki', 'small', 'sup']):
     'keeptags' parameter, which defaults to ['tt', 'nowiki', 'small', 'sup'].
 
     """
+    if keeptags is None:
+        keeptags = ['tt', 'nowiki', 'small', 'sup']
     # try to merge with 'removeDisabledParts()' above into one generic function
     # thanks to https://www.hellboundhackers.org/articles/read-article.php?article_id=841
     parser = _GetDataHTML()
@@ -483,12 +489,14 @@ class _GetDataHTML(HTMLParser):
             self.textdata += u"</%s>" % tag
 
 
-def isDisabled(text, index, tags=['*']):
+def isDisabled(text, index, tags=None):
     """
     Return True if text[index] is disabled, e.g. by a comment or by nowiki tags.
 
     For the tags parameter, see L{removeDisabledParts}.
     """
+    if tags is None:
+        tags = ['*']
     # Find a marker that is not already in the text.
     marker = findmarker(text)
     text = text[:index] + marker + text[index:]
@@ -1059,7 +1067,7 @@ def interwikiSort(sites, insite=None):
 # Functions dealing with category links
 # -------------------------------------
 
-def getCategoryLinks(text, site=None, include=[], expand_text=False):
+def getCategoryLinks(text, site=None, include=None, expand_text=False):
     """Return a list of category links found in text.
 
     @param include: list of tags which should not be removed by
@@ -1069,6 +1077,8 @@ def getCategoryLinks(text, site=None, include=[], expand_text=False):
     @return: all category links found
     @rtype: list of Category objects
     """
+    if include is None:
+        include = []
     result = []
     if site is None:
         site = pywikibot.Site()

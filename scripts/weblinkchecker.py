@@ -284,14 +284,18 @@ class LinkChecker(object):
 
     """
 
-    def __init__(self, url, redirectChain=[], serverEncoding=None,
-                 HTTPignore=[]):
+    def __init__(self, url, redirectChain=None, serverEncoding=None,
+                 HTTPignore=None):
         """
         Constructor.
 
         redirectChain is a list of redirects which were resolved by
         resolveRedirect(). This is needed to detect redirect loops.
         """
+        if redirectChain is None:
+            redirectChain = []
+        if HTTPignore is None:
+            HTTPignore = []
         self._user_agent = comms.http.get_fake_user_agent()
         self.url = url
         self.serverEncoding = serverEncoding

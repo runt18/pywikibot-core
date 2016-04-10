@@ -103,10 +103,12 @@ class RedirectGenerator(object):
 
     """Redirect generator."""
 
-    def __init__(self, xmlFilename=None, namespaces=[], offset=-1,
+    def __init__(self, xmlFilename=None, namespaces=None, offset=-1,
                  use_move_log=False, use_api=False, start=None, until=None,
                  number=None, page_title=None):
         """Constructor."""
+        if namespaces is None:
+            namespaces = []
         self.site = pywikibot.Site()
         self.xmlFilename = xmlFilename
         self.namespaces = namespaces

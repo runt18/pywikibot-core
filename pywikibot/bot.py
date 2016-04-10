@@ -1038,8 +1038,8 @@ Global arguments available for all bots:
     pywikibot.stdout(globalHelp)
 
 
-def suggest_help(missing_parameters=[], missing_generator=False,
-                 unknown_parameters=[], exception=None,
+def suggest_help(missing_parameters=None, missing_generator=False,
+                 unknown_parameters=None, exception=None,
                  missing_action=False, additional_text=''):
     """
     Output error message to use -help with additional text before it.
@@ -1057,6 +1057,10 @@ def suggest_help(missing_parameters=[], missing_generator=False,
     @param additional_text: Additional text added to the end.
     @type additional_text: str
     """
+    if missing_parameters is None:
+        missing_parameters = []
+    if unknown_parameters is None:
+        unknown_parameters = []
     if exception:
         additional_text = ('An error occured: "{0}"'.format(exception) +
                            additional_text)
