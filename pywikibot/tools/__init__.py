@@ -95,7 +95,7 @@ class NotImplementedClass(object):
     def __init__(self, *args, **kwargs):
         """Constructor."""
         raise NotImplementedError(
-            '%s: %s' % (self.__class__.__name__, self.__doc__))
+            '{0!s}: {1!s}'.format(self.__class__.__name__, self.__doc__))
 
 
 if PYTHON_VERSION < (2, 7):
@@ -347,10 +347,9 @@ class LazyRegex(object):
             if hasattr(self._compiled, attr):
                 return getattr(self._compiled, attr)
 
-            raise AttributeError('%s: attr %s not recognised'
-                                 % (self.__class__.__name__, attr))
+            raise AttributeError('{0!s}: attr {1!s} not recognised'.format(self.__class__.__name__, attr))
         else:
-            raise AttributeError('%s.raw not set' % self.__class__.__name__)
+            raise AttributeError('{0!s}.raw not set'.format(self.__class__.__name__))
 
 
 class DeprecatedRegex(LazyRegex):
@@ -636,7 +635,7 @@ class ThreadList(list):
         super(ThreadList, self).__init__(*args)
         for item in self:
             if not isinstance(threading.Thread, item):
-                raise TypeError("Cannot add '%s' to ThreadList" % type(item))
+                raise TypeError("Cannot add '{0!s}' to ThreadList".format(type(item)))
 
     def active_count(self):
         """Return the number of alive threads, and delete all non-alive ones."""
@@ -651,22 +650,21 @@ class ThreadList(list):
     def append(self, thd):
         """Add a thread to the pool and start it."""
         if not isinstance(thd, threading.Thread):
-            raise TypeError("Cannot append '%s' to ThreadList" % type(thd))
+            raise TypeError("Cannot append '{0!s}' to ThreadList".format(type(thd)))
         while self.active_count() >= self.limit:
             time.sleep(2)
         super(ThreadList, self).append(thd)
         thd.start()
-        debug("thread %d ('%s') started" % (len(self), type(thd)),
+        debug("thread {0:d} ('{1!s}') started".format(len(self), type(thd)),
               self._logger)
 
     def stop_all(self):
         """Stop all threads the pool."""
         if self:
-            debug(u'EARLY QUIT: Threads: %d' % len(self), self._logger)
+            debug(u'EARLY QUIT: Threads: {0:d}'.format(len(self)), self._logger)
         for thd in self:
             thd.stop()
-            debug(u'EARLY QUIT: Queue size left in %s: %s'
-                  % (thd, thd.queue.qsize()), self._logger)
+            debug(u'EARLY QUIT: Queue size left in {0!s}: {1!s}'.format(thd, thd.queue.qsize()), self._logger)
 
 
 def intersect_generators(genlist):
@@ -1363,8 +1361,7 @@ def deprecated_args(**arg_pairs):
                             cls = PendingDeprecationWarning
                         else:
                             cls = DeprecationWarning
-                        warn(u"%(old_arg)s argument of %(name)s is deprecated."
-                             % output_args,
+                        warn(u"{old_arg!s} argument of {name!s} is deprecated.".format(**output_args),
                              cls, depth)
                     del __kw[old_arg]
             return obj(*__args, **__kw)

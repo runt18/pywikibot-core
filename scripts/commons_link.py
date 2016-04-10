@@ -83,37 +83,31 @@ class CommonsLinkBot(Bot):
 
                         # for Commons/Commonscat template
                         s = self.findTemplate.search(text)
-                        s2 = getattr(self, 'findTemplate%d'
-                                           % (2, 3)[catmode]).search(text)
+                        s2 = getattr(self, 'findTemplate{0:d}'.format((2, 3)[catmode])).search(text)
                         if s or s2:
                             pywikibot.output(u'** Already done.')
                         else:
                             cats = textlib.getCategoryLinks(text, site=page.site)
                             text = textlib.replaceCategoryLinks(
-                                u'%s{{commons%s|%s}}'
-                                % (text, ('', 'cat')[catmode], pagetitle),
+                                u'{0!s}{{{{commons{1!s}|{2!s}}}}}'.format(text, ('', 'cat')[catmode], pagetitle),
                                 cats, site=page.site)
                             comment = i18n.twtranslate(page.site,
-                                                       'commons_link%s-template-added'
-                                                       % ('', '-cat')[catmode])
+                                                       'commons_link{0!s}-template-added'.format(('', '-cat')[catmode]))
                             try:
                                 self.userPut(page, oldText, text, summary=comment)
                             except pywikibot.EditConflict:
                                 pywikibot.output(
-                                    u'Skipping %s because of edit conflict'
-                                    % page.title())
+                                    u'Skipping {0!s} because of edit conflict'.format(page.title()))
 
                 except pywikibot.NoPage:
-                    pywikibot.output(u'%s does not exist in Commons'
-                                     % page.__class__.__name__)
+                    pywikibot.output(u'{0!s} does not exist in Commons'.format(page.__class__.__name__))
 
             except pywikibot.NoPage:
-                pywikibot.output(u'Page %s does not exist' % page.title())
+                pywikibot.output(u'Page {0!s} does not exist'.format(page.title()))
             except pywikibot.IsRedirectPage:
-                pywikibot.output(u'Page %s is a redirect; skipping.'
-                                 % page.title())
+                pywikibot.output(u'Page {0!s} is a redirect; skipping.'.format(page.title()))
             except pywikibot.LockedPage:
-                pywikibot.output(u'Page %s is locked' % page.title())
+                pywikibot.output(u'Page {0!s} is locked'.format(page.title()))
 
 
 def main(*args):

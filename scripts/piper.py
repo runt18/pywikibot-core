@@ -84,7 +84,7 @@ class PiperBot(MultipleSitesBot, ExistingPageBot, NoRedirectPageBot):
         pipe.append(program.encode('ascii'), '--')
 
         # Create a temporary filename to save the piped stuff to
-        tempFilename = '%s.%s' % (tempfile.mktemp(), 'txt')
+        tempFilename = '{0!s}.{1!s}'.format(tempfile.mktemp(), 'txt')
         with pipe.open(tempFilename, 'w') as file:
             file.write(text)
 

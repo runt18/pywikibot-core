@@ -113,8 +113,7 @@ class UnicodeOutput(IOBase):
             try:
                 self._stream.flush()
             except Exception as e:
-                _complain("%s.flush: %r from %r"
-                          % (self.name, e, self._stream))
+                _complain("{0!s}.flush: {1!r} from {2!r}".format(self.name, e, self._stream))
                 raise
 
     def write(self, text):
@@ -137,14 +136,13 @@ class UnicodeOutput(IOBase):
                                            min(remaining, 10000),
                                            byref(n), None)
                     if retval == 0 or n.value == 0:
-                        raise IOError("WriteConsoleW returned %r, n.value = %r"
-                                      % (retval, n.value))
+                        raise IOError("WriteConsoleW returned {0!r}, n.value = {1!r}".format(retval, n.value))
                     remaining -= n.value
                     if remaining == 0:
                         break
                     text = text[n.value:]
         except Exception as e:
-            _complain("%s.write: %r" % (self.name, e))
+            _complain("{0!s}.write: {1!r}".format(self.name, e))
             raise
 
     def writelines(self, lines):
@@ -153,7 +151,7 @@ class UnicodeOutput(IOBase):
             for line in lines:
                 self.write(line)
         except Exception as e:
-            _complain("%s.writelines: %r" % (self.name, e))
+            _complain("{0!s}.writelines: {1!r}".format(self.name, e))
             raise
 
 
@@ -329,7 +327,7 @@ def get_unicode_console():
                 stderr = UnicodeOutput(None, sys.stderr, old_stderr_fileno,
                                        '<Unicode redirected stderr>')
     except Exception as e:
-        _complain("exception %r while fixing up sys.stdout and sys.stderr" % (e,))
+        _complain("exception {0!r} while fixing up sys.stdout and sys.stderr".format(e))
 
     # While we're at it, let's unmangle the command-line arguments:
 

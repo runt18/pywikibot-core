@@ -154,14 +154,14 @@ class ConvertBot(object):
             self.source = os.path.join('scripts', self.source)
             if os.path.exists(self.source):
                 break
-            pywikibot.output(u'%s does not exist. Please retry.' % self.source)
+            pywikibot.output(u'{0!s} does not exist. Please retry.'.format(self.source))
             self.source = None
 
     def get_dest(self):
         """Ask for destination script name."""
-        self.dest = u'%s-core.%s' % tuple(self.source.rsplit(u'.', 1))
+        self.dest = u'{0!s}-core.{1!s}'.format(*tuple(self.source.rsplit(u'.', 1)))
         if not self.warnonly and not pywikibot.input_yn(
-                u'Destination file is %s.' % self.dest,
+                u'Destination file is {0!s}.'.format(self.dest),
                 default=True, automatic_quit=False):
             pywikibot.output('Quitting...')
             exit()
@@ -184,7 +184,7 @@ class ConvertBot(object):
         for i, line in enumerate(g, start=1):
             for w in warnings:
                 if w[0] in line:
-                    pywikibot.warning(u'line %d: %s>>> %s\n' % (i, line, w[1]))
+                    pywikibot.warning(u'line {0:d}: {1!s}>>> {2!s}\n'.format(i, line, w[1]))
         g.close()
 
 

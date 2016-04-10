@@ -185,8 +185,7 @@ class CategoryDatabase(object):
     def _load(self):
         if not self.is_loaded:
             try:
-                pywikibot.output(u'Reading dump from %s'
-                                 % config.shortpath(self.filename))
+                pywikibot.output(u'Reading dump from {0!s}'.format(config.shortpath(self.filename)))
                 with open_archive(self.filename, 'rb') as f:
                     databases = pickle.load(f)
                 # keys are categories, values are 2-tuples with lists as
@@ -264,8 +263,7 @@ class CategoryDatabase(object):
         elif not os.path.isabs(filename):
             filename = config.datafilepath(filename)
         if self.is_loaded and (self.catContentDB or self.superclassDB):
-            pywikibot.output(u'Dumping to %s, please wait...'
-                             % config.shortpath(filename))
+            pywikibot.output(u'Dumping to {0!s}, please wait...'.format(config.shortpath(filename)))
             databases = {
                 'catContentDB': self.catContentDB,
                 'superclassDB': self.superclassDB
@@ -282,8 +280,7 @@ class CategoryDatabase(object):
             except EnvironmentError:
                 pass
             else:
-                pywikibot.output(u'Database is empty. %s removed'
-                                 % config.shortpath(filename))
+                pywikibot.output(u'Database is empty. {0!s} removed'.format(config.shortpath(filename)))
 
 
 class CategoryAddBot(MultipleSitesBot):
@@ -342,8 +339,7 @@ class CategoryAddBot(MultipleSitesBot):
             if self.follow_redirects:
                 self.current_page = redirTarget
             else:
-                pywikibot.warning(u"Page %s is a redirect to %s; skipping."
-                                  % (page.title(asLink=True),
+                pywikibot.warning(u"Page {0!s} is a redirect to {1!s}; skipping.".format(page.title(asLink=True),
                                      redirTarget.title(asLink=True)))
                 # loading it will throw an error if we don't jump out before
                 return
@@ -353,27 +349,24 @@ class CategoryAddBot(MultipleSitesBot):
             # Load the page
             text = self.current_page.text
         elif self.create:
-            pywikibot.output(u"Page %s doesn't exist yet; creating."
-                             % (self.current_page.title(asLink=True)))
+            pywikibot.output(u"Page {0!s} doesn't exist yet; creating.".format((self.current_page.title(asLink=True))))
             text = ''
         else:
-            pywikibot.output(u"Page %s does not exist; skipping."
-                             % self.current_page.title(asLink=True))
+            pywikibot.output(u"Page {0!s} does not exist; skipping.".format(self.current_page.title(asLink=True)))
             return
         # store old text, so we don't have reload it every time
         old_text = text
         cats = textlib.getCategoryLinks(text)
         pywikibot.output(u"Current categories:")
         for cat in cats:
-            pywikibot.output(u"* %s" % cat.title())
+            pywikibot.output(u"* {0!s}".format(cat.title()))
         catpl = pywikibot.Category(self.current_page.site, self.newcat)
         if catpl in cats:
-            pywikibot.output(u"%s is already in %s."
-                             % (self.current_page.title(), catpl.title()))
+            pywikibot.output(u"{0!s} is already in {1!s}.".format(self.current_page.title(), catpl.title()))
         else:
             if self.sort:
                 catpl = self.sorted_by_last_name(catpl, self.current_page)
-            pywikibot.output(u'Adding %s' % catpl.title(asLink=True))
+            pywikibot.output(u'Adding {0!s}'.format(catpl.title(asLink=True)))
             cats.append(catpl)
             text = textlib.replaceCategoryLinks(text, cats,
                                                 site=self.current_page.site)
@@ -386,8 +379,7 @@ class CategoryAddBot(MultipleSitesBot):
                 self.userPut(self.current_page, old_text, text,
                              summary=comment, minor=True, botflag=True)
             except pywikibot.PageSaveRelatedError as error:
-                pywikibot.output(u'Page %s not saved: %s'
-                                 % (self.current_page.title(asLink=True),
+                pywikibot.output(u'Page {0!s} not saved: {1!s}'.format(self.current_page.title(asLink=True),
                                     error))
 
 
@@ -657,7 +649,7 @@ class CategoryMoveRobot(object):
         Do not use this function from outside the class.
         """
         # Some preparing
-        pywikibot.output('Moving text from %s to %s.' % (
+        pywikibot.output('Moving text from {0!s} to {1!s}.'.format(
                          self.oldcat.title(), self.newcat.title()))
         comma = self.site.mediawiki_message('comma-separator')
         authors = comma.join(self.oldcat.contributingUsers())
@@ -682,7 +674,7 @@ class CategoryMoveRobot(object):
         # Remove all language-specified, non substed CFD templates
         site_templates = i18n.translate(self.site, cfd_templates) or ()
         for template_name in site_templates:
-            match = re.compile(r"{{%s.*?}}" % template_name, re.IGNORECASE)
+            match = re.compile(r"{{{{{0!s}.*?}}}}".format(template_name), re.IGNORECASE)
             self.newcat.text = match.sub('', self.newcat.text)
         # Remove leading whitespace
         self.newcat.text = self.newcat.text.lstrip()
@@ -727,7 +719,7 @@ class CategoryMoveRobot(object):
         history = self.oldcat.getVersionHistoryTable()
         title = i18n.twtranslate(self.site, 'category-section-title',
                                  {'oldcat': self.oldcat.title()})
-        self.newtalk.text = "%s\n== %s ==\n%s" % (self.newtalk.text,
+        self.newtalk.text = "{0!s}\n== {1!s} ==\n{2!s}".format(self.newtalk.text,
                                                   title, history)
         comment = i18n.twtranslate(self.site, 'category-version-history',
                                    {'oldcat': self.oldcat.title()})
@@ -810,21 +802,18 @@ class CategoryListifyRobot(object):
             if (not article.isImage() or
                     self.showImages) and not article.isCategory():
                 if self.talkPages and not article.isTalkPage():
-                    listString += "*[[%s]] -- [[%s|talk]]\n" \
-                                  % (article.title(),
+                    listString += "*[[{0!s}]] -- [[{1!s}|talk]]\n".format(article.title(),
                                      article.toggleTalkPage().title())
                 else:
-                    listString += "*[[%s]]\n" % article.title()
+                    listString += "*[[{0!s}]]\n".format(article.title())
             else:
                 if self.talkPages and not article.isTalkPage():
-                    listString += "*[[:%s]] -- [[%s|talk]]\n" \
-                                  % (article.title(),
+                    listString += "*[[:{0!s}]] -- [[{1!s}|talk]]\n".format(article.title(),
                                      article.toggleTalkPage().title())
                 else:
-                    listString += "*[[:%s]]\n" % article.title()
+                    listString += "*[[:{0!s}]]\n".format(article.title())
         if self.list.exists() and not self.overwrite:
-            pywikibot.output(u'Page %s already exists, aborting.'
-                             % self.list.title())
+            pywikibot.output(u'Page {0!s} already exists, aborting.'.format(self.list.title()))
         else:
             self.list.put(listString, summary=self.editSummary)
 
@@ -896,7 +885,7 @@ class CategoryTidyRobot(pywikibot.Bot):
                     pywikibot.output('')
                     pywikibot.output('Original categories: ')
                     for cat in article.categories():
-                        pywikibot.output(u'* %s' % cat.title())
+                        pywikibot.output(u'* {0!s}'.format(cat.title()))
 
         pywikibot.output(u'')
         # Show the title of the page where the link was found.
@@ -910,7 +899,7 @@ class CategoryTidyRobot(pywikibot.Bot):
         try:
             full_text = article.get(get_redirect=True)
         except pywikibot.NoPage:
-            pywikibot.output(u'Page %s not found.' % article.title())
+            pywikibot.output(u'Page {0!s} not found.'.format(article.title()))
             return
         try:
             contextLength = full_text.index('\n\n')
@@ -936,10 +925,10 @@ class CategoryTidyRobot(pywikibot.Bot):
         # show subcategories as possible choices (with numbers)
         for i, supercat in enumerate(supercatlist):
             # layout: we don't expect a cat to have more than 10 supercats
-            pywikibot.output(u'u%d - Move up to %s' % (i, supercat.title()))
+            pywikibot.output(u'u{0:d} - Move up to {1!s}'.format(i, supercat.title()))
         for i, subcat in enumerate(subcatlist):
             # layout: we don't expect a cat to have more than 100 subcats
-            pywikibot.output(u'%2d - Move down to %s' % (i, subcat.title()))
+            pywikibot.output(u'{0:2d} - Move down to {1!s}'.format(i, subcat.title()))
         options = (IntegerOption(0, len(supercatlist), 'u'),
                    IntegerOption(0, len(subcatlist)),
                    StandardOption('jump to another category', 'j'),
@@ -950,7 +939,7 @@ class CategoryTidyRobot(pywikibot.Bot):
         choice = pywikibot.input_choice('Choice:', options, default='c')
 
         if choice == 'c':
-            pywikibot.output(u'Saving category as %s' % current_cat.title())
+            pywikibot.output(u'Saving category as {0!s}'.format(current_cat.title()))
             if current_cat == original_cat:
                 pywikibot.output('No changes necessary.')
             else:
@@ -982,8 +971,7 @@ class CategoryTidyRobot(pywikibot.Bot):
         """Start bot."""
         super(CategoryTidyRobot, self).run()
         if not self._treat_counter:
-            pywikibot.output(u'There are no articles or files in category %s'
-                             % self.catTitle)
+            pywikibot.output(u'There are no articles or files in category {0!s}'.format(self.catTitle))
 
     def treat(self, page):
         """Process page."""
@@ -1032,7 +1020,7 @@ class CategoryTreeRobot(object):
         if currentDepth > 0:
             result += u' '
         result += cat.title(asLink=True, textlink=True, withNamespace=False)
-        result += ' (%d)' % cat.categoryinfo['pages']
+        result += ' ({0:d})'.format(cat.categoryinfo['pages'])
         if currentDepth < self.maxDepth // 2:
             # noisy dots
             pywikibot.output('.', newline=False)
@@ -1077,7 +1065,7 @@ class CategoryTreeRobot(object):
         tree = self.treeview(cat)
         pywikibot.output(u'')
         if self.filename:
-            pywikibot.output(u'Saving results in %s' % self.filename)
+            pywikibot.output(u'Saving results in {0!s}'.format(self.filename))
             f = codecs.open(self.filename, 'a', 'utf-8')
             f.write(tree)
             f.close()

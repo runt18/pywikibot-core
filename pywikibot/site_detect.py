@@ -112,7 +112,7 @@ class MWSite(object):
             "?action=query&meta=siteinfo&siprop=interwikimap&sifilteriw=local&format=json")
         iw = json.loads(response.content)
         if 'error' in iw:
-            raise RuntimeError('%s - %s' % (iw['error']['code'],
+            raise RuntimeError('{0!s} - {1!s}'.format(iw['error']['code'],
                                             iw['error']['info']))
         return [wiki for wiki in iw['query']['interwikimap']
                 if u'language' in wiki]
@@ -121,8 +121,7 @@ class MWSite(object):
         """Parse HTML."""
         if not self.REwgEnableApi.search(data):
             pywikibot.log(
-                'wgEnableApi is not enabled in HTML of %s'
-                % self.fromurl)
+                'wgEnableApi is not enabled in HTML of {0!s}'.format(self.fromurl))
         try:
             self.version = MediaWikiVersion(
                 self.REwgVersion.search(data).group(1))

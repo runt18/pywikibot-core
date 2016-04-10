@@ -37,8 +37,7 @@ class TestDateMeta(MetaTestCaseClass):
                     for value in range(start, stop, step):
                         self.assertTrue(
                             predicate(value),
-                            "date.formats['%s']['%s']:\ninvalid value %d"
-                            % (formatname, code, value))
+                            "date.formats['{0!s}']['{1!s}']:\ninvalid value {2:d}".format(formatname, code, value))
 
                         newValue = convFunc(convFunc(value))
                         self.assertEqual(

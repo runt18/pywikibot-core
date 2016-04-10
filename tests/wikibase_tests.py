@@ -215,14 +215,14 @@ class TestWikibaseTypes(WikidataTestCase):
     def test_WbQuantity_formatting(self):
         """Test other WbQuantity methods."""
         q = pywikibot.WbQuantity(amount='0.044405586')
-        self.assertEqual("%s" % q,
+        self.assertEqual("{0!s}".format(q),
                          '{\n'
                          '    "amount": "+%(val)s",\n'
                          '    "lowerBound": "+%(val)s",\n'
                          '    "unit": "1",\n'
                          '    "upperBound": "+%(val)s"\n'
                          '}' % {'val': '0.044405586'})
-        self.assertEqual("%r" % q,
+        self.assertEqual("{0!r}".format(q),
                          "WbQuantity(amount=%(val)s, "
                          "upperBound=%(val)s, lowerBound=%(val)s, "
                          "unit=1)" % {'val': '0.044405586'})

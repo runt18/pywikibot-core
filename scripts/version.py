@@ -42,9 +42,9 @@ def check_environ(environ_name):
 
 def main(*args):
     """Print pywikibot version and important settings."""
-    pywikibot.output('Pywikibot: %s' % getversion())
-    pywikibot.output('Release version: %s' % pywikibot.__release__)
-    pywikibot.output('requests version: %s' % requests.__version__)
+    pywikibot.output('Pywikibot: {0!s}'.format(getversion()))
+    pywikibot.output('Release version: {0!s}'.format(pywikibot.__release__))
+    pywikibot.output('requests version: {0!s}'.format(requests.__version__))
 
     has_wikimedia_cert = False
     if (not hasattr(requests, 'certs') or
@@ -52,21 +52,20 @@ def main(*args):
             not callable(requests.certs.where)):
         pywikibot.output('  cacerts: not defined')
     elif not os.path.isfile(requests.certs.where()):
-        pywikibot.output('  cacerts: %s (missing)' % requests.certs.where())
+        pywikibot.output('  cacerts: {0!s} (missing)'.format(requests.certs.where()))
     else:
-        pywikibot.output('  cacerts: %s' % requests.certs.where())
+        pywikibot.output('  cacerts: {0!s}'.format(requests.certs.where()))
 
         with codecs.open(requests.certs.where(), 'r', 'utf-8') as cert_file:
             text = cert_file.read()
             if WMF_CACERT in text:
                 has_wikimedia_cert = True
-        pywikibot.output(u'    certificate test: %s'
-                         % ('ok' if has_wikimedia_cert else 'not ok'))
+        pywikibot.output(u'    certificate test: {0!s}'.format(('ok' if has_wikimedia_cert else 'not ok')))
     if not has_wikimedia_cert:
         pywikibot.output(
             '  Please reinstall requests!')
 
-    pywikibot.output('Python: %s' % sys.version)
+    pywikibot.output('Python: {0!s}'.format(sys.version))
 
     check_environ('PYWIKIBOT2_DIR')
     check_environ('PYWIKIBOT2_DIR_PWB')

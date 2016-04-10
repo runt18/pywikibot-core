@@ -191,7 +191,7 @@ def showQuest(page):
         [('with browser', 'b'), ('with gui', 'g'), ('no', 'n')], 'n',
         automatic_quit=False)
     if quest == 'b':
-        webbrowser.open('%s?redirect=no' % page.full_url())
+        webbrowser.open('{0!s}?redirect=no'.format(page.full_url()))
     elif quest == 'g':
         from pywikibot import editor as editarticle
         editor = editarticle.TextEditor()
@@ -280,14 +280,14 @@ def main(*args):
     preloadingGen = pagegenerators.PreloadingGenerator(generator, groupsize=60)
     for page in preloadingGen:
         pagename = page.title(asLink=True)
-        pywikibot.output('Loading %s...' % pagename)
+        pywikibot.output('Loading {0!s}...'.format(pagename))
         try:
             text = page.text
         except pywikibot.NoPage:
-            pywikibot.output("%s doesn't exist! Skipping..." % pagename)
+            pywikibot.output("{0!s} doesn't exist! Skipping...".format(pagename))
             continue
         except pywikibot.IsRedirectPage:
-            pywikibot.output("%s is a redirect! Skipping..." % pagename)
+            pywikibot.output("{0!s} is a redirect! Skipping...".format(pagename))
             if show:
                 showQuest(page)
             continue
@@ -330,14 +330,13 @@ def main(*args):
                 replaceToPerform = u'|'.join(TTP + TSP + TU)
             else:
                 replaceToPerform = u'|'.join(TTP + TSP)
-            text, changes = re.subn('<noinclude>(%s)</noinclude>'
-                                    % replaceToPerform, '', text)
+            text, changes = re.subn('<noinclude>({0!s})</noinclude>'.format(replaceToPerform), '', text)
             if changes == 0:
-                text, changes = re.subn('(%s)' % replaceToPerform, '', text)
+                text, changes = re.subn('({0!s})'.format(replaceToPerform), '', text)
             msg = u'The page is editable for all'
             if not moveBlockCheck:
                 msg += u', deleting the template..'
-            pywikibot.output(u'%s.' % msg)
+            pywikibot.output(u'{0!s}.'.format(msg))
 
         elif editRestr[0] == 'sysop':
             # total edit protection
@@ -403,10 +402,9 @@ def main(*args):
                     replaceToPerform = u'|'.join(TSMP + TTMP + TU)
                 else:
                     replaceToPerform = u'|'.join(TSMP + TTMP)
-                text, changes = re.subn('<noinclude>(%s)</noinclude>'
-                                        % replaceToPerform, '', text)
+                text, changes = re.subn('<noinclude>({0!s})</noinclude>'.format(replaceToPerform), '', text)
                 if changes == 0:
-                    text, changes = re.subn('(%s)' % replaceToPerform, '', text)
+                    text, changes = re.subn('({0!s})'.format(replaceToPerform), '', text)
             elif moveRestr[0] == 'sysop':
                 # move-total-protection
                 if (TemplateInThePage[0] == 'sysop-move' and TTMP) or \
@@ -492,8 +490,7 @@ def main(*args):
                                          u'Skipping...')
                         break
                     except pywikibot.PageNotSaved as error:
-                        pywikibot.output(u'Error putting page: %s'
-                                         % (error.args,))
+                        pywikibot.output(u'Error putting page: {0!s}'.format(error.args))
                         break
                     else:
                         # Break only if the errors are one after the other

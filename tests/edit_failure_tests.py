@@ -101,8 +101,7 @@ class TestActionFailure(TestCase):
             mysite.tokens['move']
         except KeyError:
             raise unittest.SkipTest(
-                "movepage test requires 'move' token not given to user on %s"
-                % self.site)
+                "movepage test requires 'move' token not given to user on {0!s}".format(self.site))
 
         self.assertRaises(Error, mysite.movepage,
                           mainpage, mainpage.title(), 'test')

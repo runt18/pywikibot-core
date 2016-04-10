@@ -313,9 +313,8 @@ def _http_process(session, http_request):
     auth = get_authentication(uri)
     if auth is not None and len(auth) == 4:
         if isinstance(requests_oauthlib, ImportError):
-            warn('%s' % requests_oauthlib, ImportWarning)
-            error('OAuth authentication not supported: %s'
-                  % requests_oauthlib)
+            warn('{0!s}'.format(requests_oauthlib), ImportWarning)
+            error('OAuth authentication not supported: {0!s}'.format(requests_oauthlib))
             auth = None
         else:
             auth = requests_oauthlib.OAuth1(*auth)
@@ -352,7 +351,7 @@ def error_handling_callback(request):
         raise request.data
 
     if request.status == 504:
-        raise Server504Error("Server %s timed out" % request.hostname)
+        raise Server504Error("Server {0!s} timed out".format(request.hostname))
 
     if request.status == 414:
         raise Server414Error('Too long GET request')

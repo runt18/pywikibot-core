@@ -131,20 +131,19 @@ def add_text(page, addText, summary=None, regexSkip=None,
     errorCount = 0
 
     if putText:
-        pywikibot.output(u'Loading %s...' % page.title())
+        pywikibot.output(u'Loading {0!s}...'.format(page.title()))
     if oldTextGiven is None:
         try:
             text = page.get()
         except pywikibot.NoPage:
             if create:
-                pywikibot.output(u"%s doesn't exist, creating it!"
-                                 % page.title())
+                pywikibot.output(u"{0!s} doesn't exist, creating it!".format(page.title()))
                 text = u''
             else:
-                pywikibot.output(u"%s doesn't exist, skip!" % page.title())
+                pywikibot.output(u"{0!s} doesn't exist, skip!".format(page.title()))
                 return (False, False, always)
         except pywikibot.IsRedirectPage:
-            pywikibot.output(u"%s is a redirect, skip!" % page.title())
+            pywikibot.output(u"{0!s} is a redirect, skip!".format(page.title()))
             return (False, False, always)
     else:
         text = oldTextGiven
@@ -183,7 +182,7 @@ def add_text(page, addText, summary=None, regexSkip=None,
             newtext = textlib.removeLanguageLinks(newtext, site)
 
             # Adding the text
-            newtext += u"%s%s" % (config.line_separator, addText)
+            newtext += u"{0!s}{1!s}".format(config.line_separator, addText)
             # Reputting the categories
             newtext = textlib.replaceCategoryLinks(newtext,
                                                    categoriesInside, site,
@@ -193,8 +192,7 @@ def add_text(page, addText, summary=None, regexSkip=None,
             allstars = []
             starstext = textlib.removeDisabledParts(text)
             for star in starsList:
-                regex = re.compile('(\{\{(?:template:|)%s\|.*?\}\}[\s]*)'
-                                   % star, re.I)
+                regex = re.compile('(\{{\{{(?:template:|){0!s}\|.*?\}}\}}[\s]*)'.format(star), re.I)
                 found = regex.findall(starstext)
                 if found != []:
                     newtext = regex.sub('', newtext)
@@ -203,12 +201,12 @@ def add_text(page, addText, summary=None, regexSkip=None,
                 newtext = newtext.strip() + config.line_separator * 2
                 allstars.sort()
                 for element in allstars:
-                    newtext += '%s%s' % (element.strip(), config.LS)
+                    newtext += '{0!s}{1!s}'.format(element.strip(), config.LS)
             # Adding the interwiki
             newtext = textlib.replaceLanguageLinks(newtext, interwikiInside,
                                                    site)
         else:
-            newtext += u"%s%s" % (config.line_separator, addText)
+            newtext += u"{0!s}{1!s}".format(config.line_separator, addText)
     else:
         newtext = addText + config.line_separator + text
     if putText and text != newtext:
@@ -252,15 +250,13 @@ def add_text(page, addText, summary=None, regexSkip=None,
                         raise pywikibot.ServerError(u'Fifth Server Error!')
                 except pywikibot.SpamfilterError as e:
                     pywikibot.output(
-                        u'Cannot change %s because of blacklist entry %s'
-                        % (page.title(), e.url))
+                        u'Cannot change {0!s} because of blacklist entry {1!s}'.format(page.title(), e.url))
                     return (False, False, always)
                 except pywikibot.LockedPage:
-                    pywikibot.output(u'Skipping %s (locked page)'
-                                     % page.title())
+                    pywikibot.output(u'Skipping {0!s} (locked page)'.format(page.title()))
                     return (False, False, always)
                 except pywikibot.PageNotSaved as error:
-                    pywikibot.output(u'Error putting page: %s' % error.args)
+                    pywikibot.output(u'Error putting page: {0!s}'.format(error.args))
                     return (False, False, always)
                 else:
                     # Break only if the errors are one after the other...

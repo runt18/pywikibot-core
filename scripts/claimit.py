@@ -89,7 +89,7 @@ class ClaimRobot(WikidataBot):
         self.exists_arg = exists_arg
         self.cacheSources()
         if self.exists_arg:
-            pywikibot.output('\'exists\' argument set to \'%s\'' % self.exists_arg)
+            pywikibot.output('\'exists\' argument set to \'{0!s}\''.format(self.exists_arg))
 
     def treat(self, page, item):
         """Treat each page."""
@@ -119,16 +119,14 @@ class ClaimRobot(WikidataBot):
                             if (claim.getTarget() == existing.getTarget() and
                                     't' not in self.exists_arg):
                                 pywikibot.log(
-                                    'Skipping %s because claim with same target already exists'
-                                    % (claim.getID(),))
+                                    'Skipping {0!s} because claim with same target already exists'.format(claim.getID()))
                                 pywikibot.log(
                                     'Append \'t\' to -exists argument to override this behavior')
                                 break
                             if (listsEqual(claim.getSources(), existing.getSources()) and
                                     's' not in self.exists_arg):
                                 pywikibot.log(
-                                    'Skipping %s because claim with same sources already exists'
-                                    % (claim.getID(),))
+                                    'Skipping {0!s} because claim with same sources already exists'.format(claim.getID()))
                                 pywikibot.log(
                                     'Append \'s\' to -exists argument to override this behavior')
                                 break
@@ -142,8 +140,7 @@ class ClaimRobot(WikidataBot):
                                 break
                             skip = False
                 if not skip:
-                    pywikibot.output('Adding %s --> %s'
-                                     % (claim.getID(), claim.getTarget()))
+                    pywikibot.output('Adding {0!s} --> {1!s}'.format(claim.getID(), claim.getTarget()))
                     item.addClaim(claim)
                     # A generator might yield pages from multiple languages
                     source = self.getSource(page.site)
@@ -214,8 +211,7 @@ def main(*args):
             target = pywikibot.Coordinate(coord_args[0], coord_args[1], precision=precision)
         else:
             raise NotImplementedError(
-                "%s datatype is not yet supported by claimit.py"
-                % claim.type)
+                "{0!s} datatype is not yet supported by claimit.py".format(claim.type))
         claim.setTarget(target)
         claims.append(claim)
 

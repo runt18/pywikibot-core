@@ -85,11 +85,11 @@ class BaseRevertBot(object):
                 if callback(item):
                     result = self.revert(item)
                     if result:
-                        self.log(u'%s: %s' % (item['title'], result))
+                        self.log(u'{0!s}: {1!s}'.format(item['title'], result))
                     else:
-                        self.log(u'Skipped %s' % item['title'])
+                        self.log(u'Skipped {0!s}'.format(item['title']))
                 else:
-                    self.log(u'Skipped %s by callback' % item['title'])
+                    self.log(u'Skipped {0!s} by callback'.format(item['title']))
             except StopIteration:
                 return
 
@@ -134,7 +134,7 @@ class BaseRevertBot(object):
             else:
                 pywikibot.exception()
             return False
-        return u"The edit(s) made in %s by %s was rollbacked" % (page.title(), self.user)
+        return u"The edit(s) made in {0!s} by {1!s} was rollbacked".format(page.title(), self.user)
 
     def log(self, msg):
         """Log the message msg."""

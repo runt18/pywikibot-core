@@ -317,7 +317,7 @@ def _get_translation(lang, twtitle):
         return _cache[lang][twtitle]
     message_bundle = twtitle.split('-')[0]
     trans_text = None
-    filename = '%s/%s.json' % (message_bundle, lang)
+    filename = '{0!s}/{1!s}.json'.format(message_bundle, lang)
     try:
         trans_text = pkgutil.get_data(
             _messages_package_name, filename).decode('utf-8')
@@ -624,7 +624,7 @@ def twtranslate(code, twtitle, parameters=None, fallback=True,
             'No %s translation has been defined for TranslateWiki key'
             ' %r\nIt can happen due to lack of i18n submodule or files. '
             'Read https://mediawiki.org/wiki/PWB/i18n'
-            % ('English' if 'en' in langs else "'%s'" % lang,
+            % ('English' if 'en' in langs else "'{0!s}'".format(lang),
                twtitle))
     # send the language code back via the given list
     if code_needed:
@@ -728,8 +728,7 @@ def input(twtitle, parameters=None, password=False, fallback_prompt=None):
     if not messages_available():
         if not fallback_prompt:
             raise TranslationError(
-                'Unable to load messages package %s for bundle %s'
-                % (_messages_package_name, twtitle))
+                'Unable to load messages package {0!s} for bundle {1!s}'.format(_messages_package_name, twtitle))
         else:
             prompt = fallback_prompt
     else:

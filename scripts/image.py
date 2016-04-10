@@ -151,16 +151,14 @@ class ImageRobot(ReplaceBot):
         escaped = re.sub('\\\\[_ ]', '[_ ]', escaped)
         if not self.getOption('loose') or not self.new_image:
             image_regex = re.compile(
-                r'\[\[ *(?:%s)\s*:\s*%s *(?P<parameters>\|[^\n]+|) *\]\]'
-                % ('|'.join(namespace), escaped))
+                r'\[\[ *(?:{0!s})\s*:\s*{1!s} *(?P<parameters>\|[^\n]+|) *\]\]'.format('|'.join(namespace), escaped))
         else:
             image_regex = re.compile(r'' + escaped)
 
         if self.new_image:
             if not self.getOption('loose'):
                 replacements.append((image_regex,
-                                     u'[[%s:%s\\g<parameters>]]'
-                                     % (self.site.namespaces.FILE,
+                                     u'[[{0!s}:{1!s}\\g<parameters>]]'.format(self.site.namespaces.FILE,
                                         self.new_image)))
             else:
                 replacements.append((image_regex, self.new_image))

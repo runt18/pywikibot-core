@@ -173,7 +173,7 @@ class UploadRobot(BaseBot):
             file_url = self.url
             pywikibot.warning("file_url is not given. "
                               "Set to self.url by default.")
-        pywikibot.output(u'Reading file %s' % file_url)
+        pywikibot.output(u'Reading file {0!s}'.format(file_url))
         resume = False
         rlen = 0
         _contents = None
@@ -184,7 +184,7 @@ class UploadRobot(BaseBot):
         while not retrieved:
             if resume:
                 pywikibot.output(u"Resume download...")
-                uo.addheader('Range', 'bytes=%s-' % rlen)
+                uo.addheader('Range', 'bytes={0!s}-'.format(rlen))
 
             infile = uo.open(file_url)
 
@@ -210,11 +210,10 @@ class UploadRobot(BaseBot):
                 if rlen < content_len:
                     retrieved = False
                     pywikibot.output(
-                        u"Connection closed at byte %s (%s left)"
-                        % (rlen, content_len))
+                        u"Connection closed at byte {0!s} ({1!s} left)".format(rlen, content_len))
                     if accept_ranges and rlen > 0:
                         resume = True
-                    pywikibot.output(u"Sleeping for %d seconds..." % dt)
+                    pywikibot.output(u"Sleeping for {0:d} seconds...".format(dt))
                     time.sleep(dt)
                     if dt <= 60:
                         dt += 15
@@ -285,8 +284,7 @@ class UploadRobot(BaseBot):
             filename = self.useFilename
         if not self.keepFilename:
             pywikibot.output(
-                u"The filename on the target wiki will default to: %s"
-                % filename)
+                u"The filename on the target wiki will default to: {0!s}".format(filename))
             assert not always
             newfn = pywikibot.input(
                 u'Enter a better name, or press enter to accept:')
@@ -321,7 +319,7 @@ class UploadRobot(BaseBot):
             if invalid:
                 c = "".join(invalid)
                 pywikibot.output(
-                    'Invalid character(s): %s. Please try again' % c)
+                    'Invalid character(s): {0!s}. Please try again'.format(c))
                 continue
             if allowed_formats and ext not in allowed_formats:
                 if always:
@@ -329,8 +327,7 @@ class UploadRobot(BaseBot):
                                      '[{0}]'.format(' '.join(allowed_formats)))
                     continue
                 elif not pywikibot.input_yn(
-                        u"File format is not one of [%s], but %s. Continue?"
-                        % (u' '.join(allowed_formats), ext),
+                        u"File format is not one of [{0!s}], but {1!s}. Continue?".format(u' '.join(allowed_formats), ext),
                         default=False, automatic_quit=False):
                     continue
             potential_file_page = pywikibot.FilePage(self.targetSite, filename)
@@ -369,8 +366,7 @@ class UploadRobot(BaseBot):
 
         # A proper description for the submission.
         # Empty descriptions are not accepted.
-        pywikibot.output(u'The suggested description is:\n%s'
-                         % self.description)
+        pywikibot.output(u'The suggested description is:\n{0!s}'.format(self.description))
 
         # Description must be set and verified
         if not self.description:
@@ -436,7 +432,7 @@ class UploadRobot(BaseBot):
         imagepage = pywikibot.FilePage(site, filename)  # normalizes filename
         imagepage.text = self.description
 
-        pywikibot.output(u'Uploading file to %s via API...' % site)
+        pywikibot.output(u'Uploading file to {0!s} via API...'.format(site))
 
         success = False
         try:
@@ -460,8 +456,7 @@ class UploadRobot(BaseBot):
 
         except pywikibot.data.api.APIError as error:
             if error.code == u'uploaddisabled':
-                pywikibot.error("Upload error: Local file uploads are disabled on %s."
-                                % site)
+                pywikibot.error("Upload error: Local file uploads are disabled on {0!s}.".format(site))
             else:
                 pywikibot.error("Upload error: ", exc_info=True)
             return None
@@ -471,7 +466,7 @@ class UploadRobot(BaseBot):
         else:
             if success:
                 # No warning, upload complete.
-                pywikibot.output(u"Upload of %s successful." % filename)
+                pywikibot.output(u"Upload of {0!s} successful.".format(filename))
                 return filename  # data['filename']
             else:
                 pywikibot.output(u"Upload aborted.")
@@ -482,15 +477,13 @@ class UploadRobot(BaseBot):
         # early check that upload is enabled
         if self.targetSite.is_uploaddisabled():
             pywikibot.error(
-                "Upload error: Local file uploads are disabled on %s."
-                % self.targetSite)
+                "Upload error: Local file uploads are disabled on {0!s}.".format(self.targetSite))
             return
 
         # early check that user has proper rights to upload
         if "upload" not in self.targetSite.userinfo["rights"]:
             pywikibot.error(
-                "User '%s' does not have upload rights on site %s."
-                % (self.targetSite.user(), self.targetSite))
+                "User '{0!s}' does not have upload rights on site {1!s}.".format(self.targetSite.user(), self.targetSite))
             return
         if isinstance(self.url, basestring):
             return self.upload_file(self.url)

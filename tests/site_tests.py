@@ -271,7 +271,7 @@ class TestSiteObject(DefaultSiteTestCase):
         self.assertEqual(mysite, pywikibot.Site(self.code, self.family))
         self.assertIsInstance(mysite.user(), (basestring, type(None)))
         self.assertEqual(mysite.sitename(),
-                         "%s:%s" % (self.family,
+                         "{0!s}:{1!s}".format(self.family,
                                     self.code))
         self.assertIsInstance(mysite.linktrail(), basestring)
         self.assertIsInstance(mysite.redirect(), basestring)
@@ -413,7 +413,7 @@ class TestSiteObject(DefaultSiteTestCase):
         mysite = self.get_site()
         if mysite.lang != 'en':
             raise unittest.SkipTest(
-                'English-specific tests not valid on %s' % mysite)
+                'English-specific tests not valid on {0!s}'.format(mysite))
 
         self.assertEqual(mysite.months_names[4], (u'May', u'May'))
         self.assertEqual(mysite.list_to_text(('Pride', 'Prejudice')), 'Pride and Prejudice')
@@ -1012,8 +1012,7 @@ class TestImageUsage(DefaultSiteTestCase):
         else:
             raise unittest.SkipTest("No images on site {0!r}".format(mysite))
 
-        pywikibot.output(u'site_tests.TestImageUsage found %s on %s'
-                         % (imagepage, page))
+        pywikibot.output(u'site_tests.TestImageUsage found {0!s} on {1!s}'.format(imagepage, page))
 
         self.__class__._image_page = imagepage
         return imagepage
@@ -1367,7 +1366,7 @@ class SearchTestCase(DefaultSiteTestCase):
         super(SearchTestCase, self).setUp()
         if self.site.has_extension('Wikia Search'):
             raise unittest.SkipTest(
-                'The site %r does not use MediaWiki search' % self.site)
+                'The site {0!r} does not use MediaWiki search'.format(self.site))
 
     def testSearch(self):
         """Test the site.search() method."""
@@ -1393,7 +1392,7 @@ class SearchTestCase(DefaultSiteTestCase):
                 self.assertEqual(hit.namespace(), 0)
         except pywikibot.data.api.APIError as e:
             if e.code == "gsrsearch-error" and "timed out" in e.info:
-                raise unittest.SkipTest("gsrsearch returned timeout on site: %r" % e)
+                raise unittest.SkipTest("gsrsearch returned timeout on site: {0!r}".format(e))
             raise
 
     def test_search_where(self):
@@ -1853,8 +1852,7 @@ class PatrolTestCase(TokenTestBase, TestCase):
             raise
 
         if hasattr(mysite, u'_patroldisabled') and mysite._patroldisabled:
-            raise unittest.SkipTest(u'Patrolling is disabled on %s wiki.'
-                                    % mysite)
+            raise unittest.SkipTest(u'Patrolling is disabled on {0!s} wiki.'.format(mysite))
 
         result = result[0]
         self.assertIsInstance(result, dict)
@@ -1946,13 +1944,11 @@ class TestSiteTokens(DefaultSiteTestCase):
         """Test tokens."""
         if version and self._version < MediaWikiVersion(version):
             raise unittest.SkipTest(
-                u'Site %s version %s is too low for this tests.'
-                % (self.mysite, self._version))
+                u'Site {0!s} version {1!s} is too low for this tests.'.format(self.mysite, self._version))
 
         if version and self._version < MediaWikiVersion(test_version):
             raise unittest.SkipTest(
-                u'Site %s version %s is too low for this tests.'
-                % (self.mysite, self._version))
+                u'Site {0!s} version {1!s} is too low for this tests.'.format(self.mysite, self._version))
 
         self.mysite.version = lambda: test_version
 

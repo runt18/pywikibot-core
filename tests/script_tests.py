@@ -64,8 +64,7 @@ def check_script_deps(script_name):
             try:
                 __import__(package_name)
             except ImportError as e:
-                print('%s depends on %s, which isnt available:\n%s'
-                      % (script_name, package_name, e))
+                print('{0!s} depends on {1!s}, which isnt available:\n{2!s}'.format(script_name, package_name, e))
                 return False
     return True
 
@@ -189,8 +188,7 @@ def collector(loader=unittest.loader.defaultTestLoader):
     # discover() ordering of unit tests.
 
     if unrunnable_script_list:
-        print('Skipping execution of unrunnable scripts:\n  %r'
-              % unrunnable_script_list)
+        print('Skipping execution of unrunnable scripts:\n  {0!r}'.format(unrunnable_script_list))
 
     if not enable_autorun_tests:
         print('Skipping execution of auto-run scripts '
@@ -306,14 +304,12 @@ class TestScriptMeta(MetaTestCaseClass):
                     exit_codes = [0, -9]
 
                     if (not result['stdout'] and not result['stderr']):
-                        print(' auto-run script unresponsive after %d seconds'
-                              % timeout, end=' ')
+                        print(' auto-run script unresponsive after {0:d} seconds'.format(timeout), end=' ')
                     elif 'SIMULATION: edit action blocked' in result['stderr']:
                         print(' auto-run script simulated edit blocked',
                               end='  ')
                     else:
-                        print(' auto-run script stderr within %d seconds: %r'
-                              % (timeout, result['stderr']), end='  ')
+                        print(' auto-run script stderr within {0:d} seconds: {1!r}'.format(timeout, result['stderr']), end='  ')
 
                 self.assertNotIn('Traceback (most recent call last)',
                                  result['stderr'])
@@ -354,7 +350,7 @@ class TestScriptMeta(MetaTestCaseClass):
 
             cls.add_method(dct, test_name,
                            test_execution(script_name, [argument]),
-                           'Test running %s %s.' % (script_name, argument))
+                           'Test running {0!s} {1!s}.'.format(script_name, argument))
 
             if script_name in dct['_expected_failures']:
                 dct[test_name] = unittest.expectedFailure(dct[test_name])

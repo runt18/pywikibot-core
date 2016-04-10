@@ -94,7 +94,7 @@ class SyncSites(object):
 
         if options.namespace and 'help' in options.namespace:
             for namespace in self.original.namespaces.values():
-                pywikibot.output('%s %s' % (namespace.id, namespace.custom_name))
+                pywikibot.output('{0!s} {1!s}'.format(namespace.id, namespace.custom_name))
             sys.exit()
 
         self.sites = [pywikibot.Site(s, family) for s in sites]
@@ -138,14 +138,14 @@ class SyncSites(object):
         if self.options.namespace:
             pywikibot.output(str(self.options.namespace))
             namespaces = [int(self.options.namespace)]
-        pywikibot.output("Checking these namespaces: %s\n" % (namespaces,))
+        pywikibot.output("Checking these namespaces: {0!s}\n".format(namespaces))
 
         for ns in namespaces:
             self.check_namespace(ns)
 
     def check_namespace(self, namespace):
         """Check an entire namespace."""
-        pywikibot.output("\nCHECKING NAMESPACE %s" % namespace)
+        pywikibot.output("\nCHECKING NAMESPACE {0!s}".format(namespace))
         pages = (p.title() for p in self.original.allpages(
             '!', namespace=namespace))
         for p in pages:
@@ -165,17 +165,17 @@ class SyncSites(object):
         """Create page on wikis with overview of bot results."""
         for site in self.sites:
             sync_overview_page = Page(site,
-                                      'User:%s/sync.py overview' % site.user())
+                                      'User:{0!s}/sync.py overview'.format(site.user()))
             output = "== Pages that differ from original ==\n\n"
             if self.differences[site]:
-                output += "".join('* [[:%s]]\n' % l for l in
+                output += "".join('* [[:{0!s}]]\n'.format(l) for l in
                                   self.differences[site])
             else:
                 output += "All important pages are the same"
 
             output += "\n\n== Admins from original that are missing here ==\n\n"
             if self.user_diff[site]:
-                output += "".join('* %s\n' % l.replace('_', ' ') for l in
+                output += "".join('* {0!s}\n'.format(l.replace('_', ' ')) for l in
                                   self.user_diff[site])
             else:
                 output += "All users from original are also present on this wiki"
@@ -186,12 +186,11 @@ class SyncSites(object):
 
     def put_message(self, site):
         """Return synchonization message."""
-        return ('%s replicate_wiki.py synchronization from %s'
-                % (site.user(), str(self.original)))
+        return ('{0!s} replicate_wiki.py synchronization from {1!s}'.format(site.user(), str(self.original)))
 
     def check_page(self, pagename):
         """Check one page."""
-        pywikibot.output("\nChecking %s" % pagename)
+        pywikibot.output("\nChecking {0!s}".format(pagename))
         sys.stdout.flush()
         page1 = Page(self.original, pagename)
         txt1 = page1.text
@@ -204,8 +203,7 @@ class SyncSites(object):
         for site in self.sites:
             if dest_ns is not None:
                 page2 = Page(site, page1.title(withNamespace=False), dest_ns)
-                pywikibot.output("\nCross namespace, new title: %s"
-                                 % page2.title())
+                pywikibot.output("\nCross namespace, new title: {0!s}".format(page2.title()))
             else:
                 page2 = Page(site, pagename)
 
@@ -220,11 +218,11 @@ class SyncSites(object):
                 if txt1 != txt_new:
                     pywikibot.output(
                         'NOTE: text replaced using config.sync_replace')
-                    pywikibot.output('%s %s %s' % (txt1, txt_new, txt2))
+                    pywikibot.output('{0!s} {1!s} {2!s}'.format(txt1, txt_new, txt2))
                     txt1 = txt_new
 
             if txt1 != txt2:
-                pywikibot.output("\n %s DIFFERS" % site)
+                pywikibot.output("\n {0!s} DIFFERS".format(site))
                 self.differences[site].append(pagename)
 
         if self.options.replace:

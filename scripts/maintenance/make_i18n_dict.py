@@ -82,11 +82,11 @@ class i18nBot(object):
         print("# -*- coding: utf-8 -*-")
         print("msg = {")
         for code in keys:
-            print("    '%s': {" % code)
+            print("    '{0!s}': {{".format(code))
             for msg in sorted(self.messages.values()):
-                label = "%s-%s" % (self.scriptname, msg)
+                label = "{0!s}-{1!s}".format(self.scriptname, msg)
                 if label in self.dict[code]:
-                    print("        '%s': u'%s'," % (label,
+                    print("        '{0!s}': u'{1!s}',".format(label,
                                                     self.dict[code][label]))
             print("    },")
         print("};")
@@ -99,19 +99,18 @@ class i18nBot(object):
         if newmsg is None:
             newmsg = oldmsg
         for code in keys:
-            label = "%s-%s" % (self.scriptname, newmsg)
+            label = "{0!s}-{1!s}".format(self.scriptname, newmsg)
             if code == 'qqq':
                 if code not in self.dict:
                     self.dict[code] = {}
                 self.dict[code][label] = (
-                    u'Edit summary for message %s of %s report'
-                    % (newmsg, self.scriptname))
+                    u'Edit summary for message {0!s} of {1!s} report'.format(newmsg, self.scriptname))
             elif code != 'commons':
                 if code not in self.dict:
                     self.dict[code] = {}
                 self.dict[code][label] = msg[code]
         if 'en' not in keys:
-            print('WARNING: "en" key missing for message %s' % newmsg)
+            print('WARNING: "en" key missing for message {0!s}'.format(newmsg))
 
     def run(self, quiet=False):
         """
@@ -141,7 +140,7 @@ class i18nBot(object):
         if not os.path.exists(json_dir):
             os.makedirs(json_dir)
         for lang in self.dict:
-            file_name = os.path.join(json_dir, '%s.json' % lang)
+            file_name = os.path.join(json_dir, '{0!s}.json'.format(lang))
             if os.path.isfile(file_name):
                 with codecs.open(file_name, 'r', 'utf-8') as json_file:
                     new_dict = json.loads(json_file.read())

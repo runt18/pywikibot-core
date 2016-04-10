@@ -129,12 +129,12 @@ class Photo(pywikibot.FilePage):
         params = {}
         params.update(self.metadata)
         params.update(extraparams)
-        description = u'{{%s\n' % template
+        description = u'{{{{{0!s}\n'.format(template)
         for key in sorted(params.keys()):
             value = params[key]
             if not key.startswith("_"):
                 description = description + (
-                    u'|%s=%s' % (key, self._safeTemplateValue(value))) + "\n"
+                    u'|{0!s}={1!s}'.format(key, self._safeTemplateValue(value))) + "\n"
         description = description + u'}}'
 
         return description
@@ -198,7 +198,7 @@ class DataIngestionBot(pywikibot.Bot):
         """Process each page."""
         duplicates = photo.findDuplicateImages()
         if duplicates:
-            pywikibot.output(u"Skipping duplicate of %r" % duplicates)
+            pywikibot.output(u"Skipping duplicate of {0!r}".format(duplicates))
             return duplicates[0]
 
         title = photo.getTitle(self.titlefmt)
@@ -283,7 +283,7 @@ def main(*args):
         try:
             config_page.get()
         except pywikibot.NoPage:
-            pywikibot.error('%s does not exist' % config_page)
+            pywikibot.error('{0!s} does not exist'.format(config_page))
             continue
 
         configuration = DataIngestionBot.parseConfigurationPage(config_page)
@@ -293,7 +293,7 @@ def main(*args):
 
             f = codecs.open(filename, 'r', configuration['csvEncoding'])
         except (IOError, OSError) as e:
-            pywikibot.error('%s could not be opened: %s' % (filename, e))
+            pywikibot.error('{0!s} could not be opened: {1!s}'.format(filename, e))
             continue
 
         try:

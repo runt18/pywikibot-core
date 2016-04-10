@@ -93,14 +93,14 @@ class TemplateCountRobot(object):
         templateDict = cls.template_dict(templates, namespaces)
         pywikibot.stdout('\nList of pages transcluding templates:')
         for key in templates:
-            pywikibot.output(u'* %s' % key)
+            pywikibot.output(u'* {0!s}'.format(key))
         pywikibot.stdout('-' * 36)
         total = 0
         for key in templateDict:
             for page in templateDict[key]:
                 pywikibot.stdout(page.title())
                 total += 1
-        pywikibot.output(u'Total page count: %d' % total)
+        pywikibot.output(u'Total page count: {0:d}'.format(total))
         pywikibot.stdout('Report generated on {0}'
                          ''.format(datetime.datetime.utcnow().isoformat()))
 

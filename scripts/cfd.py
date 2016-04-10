@@ -121,7 +121,7 @@ def main(*args):
             day = "None"
         elif m.check(dateheader, line):
             day = m.result.group(1)
-            pywikibot.output("Found day header: %s" % day)
+            pywikibot.output("Found day header: {0!s}".format(day))
         elif m.check(movecat, line):
             src = m.result.group(1)
             dest = m.result.group(2)
@@ -212,8 +212,7 @@ def findDay(pageTitle, oldDay):
                     elif paramName == 'year':
                         year = paramVal
                 if day and month and year:
-                    return ('[[Wikipedia:Categories for discussion/Log/%s %s %s]]'
-                            % (year, month, day))
+                    return ('[[Wikipedia:Categories for discussion/Log/{0!s} {1!s} {2!s}]]'.format(year, month, day))
         return oldDay
 
 if __name__ == "__main__":

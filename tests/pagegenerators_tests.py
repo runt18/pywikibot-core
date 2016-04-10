@@ -178,7 +178,7 @@ class TestDryPageGenerators(TestCase):
                                                       site=self.site)
         pages = []
         for p in gen:
-            p.text = u"This is the content of %s as a sample" % p.title()
+            p.text = u"This is the content of {0!s} as a sample".format(p.title())
             pages.append(p)
         gen = pagegenerators.RegexBodyFilterPageGenerator(iter(pages), '/doc')
         self.assertPagelistTitles(gen,
@@ -1060,8 +1060,7 @@ class LiveRCPageGeneratorTestCase(RecentChangesTestCase):
 
         if LooseVersion(socketIO_client.__version__) >= LooseVersion('0.6.1'):
             raise unittest.SkipTest(
-                'socketIO_client %s not supported by Wikimedia-Stream'
-                % socketIO_client.__version__)
+                'socketIO_client {0!s} not supported by Wikimedia-Stream'.format(socketIO_client.__version__))
 
     def test_RC_pagegenerator_result(self):
         """Test RC pagegenerator."""

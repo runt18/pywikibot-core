@@ -291,8 +291,7 @@ class Coordinate(_WbRepresentation):
         """
         if self.globe not in self.site.globes():
             raise CoordinateGlobeUnknownException(
-                u"%s is not supported in Wikibase yet."
-                % self.globe)
+                u"{0!s} is not supported in Wikibase yet.".format(self.globe))
         return {'latitude': self.lat,
                 'longitude': self.lon,
                 'altitude': self.alt,
@@ -506,7 +505,7 @@ class WbTime(_WbRepresentation):
             elif precision in self.PRECISION:
                 self.precision = self.PRECISION[precision]
             else:
-                raise ValueError('Invalid precision: "%s"' % precision)
+                raise ValueError('Invalid precision: "{0!s}"'.format(precision))
 
     @classmethod
     def fromTimestr(cls, datetimestr, precision=14, before=0, after=0,
@@ -541,7 +540,7 @@ class WbTime(_WbRepresentation):
         match = re.match(r'([-+]?\d+)-(\d+)-(\d+)T(\d+):(\d+):(\d+)Z',
                          datetimestr)
         if not match:
-            raise ValueError(u"Invalid format: '%s'" % datetimestr)
+            raise ValueError(u"Invalid format: '{0!s}'".format(datetimestr))
         t = match.groups()
         return cls(long(t[0]), int(t[1]), int(t[2]),
                    int(t[3]), int(t[4]), int(t[5]),
@@ -806,18 +805,16 @@ def Site(code=None, fam=None, user=None, sysop=None, interface=None, url=None):
             raise ValueError('Invalid interface name: {0}'.format(interface))
 
     if not issubclass(interface, BaseSite):
-        warning('Site called with interface=%s' % interface.__name__)
+        warning('Site called with interface={0!s}'.format(interface.__name__))
 
     user = normalize_username(user)
-    key = '%s:%s:%s:%s' % (interface.__name__, fam, code, user)
+    key = '{0!s}:{1!s}:{2!s}:{3!s}'.format(interface.__name__, fam, code, user)
     if key not in _sites or not isinstance(_sites[key], interface):
         _sites[key] = interface(code=code, fam=fam, user=user, sysop=sysop)
-        debug(u"Instantiated %s object '%s'"
-              % (interface.__name__, _sites[key]), _logger)
+        debug(u"Instantiated {0!s} object '{1!s}'".format(interface.__name__, _sites[key]), _logger)
 
         if _sites[key].code != code:
-            warn('Site %s instantiated using different code "%s"'
-                 % (_sites[key], code), UserWarning, 2)
+            warn('Site {0!s} instantiated using different code "{1!s}"'.format(_sites[key], code), UserWarning, 2)
 
     return _sites[key]
 

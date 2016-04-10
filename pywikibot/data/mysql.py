@@ -62,7 +62,7 @@ def mysql_query(query, params=(), dbname=None, encoding='utf-8', verbose=None):
 
     cursor = conn.cursor()
     if verbose:
-        pywikibot.output('Executing query:\n%s' % query)
+        pywikibot.output('Executing query:\n{0!s}'.format(query))
     query = query.encode(encoding)
     params = tuple(p.encode(encoding) for p in params)
 

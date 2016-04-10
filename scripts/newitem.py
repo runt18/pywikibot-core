@@ -65,7 +65,7 @@ class NewItemRobot(WikidataBot):
     def treat(self, page, item):
         """Treat page/item."""
         if item and item.exists():
-            pywikibot.output(u'%s already has an item: %s.' % (page, item))
+            pywikibot.output(u'{0!s} already has an item: {1!s}.'.format(page, item))
             if self.getOption('touch'):
                 pywikibot.output(u'Doing a null edit on the page.')
                 page.put(page.text)
@@ -74,18 +74,16 @@ class NewItemRobot(WikidataBot):
         self.current_page = page
 
         if page.isRedirectPage():
-            pywikibot.output(u'%s is a redirect page. Skipping.' % page)
+            pywikibot.output(u'{0!s} is a redirect page. Skipping.'.format(page))
             return
         if page.editTime() > self.lastEditBefore:
             pywikibot.output(
-                u'Last edit on %s was on %s.\nToo recent. Skipping.'
-                % (page, page.editTime().isoformat()))
+                u'Last edit on {0!s} was on {1!s}.\nToo recent. Skipping.'.format(page, page.editTime().isoformat()))
             return
 
         if page.oldest_revision.timestamp > self.pageAgeBefore:
             pywikibot.output(
-                u'Page creation of %s on %s is too recent. Skipping.'
-                % (page, page.editTime().isoformat()))
+                u'Page creation of {0!s} on {1!s} is too recent. Skipping.'.format(page, page.editTime().isoformat()))
             return
 
         if page.langlinks():
@@ -96,8 +94,7 @@ class NewItemRobot(WikidataBot):
             return
 
         # FIXME: i18n
-        summary = (u'Bot: New item with sitelink from %s'
-                   % page.title(asLink=True, insite=self.repo))
+        summary = (u'Bot: New item with sitelink from {0!s}'.format(page.title(asLink=True, insite=self.repo)))
 
         data = {'sitelinks':
                 {page.site.dbName():

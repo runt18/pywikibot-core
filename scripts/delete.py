@@ -154,8 +154,7 @@ def main(*args):
     # page generator to actually get the text of those pages.
     if generator:
         if summary is None:
-            summary = pywikibot.input(u'Enter a reason for the %sdeletion:'
-                                      % ['', 'un'][options.get('undelete', False)])
+            summary = pywikibot.input(u'Enter a reason for the {0!s}deletion:'.format(['', 'un'][options.get('undelete', False)]))
         bot = DeletionRobot(generator, summary, **options)
         bot.run()
         return True

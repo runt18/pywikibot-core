@@ -43,8 +43,7 @@ class TestSectionFunctions(TestCase):
 
     def setUp(self):
         """Setup tests."""
-        self.catresult1 = ('[[Category:Cat1]]%(LS)s[[Category:Cat2]]%(LS)s'
-                           % {'LS': config.LS})
+        self.catresult1 = ('[[Category:Cat1]]{LS!s}[[Category:Cat2]]{LS!s}'.format(**{'LS': config.LS}))
         super(TestSectionFunctions, self).setUp()
 
     def contains(self, fn, sn):
@@ -120,8 +119,7 @@ class TestFormatInterwiki(TestCase):
             'de': pywikibot.Page(pywikibot.Link('de:German', self.site)),
             'fr': pywikibot.Page(pywikibot.Link('fr:French', self.site))
         }
-        self.assertEqual('[[de:German]]%(LS)s[[fr:French]]%(LS)s'
-                         % {'LS': config.LS},
+        self.assertEqual('[[de:German]]{LS!s}[[fr:French]]{LS!s}'.format(**{'LS': config.LS}),
                          textlib.interwikiFormat(interwikis, self.site))
 
     def test_interwiki_format_Link(self):
@@ -130,8 +128,7 @@ class TestFormatInterwiki(TestCase):
             'de': pywikibot.Link('de:German', self.site),
             'fr': pywikibot.Link('fr:French', self.site),
         }
-        self.assertEqual('[[de:German]]%(LS)s[[fr:French]]%(LS)s'
-                         % {'LS': config.LS},
+        self.assertEqual('[[de:German]]{LS!s}[[fr:French]]{LS!s}'.format(**{'LS': config.LS}),
                          textlib.interwikiFormat(interwikis, self.site))
 
 
@@ -141,8 +138,7 @@ class TestFormatCategory(DefaultDrySiteTestCase):
 
     dry = True
 
-    catresult = ('[[Category:Cat1]]%(LS)s[[Category:Cat2]]%(LS)s'
-                 % {'LS': config.LS})
+    catresult = ('[[Category:Cat1]]{LS!s}[[Category:Cat2]]{LS!s}'.format(**{'LS': config.LS}))
 
     def test_category_format_raw(self):
         """Test formatting categories as strings formatted as links."""
@@ -1168,18 +1164,18 @@ class TestReplaceExcept(DefaultDrySiteTestCase):
     def test_replace_tag_category(self):
         """Test replacing not inside category links."""
         for ns_name in self.site.namespaces[14]:
-            self.assertEqual(textlib.replaceExcept('[[%s:x]]' % ns_name,
+            self.assertEqual(textlib.replaceExcept('[[{0!s}:x]]'.format(ns_name),
                                                    'x', 'y', ['category'],
                                                    site=self.site),
-                             '[[%s:x]]' % ns_name)
+                             '[[{0!s}:x]]'.format(ns_name))
 
     def test_replace_tag_file(self):
         """Test replacing not inside file links."""
         for ns_name in self.site.namespaces[6]:
-            self.assertEqual(textlib.replaceExcept('[[%s:x]]' % ns_name,
+            self.assertEqual(textlib.replaceExcept('[[{0!s}:x]]'.format(ns_name),
                                                    'x', 'y', ['file'],
                                                    site=self.site),
-                             '[[%s:x]]' % ns_name)
+                             '[[{0!s}:x]]'.format(ns_name))
 
         self.assertEqual(
             textlib.replaceExcept(
@@ -1292,8 +1288,7 @@ class TestReplaceExcept(DefaultDrySiteTestCase):
     def test_replace_tags_interwiki(self):
         """Test replacing not inside interwiki links."""
         if 'es' not in self.site.family.langs or 'ey' in self.site.family.langs:
-            raise unittest.SkipTest('family %s doesnt have languages'
-                                    % self.site)
+            raise unittest.SkipTest('family {0!s} doesnt have languages'.format(self.site))
 
         self.assertEqual(textlib.replaceExcept('[[es:s]]', 's', 't',
                                                ['interwiki'], site=self.site),

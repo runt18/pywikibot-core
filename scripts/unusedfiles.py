@@ -52,22 +52,19 @@ class UnusedFilesBot(Bot):
                                        template_to_the_user)
         self.summary = i18n.twtranslate(self.site, 'unusedfiles-comment')
         if not all([template_image, template_user]):
-            raise pywikibot.Error(u'This script is not localized for %s site.'
-                                  % self.site)
+            raise pywikibot.Error(u'This script is not localized for {0!s} site.'.format(self.site))
         generator = pagegenerators.UnusedFilesGenerator(site=self.site)
         generator = pagegenerators.PreloadingGenerator(generator)
         for image in generator:
             if not image.exists():
-                pywikibot.output("File '%s' does not exist (see bug T71133)."
-                                 % image.title())
+                pywikibot.output("File '{0!s}' does not exist (see bug T71133).".format(image.title()))
                 continue
             # Use fileUrl() and fileIsShared() to confirm it is local media
             # rather than a local page with the same name as shared media.
             if (image.fileUrl() and not image.fileIsShared() and
                     u'http://' not in image.text):
                 if template_image in image.text:
-                    pywikibot.output(u"%s done already"
-                                     % image.title(asLink=True))
+                    pywikibot.output(u"{0!s} done already".format(image.title(asLink=True)))
                     continue
                 self.append_text(image, u"\n\n" + template_image)
                 uploader = image.getFileVersionHistory().pop(0)['user']

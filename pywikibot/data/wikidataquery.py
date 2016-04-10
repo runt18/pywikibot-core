@@ -103,20 +103,20 @@ class QuerySet(object):
         """
         def bracketIfQuerySet(q):
             if isinstance(q, QuerySet) and q.joiner != self.joiner:
-                return "(%s)" % q
+                return "({0!s})".format(q)
             else:
                 return str(q)
 
         s = bracketIfQuerySet(self.qs[0])
 
         for q in self.qs[1:]:
-            s += " %s %s" % (self.joiner, bracketIfQuerySet(q))
+            s += " {0!s} {1!s}".format(self.joiner, bracketIfQuerySet(q))
 
         return s
 
     def __repr__(self):
         """Return a string representation."""
-        return u"QuerySet(%s)" % self
+        return u"QuerySet({0!s})".format(self)
 
 
 class Query(object):
@@ -241,7 +241,7 @@ class Query(object):
 
     def __repr__(self):
         """Return a string representation."""
-        return u"Query(%s)" % self
+        return u"Query({0!s})".format(self)
 
 
 class HasClaim(Query):
@@ -283,9 +283,9 @@ class HasClaim(Query):
     def __str__(self):
         """Return the query string for the API."""
         if isinstance(self.items, list):
-            return "%s[%s%s]" % (self.queryType, self.prop, self.formatItems())
+            return "{0!s}[{1!s}{2!s}]".format(self.queryType, self.prop, self.formatItems())
         elif isinstance(self.items, Query):
-            return "%s[%s:(%s)]" % (self.queryType, self.prop, self.items)
+            return "{0!s}[{1!s}:({2!s})]".format(self.queryType, self.prop, self.items)
 
 
 class NoClaim(HasClaim):
@@ -303,7 +303,7 @@ class StringClaim(HasClaim):
 
     def formatItem(self, x):
         """Add quotes around string."""
-        return '"%s"' % x
+        return '"{0!s}"'.format(x)
 
     def validate(self):
         """Validate that the items are strings."""
@@ -348,7 +348,7 @@ class Tree(Query):
 
     def __str__(self):
         """Return the query string for the API."""
-        return "%s[%s][%s][%s]" % (self.queryType, self.formatList(self.item),
+        return "{0!s}[{1!s}][{2!s}][{3!s}]".format(self.queryType, self.formatList(self.item),
                                    self.formatList(self.forward),
                                    self.formatList(self.reverse))
 
@@ -372,7 +372,7 @@ class Around(Query):
 
     def __str__(self):
         """Return the query string for the API."""
-        return "%s[%s,%s,%s,%s]" % (self.queryType, self.prop,
+        return "{0!s}[{1!s},{2!s},{3!s},{4!s}]".format(self.queryType, self.prop,
                                     self.lt, self.lg, self.rad)
 
 
@@ -408,7 +408,7 @@ class Between(Query):
         # if you don't have an end, you don't put in the comma
         end = ',' + self.end.toTimestr() if self.end else ''
 
-        return "%s[%s,%s%s]" % (self.queryType, self.prop, begin, end)
+        return "{0!s}[{1!s},{2!s}{3!s}]".format(self.queryType, self.prop, begin, end)
 
 
 class Link(Query):
@@ -432,7 +432,7 @@ class Link(Query):
 
     def __str__(self):
         """Return the query string for the API."""
-        return "%s[%s]" % (self.queryType, self.formatList(self.link))
+        return "{0!s}[{1!s}]".format(self.queryType, self.formatList(self.link))
 
 
 class NoLink(Link):
@@ -460,8 +460,7 @@ def fromClaim(claim):
     if claim.type in ('string', 'url', 'math', 'external-id'):
         return StringClaim(claim.getID(numeric=True), claim.getTarget())
     else:
-        raise TypeError("Cannot construct a query from a claim of type %s"
-                        % claim.type)
+        raise TypeError("Cannot construct a query from a claim of type {0!s}".format(claim.type))
 
 
 class WikidataQuery(object):
@@ -493,7 +492,7 @@ class WikidataQuery(object):
 
     def getUrl(self, queryStr):
         """Get the URL given the query string."""
-        return "%s/api?%s" % (self.host, queryStr)
+        return "{0!s}/api?{1!s}".format(self.host, queryStr)
 
     def getQueryString(self, q, labels=[], props=[]):
         """
@@ -501,13 +500,13 @@ class WikidataQuery(object):
 
         @return: string including labels and props
         """
-        qStr = "q=%s" % quote(str(q))
+        qStr = "q={0!s}".format(quote(str(q)))
 
         if labels:
-            qStr += "&labels=%s" % ','.join(labels)
+            qStr += "&labels={0!s}".format(','.join(labels))
 
         if props:
-            qStr += "&props=%s" % ','.join(props)
+            qStr += "&props={0!s}".format(','.join(props))
 
         return qStr
 
@@ -540,8 +539,7 @@ class WikidataQuery(object):
                     try:
                         data = pickle.load(f)
                     except pickle.UnpicklingError:
-                        pywikibot.warning(u"Couldn't read cached data from %s"
-                                          % cacheFile)
+                        pywikibot.warning(u"Couldn't read cached data from {0!s}".format(cacheFile))
                         data = None
 
                 return data
@@ -572,7 +570,7 @@ class WikidataQuery(object):
             try:
                 pickle.dump(data, f, protocol=config.pickle_protocol)
             except IOError:
-                pywikibot.warning(u"Failed to write cache file %s" % cacheFile)
+                pywikibot.warning(u"Failed to write cache file {0!s}".format(cacheFile))
 
     def getDataFromHost(self, queryStr):
         """
@@ -585,23 +583,21 @@ class WikidataQuery(object):
         try:
             resp = http.fetch(url)
         except:
-            pywikibot.warning(u"Failed to retrieve %s" % url)
+            pywikibot.warning(u"Failed to retrieve {0!s}".format(url))
             raise
 
         data = resp.content
         if not data:
-            pywikibot.warning('No data received for %s' % url)
-            raise pywikibot.ServerError('No data received for %s' % url)
+            pywikibot.warning('No data received for {0!s}'.format(url))
+            raise pywikibot.ServerError('No data received for {0!s}'.format(url))
 
         try:
             data = json.loads(data)
         except ValueError:
             pywikibot.warning(
-                'Data received for %s but no JSON could be decoded: %r'
-                % (url, data))
+                'Data received for {0!s} but no JSON could be decoded: {1!r}'.format(url, data))
             raise pywikibot.ServerError(
-                'Data received for %s but no JSON could be decoded: %r'
-                % (url, data))
+                'Data received for {0!s} but no JSON could be decoded: {1!r}'.format(url, data))
 
         return data
 

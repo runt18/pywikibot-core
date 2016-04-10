@@ -94,12 +94,10 @@ class ProofreadPage(pywikibot.Page):
             site = source
         super(ProofreadPage, self).__init__(source, title)
         if self.namespace() != site.proofread_page_ns:
-            raise ValueError('Page %s must belong to %s namespace'
-                             % (self.title(), site.proofread_page_ns))
+            raise ValueError('Page {0!s} must belong to {1!s} namespace'.format(self.title(), site.proofread_page_ns))
         # Ensure that constants are in line with Extension values.
         if list(self.site.proofread_levels.keys()) != self.PROOFREAD_LEVELS:
-            raise ValueError('QLs do not match site values: %s != %s'
-                             % (self.site.proofread_levels.keys(),
+            raise ValueError('QLs do not match site values: {0!s} != {1!s}'.format(self.site.proofread_levels.keys(),
                                 self.PROOFREAD_LEVELS))
 
     @property
@@ -138,22 +136,19 @@ class ProofreadPage(pywikibot.Page):
 
         page, others = self._index
         if others:
-            pywikibot.warning('Page %s is linked to several Index pages: %s.'
-                              % (self, others))
+            pywikibot.warning('Page {0!s} is linked to several Index pages: {1!s}.'.format(self, others))
             if page:
-                pywikibot.warning('    %s selected as Index.' % page)
-                pywikibot.warning('    %s remaining.' % others)
+                pywikibot.warning('    {0!s} selected as Index.'.format(page))
+                pywikibot.warning('    {0!s} remaining.'.format(others))
         elif not page:
-            pywikibot.warning('Page %s is not linked to any Index page.'
-                              % self)
+            pywikibot.warning('Page {0!s} is not linked to any Index page.'.format(self))
 
         return page
 
     @index.setter
     def index(self, value):
         if not isinstance(value, IndexPage):
-            raise ValueError('value %s must be a IndexPage object.'
-                             % value)
+            raise ValueError('value {0!s} must be a IndexPage object.'.format(value))
         self._index = (value, None)
 
     @index.deleter
@@ -205,8 +200,7 @@ class ProofreadPage(pywikibot.Page):
     def ql(self, value):
         """Set page quality level."""
         if value not in self.site.proofread_levels:
-            raise ValueError('Not valid QL value: %s (legal values: %s)'
-                             % (value, self.site.proofread_levels))
+            raise ValueError('Not valid QL value: {0!s} (legal values: {1!s})'.format(value, self.site.proofread_levels))
         # TODO: add logic to validate ql value change, considering
         # site.proofread_levels.
         self._full_header.ql = value
@@ -230,8 +224,7 @@ class ProofreadPage(pywikibot.Page):
         try:
             return self.site.proofread_levels[self.ql]
         except KeyError:
-            pywikibot.warning('Not valid status set for %s: quality level = %s'
-                              % (self.title(asLink=True), self.ql))
+            pywikibot.warning('Not valid status set for {0!s}: quality level = {1!s}'.format(self.title(asLink=True), self.ql))
             return None
 
     def without_text(self):
@@ -363,8 +356,7 @@ class ProofreadPage(pywikibot.Page):
         len_oq = len(open_queue)
         len_cq = len(close_queue)
         if (len_oq != len_cq) or (len_oq < 2 or len_cq < 2):
-            raise pywikibot.Error('ProofreadPage %s: invalid format'
-                                  % self.title(asLink=True))
+            raise pywikibot.Error('ProofreadPage {0!s}: invalid format'.format(self.title(asLink=True)))
 
         f_open, f_close = open_queue[0], close_queue[0]
         self._full_header = FullHeader(self._text[f_open.end():f_close.start()])
@@ -456,8 +448,7 @@ class IndexPage(pywikibot.Page):
             site = source
         super(IndexPage, self).__init__(source, title)
         if self.namespace() != site.proofread_index_ns:
-            raise ValueError('Page %s must belong to %s namespace'
-                             % (self.title(), site.proofread_index_ns))
+            raise ValueError('Page {0!s} must belong to {1!s} namespace'.format(self.title(), site.proofread_index_ns))
 
         self._all_page_links = set(
             self.site.pagelinks(self, namespaces=site.proofread_page_ns))
@@ -542,7 +533,7 @@ class IndexPage(pywikibot.Page):
                 continue
 
             if page not in self._all_page_links:
-                raise pywikibot.Error('Page %s not recognised.' % page)
+                raise pywikibot.Error('Page {0!s} not recognised.'.format(page))
 
             # In order to avoid to fetch other Page:title links outside
             # the Pages section of the Index page; these should hopefully be
@@ -555,8 +546,7 @@ class IndexPage(pywikibot.Page):
             # Sanity check if WS site use page convention name/number.
             if sep == '/':
                 assert page_cnt == int(page_number), (
-                    'Page number %s not recognised as page %s.'
-                    % (page_cnt, title))
+                    'Page number {0!s} not recognised as page {1!s}.'.format(page_cnt, title))
 
             # Mapping: numbers <-> pages.
             self._page_from_numbers[page_cnt] = page
@@ -609,8 +599,7 @@ class IndexPage(pywikibot.Page):
         if not ((1 <= start <= self.num_pages) and
                 (1 <= end <= self.num_pages) and
                 (start <= end)):
-            raise ValueError('start=%s, end=%s are not in valid range (%s, %s)'
-                             % (start, end, 1, self.num_pages))
+            raise ValueError('start={0!s}, end={1!s} are not in valid range ({2!s}, {3!s})'.format(start, end, 1, self.num_pages))
 
         # All but 'Without Text'
         if filter_ql is None:
@@ -646,7 +635,7 @@ class IndexPage(pywikibot.Page):
         try:
             return self._labels_from_page[page]
         except KeyError:
-            raise KeyError('Invalid Page: %s.' % page)
+            raise KeyError('Invalid Page: {0!s}.'.format(page))
 
     @check_if_cached
     def get_label_from_page_number(self, page_number):
@@ -661,8 +650,7 @@ class IndexPage(pywikibot.Page):
         try:
             return self._labels_from_page_number[page_number]
         except KeyError:
-            raise KeyError('Page number ".../%s" not in range.'
-                           % page_number)
+            raise KeyError('Page number ".../{0!s}" not in range.'.format(page_number))
 
     def _get_from_label(self, mapping_dict, label):
         """Helper function to get info from label."""
@@ -673,7 +661,7 @@ class IndexPage(pywikibot.Page):
         try:
             return mapping_dict[label]
         except KeyError:
-            raise KeyError('No page has label: "%s".' % label)
+            raise KeyError('No page has label: "{0!s}".'.format(label))
 
     @check_if_cached
     def get_page_number_from_label(self, label='1'):
@@ -703,7 +691,7 @@ class IndexPage(pywikibot.Page):
         try:
             return self._page_from_numbers[page_number]
         except KeyError:
-            raise KeyError('Invalid page number: %s.' % page_number)
+            raise KeyError('Invalid page number: {0!s}.'.format(page_number))
 
     @check_if_cached
     def pages(self):
@@ -720,4 +708,4 @@ class IndexPage(pywikibot.Page):
         try:
             return self._numbers_from_page[page]
         except KeyError:
-            raise KeyError('Invalid page: %s.' % page)
+            raise KeyError('Invalid page: {0!s}.'.format(page))

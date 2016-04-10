@@ -47,7 +47,7 @@ class DjVuFile(object):
                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             (stdoutdata, stderrdata) = dp.communicate()
             if dp.returncode != 0:
-                error('djvulibre library error!\n%s' % stderrdata)
+                error('djvulibre library error!\n{0!s}'.format(stderrdata))
             self._image_count = int(stdoutdata)
         return self._image_count
 
@@ -58,7 +58,7 @@ class DjVuFile(object):
                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             (stdoutdata, stderrdata) = dp.communicate()
             if dp.returncode != 0:
-                error('djvulibre library error!\n%s' % stderrdata)
+                error('djvulibre library error!\n{0!s}'.format(stderrdata))
             txt = stdoutdata.decode('utf-8')
             self._has_text = 'TXTz' in txt
         return self._has_text
@@ -82,14 +82,14 @@ class DjVuFile(object):
     def get_page(self, n):
         """Get page n for djvu file."""
         if not self.has_text():
-            raise ValueError('Djvu file %s has no text layer.' % self.file_djvu)
+            raise ValueError('Djvu file {0!s} has no text layer.'.format(self.file_djvu))
         if not (1 <= n <= self.number_of_images()):
             raise ValueError('Requested page number %d is not in file %s'
                              ' page range [%d-%d]'
                              % (n, self.file_djvu, 1, self.number_of_images()))
-        dp = subprocess.Popen(['djvutxt', '--page=%d' % n, self.file_djvu],
+        dp = subprocess.Popen(['djvutxt', '--page={0:d}'.format(n), self.file_djvu],
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         (stdoutdata, stderrdata) = dp.communicate()
         if dp.returncode != 0:
-            error('djvulibre library error!\n%s' % stderrdata)
+            error('djvulibre library error!\n{0!s}'.format(stderrdata))
         return self._remove_control_chars(stdoutdata)

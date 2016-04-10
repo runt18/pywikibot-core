@@ -94,12 +94,11 @@ class LoginManager(object):
                 self.username = self.username or family_sysopnames['*']
             except KeyError:
                 raise NoUsername(u"""\
-ERROR: Sysop username for %(fam_name)s:%(wiki_code)s is undefined.
+ERROR: Sysop username for {fam_name!s}:{wiki_code!s} is undefined.
 If you have a sysop account for that site, please add a line to user-config.py:
 
-sysopnames['%(fam_name)s']['%(wiki_code)s'] = 'myUsername'"""
-                                 % {'fam_name': self.site.family.name,
-                                    'wiki_code': self.site.code})
+sysopnames['{fam_name!s}']['{wiki_code!s}'] = 'myUsername'""".format(**{'fam_name': self.site.family.name,
+                                    'wiki_code': self.site.code}))
         else:
             try:
                 family_usernames = config.usernames[self.site.family.name]
@@ -107,12 +106,11 @@ sysopnames['%(fam_name)s']['%(wiki_code)s'] = 'myUsername'"""
                 self.username = self.username or family_usernames['*']
             except:
                 raise NoUsername(u"""\
-ERROR: Username for %(fam_name)s:%(wiki_code)s is undefined.
+ERROR: Username for {fam_name!s}:{wiki_code!s} is undefined.
 If you have an account for that site, please add a line to user-config.py:
 
-usernames['%(fam_name)s']['%(wiki_code)s'] = 'myUsername'"""
-                                 % {'fam_name': self.site.family.name,
-                                    'wiki_code': self.site.code})
+usernames['{fam_name!s}']['{wiki_code!s}'] = 'myUsername'""".format(**{'fam_name': self.site.family.name,
+                                    'wiki_code': self.site.code}))
         self.password = password
         if getattr(config, 'password_file', ''):
             self.readPassword()
@@ -128,16 +126,14 @@ usernames['%(fam_name)s']['%(wiki_code)s'] = 'myUsername'"""
             user = next(iter(data))
         except pywikibot.data.api.APIError as e:
             if e.code == 'readapidenied':
-                pywikibot.warning('Could not check user %s exists on %s'
-                                  % (self.username, self.site))
+                pywikibot.warning('Could not check user {0!s} exists on {1!s}'.format(self.username, self.site))
                 return
             else:
                 raise
 
         if user['name'] != self.username:
             # Report the same error as server error code NotExists
-            raise NoUsername('Username \'%s\' does not exist on %s'
-                             % (self.username, self.site))
+            raise NoUsername('Username \'{0!s}\' does not exist on {1!s}'.format(self.username, self.site))
 
     def botAllowed(self):
         """
@@ -185,7 +181,7 @@ usernames['%(fam_name)s']['%(wiki_code)s'] = 'myUsername'"""
         """
         # THIS IS OVERRIDDEN IN data/api.py
         filename = config.datafilepath('pywikibot.lwp')
-        pywikibot.debug(u"Storing cookies to %s" % filename,
+        pywikibot.debug(u"Storing cookies to {0!s}".format(filename),
                         _logger)
         f = open(filename, 'w')
         f.write(data)
@@ -271,18 +267,15 @@ usernames['%(fam_name)s']['%(wiki_code)s'] = 'myUsername'"""
                 u'be shown):' % {'name': self.username, 'site': self.site},
                 password=True)
 
-        pywikibot.output(u"Logging in to %(site)s as %(name)s"
-                         % {'name': self.username, 'site': self.site})
+        pywikibot.output(u"Logging in to {site!s} as {name!s}".format(**{'name': self.username, 'site': self.site}))
         try:
             cookiedata = self.getCookie()
         except pywikibot.data.api.APIError as e:
-            pywikibot.error(u"Login failed (%s)." % e.code)
+            pywikibot.error(u"Login failed ({0!s}).".format(e.code))
             if e.code == 'NotExists':
-                raise NoUsername(u"Username '%s' does not exist on %s"
-                                 % (self.username, self.site))
+                raise NoUsername(u"Username '{0!s}' does not exist on {1!s}".format(self.username, self.site))
             elif e.code == 'Illegal':
-                raise NoUsername(u"Username '%s' is invalid on %s"
-                                 % (self.username, self.site))
+                raise NoUsername(u"Username '{0!s}' is invalid on {1!s}".format(self.username, self.site))
             # TODO: investigate other unhandled API codes (bug T75539)
             if retry:
                 self.password = None
@@ -336,7 +329,7 @@ class OauthLoginManager(LoginManager):
         @raises OAuthImpossible: mwoauth isn't installed
         """
         if isinstance(mwoauth, ImportError):
-            raise OAuthImpossible('mwoauth is not installed: %s.' % mwoauth)
+            raise OAuthImpossible('mwoauth is not installed: {0!s}.'.format(mwoauth))
         assert password is not None and user is not None
         assert sysop is False
         super(OauthLoginManager, self).__init__(None, False, site, None)
@@ -357,9 +350,8 @@ class OauthLoginManager(LoginManager):
         @type force: bool
         """
         if self.access_token is None or force:
-            pywikibot.output('Logging in to %(site)s via OAuth consumer %(key)s'
-                             % {'key': self.consumer_token[0],
-                                'site': self.site})
+            pywikibot.output('Logging in to {site!s} via OAuth consumer {key!s}'.format(**{'key': self.consumer_token[0],
+                                'site': self.site}))
             consumer_token = mwoauth.ConsumerToken(self.consumer_token[0],
                                                    self.consumer_token[1])
             handshaker = mwoauth.Handshaker(
@@ -380,9 +372,8 @@ class OauthLoginManager(LoginManager):
                 if retry:
                     self.login(retry=True, force=force)
         else:
-            pywikibot.output('Logged in to %(site)s via consumer %(key)s'
-                             % {'key': self.consumer_token[0],
-                                'site': self.site})
+            pywikibot.output('Logged in to {site!s} via consumer {key!s}'.format(**{'key': self.consumer_token[0],
+                                'site': self.site}))
 
     @property
     def consumer_token(self):

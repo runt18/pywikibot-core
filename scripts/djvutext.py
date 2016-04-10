@@ -118,7 +118,7 @@ class DjVuTextBot(SingleSiteBot):
 
         summary = self.getOption('summary')
         if page.exists() and not self.getOption('force'):
-            pywikibot.output('Page %s already exists, not adding!' % page)
+            pywikibot.output('Page {0!s} already exists, not adding!'.format(page))
         else:
             self.userPut(page, old_text, new_text,
                          summary=summary, minor=True, botflag=True)
@@ -154,7 +154,7 @@ def main(*args):
         elif arg == '-always':
             options['always'] = True
         else:
-            pywikibot.output('Unknown argument %s' % arg)
+            pywikibot.output('Unknown argument {0!s}'.format(arg))
 
     # index is mandatory.
     if not index:
@@ -165,7 +165,7 @@ def main(*args):
     djvu_path = os.path.expanduser(djvu_path)
     djvu_path = os.path.abspath(djvu_path)
     if not os.path.exists(djvu_path):
-        pywikibot.error('No such file or directory: %s' % djvu_path)
+        pywikibot.error('No such file or directory: {0!s}'.format(djvu_path))
         return False
     if os.path.isdir(djvu_path):
         djvu_path = os.path.join(djvu_path, index)
@@ -174,7 +174,7 @@ def main(*args):
     djvu = DjVuFile(djvu_path)
 
     if not djvu.has_text():
-        pywikibot.error('No text layer in djvu file %s' % djvu.file_djvu)
+        pywikibot.error('No text layer in djvu file {0!s}'.format(djvu.file_djvu))
         return False
 
     # Parse pages param.
@@ -190,7 +190,7 @@ def main(*args):
 
     site = pywikibot.Site()
     if not site.has_extension('ProofreadPage'):
-        pywikibot.error('Site %s must have ProofreadPage extension.' % site)
+        pywikibot.error('Site {0!s} must have ProofreadPage extension.'.format(site))
         return False
 
     index_page = pywikibot.Page(site, index, ns=site.proofread_index_ns)
@@ -198,8 +198,7 @@ def main(*args):
     if not index_page.exists():
         raise pywikibot.NoPage(index)
 
-    pywikibot.output('uploading text from %s to %s'
-                     % (djvu.file_djvu, index_page.title(asLink=True)))
+    pywikibot.output('uploading text from {0!s} to {1!s}'.format(djvu.file_djvu, index_page.title(asLink=True)))
 
     bot = DjVuTextBot(djvu, index_page, pages, **options)
     bot.run()

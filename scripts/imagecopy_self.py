@@ -351,8 +351,7 @@ class imageFetcher(threading.Thread):
             # First do autoskip.
             if self.doiskip(imagepage):
                 pywikibot.output(
-                    u'Skipping %s : Got a template on the skip list.'
-                    % page.title())
+                    u'Skipping {0!s} : Got a template on the skip list.'.format(page.title()))
                 return False
 
             text = imagepage.get()
@@ -363,8 +362,7 @@ class imageFetcher(threading.Thread):
                     foundMatch = True
             if not foundMatch:
                 pywikibot.output(
-                    u'Skipping %s : No suitable license template was found.'
-                    % page.title())
+                    u'Skipping {0!s} : No suitable license template was found.'.format(page.title()))
                 return False
             self.prefetchQueue.put(self.getNewFields(imagepage))
 
@@ -377,7 +375,7 @@ class imageFetcher(threading.Thread):
         for template in imagepage.templates():
             if template in skipTemplates[imagepage.site.language()]:
                 pywikibot.output(
-                    u'Found %s which is on the template skip list' % template)
+                    u'Found {0!s} which is on the template skip list'.format(template))
                 return True
         return False
 
@@ -646,8 +644,7 @@ class userInteraction(threading.Thread):
                 fields = TkdialogICS(fields).getnewmetadata()
 
                 if fields.get('skip'):
-                    pywikibot.output(u'Skipping %s : User pressed skip.'
-                                     % fields.get('imagepage').title())
+                    pywikibot.output(u'Skipping {0!s} : User pressed skip.'.format(fields.get('imagepage').title()))
                     return False
 
                 # Check if the image already exists
@@ -905,22 +902,22 @@ class uploader(threading.Thread):
                     )
         cid += u'== {{int:filedesc}} ==\n'
         cid += u'{{Information\n'
-        cid += u'|description=%(description)s\n' % fields
-        cid += u'|date=%(date)s\n' % fields
-        cid += u'|source=%(source)s\n' % fields
-        cid += u'|author=%(author)s\n' % fields
-        cid += u'|permission=%(permission)s\n' % fields
-        cid += u'|other_versions=%(other_versions)s\n' % fields
+        cid += u'|description={description!s}\n'.format(**fields)
+        cid += u'|date={date!s}\n'.format(**fields)
+        cid += u'|source={source!s}\n'.format(**fields)
+        cid += u'|author={author!s}\n'.format(**fields)
+        cid += u'|permission={permission!s}\n'.format(**fields)
+        cid += u'|other_versions={other_versions!s}\n'.format(**fields)
         cid += u'}}\n'
         cid += u'== {{int:license}} ==\n'
-        cid += u'%(licensetemplate)s\n' % fields
+        cid += u'{licensetemplate!s}\n'.format(**fields)
         cid += u'\n'
         cid += self.getOriginalUploadLog(fields.get('imagepage'))
         cid += u'__NOTOC__\n'
         if fields.get('categories').strip() == u'':
             cid = cid + u'{{Subst:Unc}}'
         else:
-            cid = cid + u'%(categories)s\n' % fields
+            cid = cid + u'{categories!s}\n'.format(**fields)
         return cid
 
     def getOriginalUploadLog(self, imagepage):

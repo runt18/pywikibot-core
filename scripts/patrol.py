@@ -102,7 +102,7 @@ class PatrolBot(SingleSiteBot):
         else:
             local_whitelist_subpage_name = pywikibot.translate(
                 self.site, self.whitelist_subpage_name, fallback=True)
-            self.whitelist_pagename = u'%s:%s/%s' % (
+            self.whitelist_pagename = u'{0!s}:{1!s}/{2!s}'.format(
                                       self.site.namespace(2),
                                       self.site.username(),
                                       local_whitelist_subpage_name)
@@ -137,7 +137,7 @@ class PatrolBot(SingleSiteBot):
                                         self.whitelist_pagename)
 
         if not self.whitelist:
-            pywikibot.output(u'Loading %s' % self.whitelist_pagename)
+            pywikibot.output(u'Loading {0!s}'.format(self.whitelist_pagename))
 
         try:
             if self.whitelist_ts:
@@ -166,12 +166,12 @@ class PatrolBot(SingleSiteBot):
             # cascade if there isnt a whitelist to fallback on
             if not self.whitelist:
                 raise
-            pywikibot.error(u'%s' % e)
+            pywikibot.error(u'{0!s}'.format(e))
 
     def in_list(self, pagelist, title):
         """Check if title present in pagelist."""
         if pywikibot.config.verbose_output:
-            pywikibot.output(u'Checking whitelist for: %s' % title)
+            pywikibot.output(u'Checking whitelist for: {0!s}'.format(title))
 
         # quick check for exact match
         if title in pagelist:
@@ -185,7 +185,7 @@ class PatrolBot(SingleSiteBot):
 
         for item in pagelist:
             if pywikibot.config.verbose_output:
-                pywikibot.output(u'checking against whitelist item = %s' % item)
+                pywikibot.output(u'checking against whitelist item = {0!s}'.format(item))
 
             if isinstance(item, PatrolRule):
                 if pywikibot.config.verbose_output:
@@ -245,7 +245,7 @@ class PatrolBot(SingleSiteBot):
                     # the user will be the target of subsequent rules
                     current_user = obj.title
                     if pywikibot.config.verbose_output:
-                        pywikibot.output(u'Whitelist user: %s' % current_user)
+                        pywikibot.output(u'Whitelist user: {0!s}'.format(current_user))
                     continue
                 else:
                     page = obj.canonical_title()
@@ -254,11 +254,11 @@ class PatrolBot(SingleSiteBot):
                     if not user or current_user == user:
                         if self.is_wikisource_author_page(page):
                             if pywikibot.config.verbose_output:
-                                pywikibot.output(u'Whitelist author: %s' % page)
+                                pywikibot.output(u'Whitelist author: {0!s}'.format(page))
                             page = LinkedPagesRule(page)
                         else:
                             if pywikibot.config.verbose_output:
-                                pywikibot.output(u'Whitelist page: %s' % page)
+                                pywikibot.output(u'Whitelist page: {0!s}'.format(page))
                         if pywikibot.config.verbose_output:
                             pywikibot.output('Adding {0}:{1}'.format(current_user, page))
                         whitelist[current_user].append(page)
@@ -266,7 +266,7 @@ class PatrolBot(SingleSiteBot):
                         pywikibot.output(u'Discarding whitelist page for '
                                          u'another user: %s' % page)
                 else:
-                    raise Exception(u'No user set for page %s' % page)
+                    raise Exception(u'No user set for page {0!s}'.format(page))
 
         return dict(whitelist)
 
@@ -282,12 +282,11 @@ class PatrolBot(SingleSiteBot):
             pass
         if author_ns:
             author_ns_prefix = self.site.namespace(author_ns)
-        pywikibot.debug(u'Author ns: %d; name: %s'
-                        % (author_ns, author_ns_prefix), _logger)
+        pywikibot.debug(u'Author ns: {0:d}; name: {1!s}'.format(author_ns, author_ns_prefix), _logger)
         if title.find(author_ns_prefix + ':') == 0:
             if pywikibot.config.verbose_output:
                 author_page_name = title[len(author_ns_prefix) + 1:]
-                pywikibot.output(u'Found author %s' % author_page_name)
+                pywikibot.output(u'Found author {0!s}'.format(author_page_name))
             return True
 
     def run(self, feed=None):
@@ -321,23 +320,20 @@ class PatrolBot(SingleSiteBot):
                 self.repeat_start_ts = time.time()
 
             if pywikibot.config.verbose_output or self.getOption('ask'):
-                pywikibot.output(u'User %s has created or modified page %s'
-                                 % (username, title))
+                pywikibot.output(u'User {0!s} has created or modified page {1!s}'.format(username, title))
 
             if self.getOption('autopatroluserns') and (page['ns'] == 2 or
                                                        page['ns'] == 3):
                 # simple rule to whitelist any user editing their own userspace
                 if title.partition(':')[2].split('/')[0].startswith(username):
                     if pywikibot.config.verbose_output:
-                        pywikibot.output(u'%s is whitelisted to modify %s'
-                                         % (username, title))
+                        pywikibot.output(u'{0!s} is whitelisted to modify {1!s}'.format(username, title))
                     choice = True
 
             if not choice and username in self.whitelist:
                 if self.in_list(self.whitelist[username], title):
                     if pywikibot.config.verbose_output:
-                        pywikibot.output(u'%s is whitelisted to modify %s'
-                                         % (username, title))
+                        pywikibot.output(u'{0!s} is whitelisted to modify {1!s}'.format(username, title))
                     choice = True
 
             if self.getOption('ask'):
@@ -349,8 +345,7 @@ class PatrolBot(SingleSiteBot):
                 # list() iterates over patrol() which returns a generator
                 list(self.site.patrol(rcid))
                 self.patrol_counter = self.patrol_counter + 1
-                pywikibot.output(u'Patrolled %s (rcid %d) by user %s'
-                                 % (title, rcid, username))
+                pywikibot.output(u'Patrolled {0!s} (rcid {1:d}) by user {2!s}'.format(title, rcid, username))
             else:
                 if pywikibot.config.verbose_output:
                     pywikibot.output(u'Skipped')
@@ -361,17 +356,15 @@ class PatrolBot(SingleSiteBot):
             self.rc_item_counter = self.rc_item_counter + 1
 
         except pywikibot.NoPage:
-            pywikibot.output(u'Page %s does not exist; skipping.'
-                             % title(asLink=True))
+            pywikibot.output(u'Page {0!s} does not exist; skipping.'.format(title(asLink=True)))
         except pywikibot.IsRedirectPage:
-            pywikibot.output(u'Page %s is a redirect; skipping.'
-                             % title(asLink=True))
+            pywikibot.output(u'Page {0!s} is a redirect; skipping.'.format(title(asLink=True)))
 
 
 def title_match(prefix, title):
     """Match title substring with given prefix."""
     if pywikibot.config.verbose_output:
-        pywikibot.output(u'Matching %s to prefix %s' % (title, prefix))
+        pywikibot.output(u'Matching {0!s} to prefix {1!s}'.format(title, prefix))
     if title.startswith(prefix):
         if pywikibot.config.verbose_output:
             pywikibot.output(u'substr match')
@@ -425,7 +418,7 @@ class LinkedPagesRule(PatrolRule):
 
         if not self.linkedpages:
             if pywikibot.config.verbose_output:
-                pywikibot.output(u'loading page links on %s' % self.page_title)
+                pywikibot.output(u'loading page links on {0!s}'.format(self.page_title))
             p = pywikibot.Page(self.site, self.page_title)
             linkedpages = list()
             for linkedpage in p.linkedPages():
@@ -433,11 +426,11 @@ class LinkedPagesRule(PatrolRule):
 
             self.linkedpages = linkedpages
             if pywikibot.config.verbose_output:
-                pywikibot.output(u'Loaded %d page links' % len(linkedpages))
+                pywikibot.output(u'Loaded {0:d} page links'.format(len(linkedpages)))
 
         for p in self.linkedpages:
             if pywikibot.config.verbose_output:
-                pywikibot.output(u"Checking against '%s'" % p)
+                pywikibot.output(u"Checking against '{0!s}'".format(p))
             if title_match(p, page_title):
                 if pywikibot.config.verbose_output:
                     pywikibot.output(u'Matched.')
@@ -460,7 +453,7 @@ def api_feed_repeater(gen, delay=0, repeat=False, namespaces=None,
             else:
                 yield page[1]
         if repeat:
-            pywikibot.output(u'Sleeping for %d seconds' % delay)
+            pywikibot.output(u'Sleeping for {0:d} seconds'.format(delay))
             time.sleep(delay)
         else:
             break
@@ -509,7 +502,7 @@ def main(*args):
     site.login()
 
     if usercontribs:
-        pywikibot.output(u'Processing user: %s' % usercontribs)
+        pywikibot.output(u'Processing user: {0!s}'.format(usercontribs))
 
     if not newpages and not recentchanges and not usercontribs:
         if site.family.name == 'wikipedia':
@@ -536,8 +529,7 @@ def main(*args):
                                  user=usercontribs)
         bot.run(feed)
 
-    pywikibot.output(u'%d/%d patrolled'
-                     % (bot.patrol_counter, bot.rc_item_counter))
+    pywikibot.output(u'{0:d}/{1:d} patrolled'.format(bot.patrol_counter, bot.rc_item_counter))
 
 if __name__ == '__main__':
     main()

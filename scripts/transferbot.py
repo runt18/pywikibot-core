@@ -127,31 +127,30 @@ def main(*args):
     pywikibot.output(u"""
     Page transfer configuration
     ---------------------------
-    Source: %(fromsite)r
-    Target: %(tosite)r
+    Source: {fromsite!r}
+    Target: {tosite!r}
 
-    Pages to transfer: %(gen_args)s
+    Pages to transfer: {gen_args!s}
 
-    Prefix for transferred pages: %(prefix)s
-    """ % {'fromsite': fromsite, 'tosite': tosite,
-           'gen_args': gen_args, 'prefix': prefix})
+    Prefix for transferred pages: {prefix!s}
+    """.format(**{'fromsite': fromsite, 'tosite': tosite,
+           'gen_args': gen_args, 'prefix': prefix}))
 
     for page in gen:
-        summary = "Moved page from %s" % page.title(asLink=True)
+        summary = "Moved page from {0!s}".format(page.title(asLink=True))
         targetpage = pywikibot.Page(tosite, prefix + page.title())
         edithistpage = pywikibot.Page(tosite, prefix + page.title() + '/edithistory')
 
         if targetpage.exists() and not overwrite:
             pywikibot.output(
-                u"Skipped %s (target page %s exists)" % (
+                u"Skipped {0!s} (target page {1!s} exists)".format(
                     page.title(asLink=True),
                     targetpage.title(asLink=True)
                 )
             )
             continue
 
-        pywikibot.output(u"Moving %s to %s..."
-                         % (page.title(asLink=True),
+        pywikibot.output(u"Moving {0!s} to {1!s}...".format(page.title(asLink=True),
                             targetpage.title(asLink=True)))
 
         pywikibot.log("Getting page text.")

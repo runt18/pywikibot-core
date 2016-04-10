@@ -120,8 +120,7 @@ class LoginStatus(object):
         for key, value in cls.__dict__.items():
             if key == key.upper() and value == search_value:
                 return key
-        raise KeyError("Value %r could not be found in this enum"
-                       % search_value)
+        raise KeyError("Value {0!r} could not be found in this enum".format(search_value))
 
     def __init__(self, state):
         """Constructor."""
@@ -129,7 +128,7 @@ class LoginStatus(object):
 
     def __repr__(self):
         """Return internal representation."""
-        return 'LoginStatus(%s)' % (LoginStatus.name(self.state))
+        return 'LoginStatus({0!s})'.format((LoginStatus.name(self.state)))
 
 
 Family = redirect_func(pywikibot.family.Family.load,
@@ -395,8 +394,7 @@ class Namespace(Iterable, ComparableMixin, UnicodeMixin):
         else:
             kwargs = ''
 
-        return '%s(id=%d, custom_name=%r, canonical_name=%r, aliases=%r%s)' \
-               % (self.__class__.__name__, self.id, self.custom_name,
+        return '{0!s}(id={1:d}, custom_name={2!r}, canonical_name={3!r}, aliases={4!r}{5!s})'.format(self.__class__.__name__, self.id, self.custom_name,
                   self.canonical_name, self.aliases, kwargs)
 
     @staticmethod
@@ -634,15 +632,13 @@ class NamespacesDict(Mapping, SelfCallMixin):
                   for ns in identifiers]
 
         if NotImplemented in result:
-            raise TypeError('identifiers contains inappropriate types: %r'
-                            % identifiers)
+            raise TypeError('identifiers contains inappropriate types: {0!r}'.format(identifiers))
 
         # Namespace.lookup_name returns None if the name is not recognised
         if None in result:
-            raise KeyError(u'Namespace identifier(s) not recognised: %s'
-                           % u','.join([str(identifier) for identifier, ns
+            raise KeyError(u'Namespace identifier(s) not recognised: {0!s}'.format(u','.join([str(identifier) for identifier, ns
                                         in zip(identifiers, result)
-                                        if ns is None]))
+                                        if ns is None])))
 
         return result
 
@@ -699,8 +695,7 @@ class _InterwikiMap(object):
         elif isinstance(self._iw_sites[prefix].site, Exception):
             raise self._iw_sites[prefix].site
         else:
-            raise TypeError('_iw_sites[%s] is wrong type: %s'
-                            % (prefix, type(self._iw_sites[prefix].site)))
+            raise TypeError('_iw_sites[{0!s}] is wrong type: {1!s}'.format(prefix, type(self._iw_sites[prefix].site)))
 
     def get_by_url(self, url):
         """Return a set of prefixes applying to the URL."""
@@ -728,11 +723,10 @@ class BaseSite(ComparableMixin):
         if code.lower() != code:
             # Note the Site function in __init__ also emits a UserWarning
             # for this condition, showing the callers file and line no.
-            pywikibot.log(u'BaseSite: code "%s" converted to lowercase' % code)
+            pywikibot.log(u'BaseSite: code "{0!s}" converted to lowercase'.format(code))
             code = code.lower()
         if not all(x in pywikibot.family.CODE_CHARACTERS for x in str(code)):
-            pywikibot.log(u'BaseSite: code "%s" contains invalid characters'
-                          % code)
+            pywikibot.log(u'BaseSite: code "{0!s}" contains invalid characters'.format(code))
         self.__code = code
         if isinstance(fam, basestring) or fam is None:
             self.__family = pywikibot.family.Family.load(fam)
@@ -746,8 +740,7 @@ class BaseSite(ComparableMixin):
                 self.__code = self.__family.obsolete[self.__code]
                 # Note the Site function in __init__ emits a UserWarning
                 # for this condition, showing the callers file and line no.
-                pywikibot.log(u'Site %s instantiated using code %s'
-                              % (self, code))
+                pywikibot.log(u'Site {0!s} instantiated using code {1!s}'.format(self, code))
             else:
                 # no such language anymore
                 self.obsolete = True
@@ -764,8 +757,7 @@ class BaseSite(ComparableMixin):
                          u'"%s" while instantiating site %s'
                          % (self.__code, self), UserWarning)
             else:
-                raise UnknownSite(u"Language '%s' does not exist in family %s"
-                                  % (self.__code, self.__family.name))
+                raise UnknownSite(u"Language '{0!s}' does not exist in family {1!s}".format(self.__code, self.__family.name))
 
         self._username = [normalize_username(user), normalize_username(sysop)]
 
@@ -895,8 +887,7 @@ class BaseSite(ComparableMixin):
                 f.__doc__ = method.__doc__
             return f
         except AttributeError:
-            raise AttributeError("%s instance has no attribute '%s'"
-                                 % (self.__class__.__name__, attr))
+            raise AttributeError("{0!s} instance has no attribute '{1!s}'".format(self.__class__.__name__, attr))
 
     def __str__(self):
         """Return string representing this Site's name and code."""
@@ -1080,11 +1071,10 @@ class BaseSite(ComparableMixin):
     def disambcategory(self):
         """Return Category in which disambig pages are listed."""
         try:
-            name = '%s:%s' % (self.namespace(14),
+            name = '{0!s}:{1!s}'.format(self.namespace(14),
                               self.family.disambcatname[self.code])
         except KeyError:
-            raise Error(u"No disambiguation category name found for %(site)s"
-                        % {'site': self})
+            raise Error(u"No disambiguation category name found for {site!s}".format(**{'site': self}))
         return pywikibot.Category(pywikibot.Link(name, self))
 
     @deprecated("pywikibot.Link")
@@ -1121,8 +1111,7 @@ class BaseSite(ComparableMixin):
         # A redirect starts with hash (#), followed by a keyword, then
         # arbitrary stuff, then a wikilink. The wikilink may contain
         # a label, although this is not useful.
-        return re.compile(r'\s*#%(pattern)s\s*:?\s*\[\[(.+?)(?:\|.*?)?\]\]'
-                          % {'pattern': pattern},
+        return re.compile(r'\s*#{pattern!s}\s*:?\s*\[\[(.+?)(?:\|.*?)?\]\]'.format(**{'pattern': pattern}),
                           re.IGNORECASE | re.UNICODE | re.DOTALL)
 
     def sametitle(self, title1, title2):
@@ -1293,8 +1282,7 @@ def must_be(group=None, right=None):
     def decorator(fn):
         def callee(self, *args, **kwargs):
             if self.obsolete:
-                raise UnknownSite("Language %s in family %s is obsolete"
-                                  % (self.code, self.family.name))
+                raise UnknownSite("Language {0!s} in family {1!s} is obsolete".format(self.code, self.family.name))
             grp = kwargs.pop('as_group', group)
             if grp == 'user':
                 self.login(False)
@@ -1352,8 +1340,7 @@ def need_extension(extension):
         def callee(self, *args, **kwargs):
             if not self.has_extension(extension):
                 raise UnknownExtension(
-                    'Method "%s" is not implemented without the extension %s'
-                    % (fn.__name__, extension))
+                    'Method "{0!s}" is not implemented without the extension {1!s}'.format(fn.__name__, extension))
             return fn(self, *args, **kwargs)
 
         if not __debug__:
@@ -1880,7 +1867,7 @@ class APISite(BaseSite):
                 for site in val:
                     if site['dbname'] == dbname:
                         return cls(site['code'], site['code'])
-        raise ValueError("Cannot parse a site out of %s." % dbname)
+        raise ValueError("Cannot parse a site out of {0!s}.".format(dbname))
 
     @deprecated
     def has_api(self):
@@ -2020,8 +2007,7 @@ class APISite(BaseSite):
         #       of issues are resolved.
         if self._loginstatus == LoginStatus.IN_PROGRESS:
             pywikibot.log(
-                u'%r.login(%r) called when a previous login was in progress.'
-                % (self, sysop)
+                u'{0!r}.login({1!r}) called when a previous login was in progress.'.format(self, sysop)
             )
         # There are several ways that the site may already be
         # logged in, and we do not need to hit the server again.
@@ -2051,7 +2037,7 @@ class APISite(BaseSite):
                                     'wrong': self.userinfo['name'],
                                     'right': self._username[sysop]})
             else:
-                raise NoUsername('Logging in on %s via OAuth failed' % self)
+                raise NoUsername('Logging in on {0!s} via OAuth failed'.format(self))
         loginMan = api.LoginManager(site=self, sysop=sysop,
                                     user=self._username[sysop])
         if loginMan.login(retry=True):
@@ -2185,7 +2171,7 @@ class APISite(BaseSite):
         """
         if self.is_blocked(sysop):
             # User blocked
-            raise UserBlocked('User is blocked in site %s' % self)
+            raise UserBlocked('User is blocked in site {0!s}'.format(self))
 
     def get_searched_namespaces(self, force=False):
         """
@@ -2233,11 +2219,11 @@ class APISite(BaseSite):
         if reverse:
             if end < start:
                 raise Error(
-                    "%s: end must be later than start with reverse=True" % msg_prefix)
+                    "{0!s}: end must be later than start with reverse=True".format(msg_prefix))
         else:
             if start < end:
                 raise Error(
-                    "%s: start must be later than end with reverse=False" % msg_prefix)
+                    "{0!s}: start must be later than end with reverse=False".format(msg_prefix))
 
     def has_right(self, right, sysop=False):
         """Return true if and only if the user has a specific right.
@@ -2338,8 +2324,7 @@ class APISite(BaseSite):
                 # Check requested keys
                 for key in keys:
                     if key not in self._msgcache:
-                        raise KeyError("Site %s has no message '%s'"
-                                       % (self, key))
+                        raise KeyError("Site {0!s} has no message '{1!s}'".format(self, key))
 
         return dict((_key, self._msgcache[_key]) for _key in keys)
 
@@ -2927,8 +2912,7 @@ class APISite(BaseSite):
         for pageitem in query:
             if not self.sametitle(pageitem['title'], title):
                 raise Error(
-                    u"loadimageinfo: Query on %s returned data on '%s'"
-                    % (page, pageitem['title']))
+                    u"loadimageinfo: Query on {0!s} returned data on '{1!s}'".format(page, pageitem['title']))
             api.update_page(page, pageitem, query.props)
 
             if "imageinfo" not in pageitem:
@@ -3025,8 +3009,7 @@ class APISite(BaseSite):
         result = query.submit()
         if "query" not in result or "redirects" not in result["query"]:
             raise RuntimeError(
-                "getredirtarget: No 'redirects' found for page %s."
-                % title.encode(self.encoding()))
+                "getredirtarget: No 'redirects' found for page {0!s}.".format(title.encode(self.encoding())))
 
         redirmap = dict((item['from'],
                          {'title': item['to'],
@@ -3043,9 +3026,8 @@ class APISite(BaseSite):
 
         if title not in redirmap:
             raise RuntimeError(
-                "getredirtarget: 'redirects' contains no key for page %s."
-                % title.encode(self.encoding()))
-        target_title = u'%(title)s%(section)s' % redirmap[title]
+                "getredirtarget: 'redirects' contains no key for page {0!s}.".format(title.encode(self.encoding())))
+        target_title = u'{title!s}{section!s}'.format(**redirmap[title])
 
         if self.sametitle(title, target_title):
             raise CircularRedirect(page)
@@ -3121,10 +3103,9 @@ class APISite(BaseSite):
             else:
                 rvgen.request["titles"] = "|".join(list(cache.keys()))
             rvgen.request[u"rvprop"] = u"ids|flags|timestamp|user|comment|content"
-            pywikibot.output(u"Retrieving %s pages from %s."
-                             % (len(cache), self))
+            pywikibot.output(u"Retrieving {0!s} pages from {1!s}.".format(len(cache), self))
             for pagedata in rvgen:
-                pywikibot.debug(u"Preloading %s" % pagedata, _logger)
+                pywikibot.debug(u"Preloading {0!s}".format(pagedata), _logger)
                 try:
                     if pagedata['title'] not in cache:
                         # API always returns a "normalized" title which is
@@ -3144,9 +3125,9 @@ class APISite(BaseSite):
                                 u"title '%s'" % pagedata['title'])
                             continue
                 except KeyError:
-                    pywikibot.debug(u"No 'title' in %s" % pagedata, _logger)
-                    pywikibot.debug(u"pageids=%s" % pageids, _logger)
-                    pywikibot.debug(u"titles=%s" % list(cache.keys()), _logger)
+                    pywikibot.debug(u"No 'title' in {0!s}".format(pagedata), _logger)
+                    pywikibot.debug(u"pageids={0!s}".format(pageids), _logger)
+                    pywikibot.debug(u"titles={0!s}".format(list(cache.keys())), _logger)
                     continue
                 page = cache[pagedata['title']]
                 api.update_page(page, pagedata, rvgen.props)
@@ -3598,8 +3579,7 @@ class APISite(BaseSite):
         """
         if category.namespace() != 14:
             raise Error(
-                u"categorymembers: non-Category page '%s' specified"
-                % category.title())
+                u"categorymembers: non-Category page '{0!s}' specified".format(category.title()))
         cmtitle = category.title(withSection=False).encode(self.encoding())
         cmargs = dict(type_arg="categorymembers",
                       gcmtitle=cmtitle,
@@ -3608,8 +3588,7 @@ class APISite(BaseSite):
             cmargs["gcmsort"] = sortby
         elif sortby:
             raise ValueError(
-                "categorymembers: invalid sortby value '%s'"
-                % sortby)
+                "categorymembers: invalid sortby value '{0!s}'".format(sortby))
         if starttime and endtime and starttime > endtime:
             raise ValueError(
                 "categorymembers: starttime must be before endtime")
@@ -3639,8 +3618,7 @@ class APISite(BaseSite):
                 if namespaces:
                     if excluded_namespaces.intersection(namespaces):
                         raise ValueError(
-                            'incompatible namespaces %r and member_type %r'
-                            % (namespaces, member_type))
+                            'incompatible namespaces {0!r} and member_type {1!r}'.format(namespaces, member_type))
                     # All excluded namespaces are not present in `namespaces`.
                 else:
                     # If the number of namespaces is greater than permitted by
@@ -3817,8 +3795,7 @@ class APISite(BaseSite):
             if not self.sametitle(pagedata['title'],
                                   page.title(withSection=False)):
                 raise Error(
-                    u"loadrevisions: Query on %s returned data on '%s'"
-                    % (page, pagedata['title']))
+                    u"loadrevisions: Query on {0!s} returned data on '{1!s}'".format(page, pagedata['title']))
             if "missing" in pagedata:
                 raise NoPage(page)
             api.update_page(page, pagedata, rvgen.props)
@@ -3848,8 +3825,7 @@ class APISite(BaseSite):
         for pageitem in llquery:
             if not self.sametitle(pageitem['title'], lltitle):
                 raise Error(
-                    u"getlanglinks: Query on %s returned data on '%s'"
-                    % (page, pageitem['title']))
+                    u"getlanglinks: Query on {0!s} returned data on '{1!s}'".format(page, pageitem['title']))
             if 'langlinks' not in pageitem:
                 continue
             for linkdata in pageitem['langlinks']:
@@ -3871,8 +3847,7 @@ class APISite(BaseSite):
         for pageitem in elquery:
             if not self.sametitle(pageitem['title'], eltitle):
                 raise RuntimeError(
-                    "getlanglinks: Query on %s returned data on '%s'"
-                    % (page, pageitem['title']))
+                    "getlanglinks: Query on {0!s} returned data on '{1!s}'".format(page, pageitem['title']))
             if 'extlinks' not in pageitem:
                 continue
             for linkdata in pageitem['extlinks']:
@@ -4475,7 +4450,7 @@ class APISite(BaseSite):
         if not searchstring:
             raise Error("search: searchstring cannot be empty")
         if where not in where_types:
-            raise Error("search: unrecognized 'where' value: %s" % where)
+            raise Error("search: unrecognized 'where' value: {0!s}".format(where))
         if where in ('title', 'titles'):
             if isinstance(self.family, WikimediaFamily):
                 # 'title' search was disabled, use intitle instead
@@ -4800,11 +4775,9 @@ class APISite(BaseSite):
 
         if text_overrides:
             if 'text' in kwargs:
-                raise ValueError('text can not be used with any of %s'
-                                 % ', '.join(text_overrides))
+                raise ValueError('text can not be used with any of {0!s}'.format(', '.join(text_overrides)))
             if len(text_overrides) > 1:
-                raise ValueError('Multiple text overrides used: %s'
-                                 % ', '.join(text_overrides))
+                raise ValueError('Multiple text overrides used: {0!s}'.format(', '.join(text_overrides)))
             text = None
             basetimestamp = False
         elif 'text' in kwargs:
@@ -4853,20 +4826,18 @@ class APISite(BaseSite):
                 params['watchlist'] = watch
         elif watch:
             pywikibot.warning(
-                u"editpage: Invalid watch value '%(watch)s' ignored."
-                % {'watch': watch})
+                u"editpage: Invalid watch value '{watch!s}' ignored.".format(**{'watch': watch}))
         req = self._simple_request(**params)
         while True:
             try:
                 result = req.submit()
-                pywikibot.debug(u"editpage response: %s" % result,
+                pywikibot.debug(u"editpage response: {0!s}".format(result),
                                 _logger)
             except api.APIError as err:
                 self.unlock_page(page)
                 if err.code.endswith("anon") and self.logged_in():
                     pywikibot.debug(
-                        u"editpage: received '%s' even though bot is logged in"
-                        % err.code,
+                        u"editpage: received '{0!s}' even though bot is logged in".format(err.code),
                         _logger)
                 if err.code in self._ep_errors:
                     if isinstance(self._ep_errors[err.code], basestring):
@@ -4880,8 +4851,7 @@ class APISite(BaseSite):
                     else:
                         raise self._ep_errors[err.code](page)
                 pywikibot.debug(
-                    u"editpage: Unexpected error code '%s' received."
-                    % err.code,
+                    u"editpage: Unexpected error code '{0!s}' received.".format(err.code),
                     _logger)
                 raise
             assert "edit" in result and "result" in result["edit"], result
@@ -4889,8 +4859,7 @@ class APISite(BaseSite):
                 self.unlock_page(page)
                 if "nochange" in result["edit"]:
                     # null edit, page not changed
-                    pywikibot.log(u"Page [[%s]] saved without any changes."
-                                  % page.title())
+                    pywikibot.log(u"Page [[{0!s}]] saved without any changes.".format(page.title()))
                     return True
                 page.latest_revision_id = result["edit"]["newrevid"]
                 # see https://www.mediawiki.org/wiki/API:Wikimania_2006_API_discussion#Notes
@@ -4907,8 +4876,7 @@ class APISite(BaseSite):
                         continue
                     elif "url" in captcha:
                         import webbrowser
-                        webbrowser.open('%s://%s%s'
-                                        % (self.protocol(),
+                        webbrowser.open('{0!s}://{1!s}{2!s}'.format(self.protocol(),
                                            self.hostname(),
                                            captcha["url"]))
                         req['captchaword'] = pywikibot.input(
@@ -4927,13 +4895,11 @@ class APISite(BaseSite):
                 elif 'code' in result['edit'] and 'info' in result['edit']:
                     self.unlock_page(page)
                     pywikibot.error(
-                        u"editpage: %s\n%s, "
-                        % (result['edit']['code'], result['edit']['info']))
+                        u"editpage: {0!s}\n{1!s}, ".format(result['edit']['code'], result['edit']['info']))
                     return False
                 else:
                     self.unlock_page(page)
-                    pywikibot.error(u"editpage: unknown failure reason %s"
-                                    % str(result))
+                    pywikibot.error(u"editpage: unknown failure reason {0!s}".format(str(result)))
                     return False
             else:
                 self.unlock_page(page)
@@ -4995,8 +4961,7 @@ class APISite(BaseSite):
         else:
             newtitle = newlink.title
         if oldtitle == newtitle:
-            raise Error("Cannot move page %s to its own title."
-                        % oldtitle)
+            raise Error("Cannot move page {0!s} to its own title.".format(oldtitle))
         if not page.exists():
             raise NoPage(page,
                          "Cannot move page %(page)s because it "
@@ -5012,13 +4977,12 @@ class APISite(BaseSite):
         req['from'] = oldtitle  # "from" is a python keyword
         try:
             result = req.submit()
-            pywikibot.debug(u"movepage response: %s" % result,
+            pywikibot.debug(u"movepage response: {0!s}".format(result),
                             _logger)
         except api.APIError as err:
             if err.code.endswith("anon") and self.logged_in():
                 pywikibot.debug(
-                    u"movepage: received '%s' even though bot is logged in"
-                    % err.code,
+                    u"movepage: received '{0!s}' even though bot is logged in".format(err.code),
                     _logger)
             if err.code in self._mv_errors:
                 on_error = self._mv_errors[err.code]
@@ -5048,20 +5012,18 @@ class APISite(BaseSite):
                         'user': self.user(),
                     }
                     raise Error(on_error % errdata)
-            pywikibot.debug(u"movepage: Unexpected error code '%s' received."
-                            % err.code,
+            pywikibot.debug(u"movepage: Unexpected error code '{0!s}' received.".format(err.code),
                             _logger)
             raise
         finally:
             self.unlock_page(page)
         if "move" not in result:
-            pywikibot.error(u"movepage: %s" % result)
+            pywikibot.error(u"movepage: {0!s}".format(result))
             raise Error("movepage: unexpected response")
         # TODO: Check for talkmove-error messages
         if "talkmove-error-code" in result["move"]:
             pywikibot.warning(
-                u"movepage: Talk page %s not moved"
-                % (page.toggleTalkPage().title(asLink=True)))
+                u"movepage: Talk page {0!s} not moved".format((page.toggleTalkPage().title(asLink=True))))
         return pywikibot.Page(page, newtitle)
 
     # catalog of rollback errors for use in error messages
@@ -5086,8 +5048,7 @@ class APISite(BaseSite):
         """
         if len(page._revisions) < 2:
             raise Error(
-                u"Rollback of %s aborted; load revision history first."
-                % page.title(asLink=True))
+                u"Rollback of {0!s} aborted; load revision history first.".format(page.title(asLink=True)))
         last_rev = page.latest_revision
         last_user = last_rev.user
         for rev in sorted(page._revisions.values(), reverse=True,
@@ -5097,8 +5058,7 @@ class APISite(BaseSite):
                 break
         else:
             raise Error(
-                u"Rollback of %s aborted; only one user in revision history."
-                % page.title(asLink=True))
+                u"Rollback of {0!s} aborted; only one user in revision history.".format(page.title(asLink=True)))
         parameters = merge_unique_dicts(kwargs, action='rollback',
                                         title=page,
                                         token=self.tokens['rollback'],
@@ -5115,8 +5075,7 @@ class APISite(BaseSite):
             }
             if err.code in self._rb_errors:
                 raise Error(self._rb_errors[err.code] % errdata)
-            pywikibot.debug(u"rollback: Unexpected error code '%s' received."
-                            % err.code,
+            pywikibot.debug(u"rollback: Unexpected error code '{0!s}' received.".format(err.code),
                             _logger)
             raise
         finally:
@@ -5160,8 +5119,7 @@ class APISite(BaseSite):
             }
             if err.code in self._dl_errors:
                 raise Error(self._dl_errors[err.code] % errdata)
-            pywikibot.debug(u"delete: Unexpected error code '%s' received."
-                            % err.code,
+            pywikibot.debug(u"delete: Unexpected error code '{0!s}' received.".format(err.code),
                             _logger)
             raise
         else:
@@ -5200,8 +5158,7 @@ class APISite(BaseSite):
             }
             if err.code in self._dl_errors:
                 raise Error(self._dl_errors[err.code] % errdata)
-            pywikibot.debug(u"delete: Unexpected error code '%s' received."
-                            % err.code,
+            pywikibot.debug(u"delete: Unexpected error code '{0!s}' received.".format(err.code),
                             _logger)
             raise
         finally:
@@ -5275,8 +5232,7 @@ class APISite(BaseSite):
             }
             if err.code in self._protect_errors:
                 raise Error(self._protect_errors[err.code] % errdata)
-            pywikibot.debug(u"protect: Unexpected error code '%s' received."
-                            % err.code,
+            pywikibot.debug(u"protect: Unexpected error code '{0!s}' received.".format(err.code),
                             _logger)
             raise
         else:
@@ -5381,8 +5337,7 @@ class APISite(BaseSite):
                 errdata[idtype] = idvalue
                 if err.code in self._patrol_errors:
                     raise Error(self._patrol_errors[err.code] % errdata)
-                pywikibot.debug(u"protect: Unexpected error code '%s' received."
-                                % err.code,
+                pywikibot.debug(u"protect: Unexpected error code '{0!s}' received.".format(err.code),
                                 _logger)
                 raise
 
@@ -5518,7 +5473,7 @@ class APISite(BaseSite):
         req = self._simple_request(**parameters)
         result = req.submit()
         if "watch" not in result:
-            pywikibot.error(u"watchpage: Unexpected API response:\n%s" % result)
+            pywikibot.error(u"watchpage: Unexpected API response:\n{0!s}".format(result))
             return False
         return ('unwatched' if unwatch else 'watched') in result["watch"]
 
@@ -5542,7 +5497,7 @@ class APISite(BaseSite):
                 linkupdate = True
         result = req.submit()
         if 'purge' not in result:
-            pywikibot.error(u'purgepages: Unexpected API response:\n%s' % result)
+            pywikibot.error(u'purgepages: Unexpected API response:\n{0!s}'.format(result))
             return False
         result = result['purge']
         purged = ['purged' in page for page in result]
@@ -5715,8 +5670,7 @@ class APISite(BaseSite):
         # check for required user right
         if "upload" not in self.userinfo["rights"]:
             raise Error(
-                "User '%s' does not have upload rights on site %s."
-                % (self.user(), self))
+                "User '{0!s}' does not have upload rights on site {1!s}.".format(self.user(), self))
         # check for required parameters
         if bool(source_filename) == bool(source_url):
             raise ValueError("APISite.upload: must provide either "
@@ -5756,8 +5710,7 @@ class APISite(BaseSite):
             if os.path.isfile(source_filename):
                 file_size = os.path.getsize(source_filename)
             elif offset is not False:
-                raise ValueError("File '%s' does not exist."
-                                 % source_filename)
+                raise ValueError("File '{0!s}' does not exist.".format(source_filename))
 
         if source_filename and _file_key:
             assert offset is False or file_size is not None
@@ -5918,8 +5871,7 @@ class APISite(BaseSite):
             # upload by URL
             if "upload_by_url" not in self.userinfo["rights"]:
                 raise Error(
-                    "User '%s' is not authorized to upload by URL on site %s."
-                    % (self.user(), self))
+                    "User '{0!s}' is not authorized to upload by URL on site {1!s}.".format(self.user(), self))
             final_request = self._simple_request(
                 action='upload', filename=file_page_title,
                 url=source_url, comment=comment, text=text, token=token)
@@ -5972,7 +5924,7 @@ class APISite(BaseSite):
                                     file_key=_file_key,
                                     offset=result.get('offset', False))
         elif "result" not in result:
-            pywikibot.output(u"Upload: unrecognized response: %s" % result)
+            pywikibot.output(u"Upload: unrecognized response: {0!s}".format(result))
         if result["result"] == "Success":
             if report_success:
                 pywikibot.output(u"Upload successful.")
@@ -6792,8 +6744,7 @@ class DataSite(APISite):
             return self._item_namespace
         else:
             raise EntityTypeUnknownException(
-                '%r does not support entity type "item"'
-                % self)
+                '{0!r} does not support entity type "item"'.format(self))
 
     @property
     def property_namespace(self):
@@ -6810,8 +6761,7 @@ class DataSite(APISite):
             return self._property_namespace
         else:
             raise EntityTypeUnknownException(
-                '%r does not support entity type "property"'
-                % self)
+                '{0!r} does not support entity type "property"'.format(self))
 
     def _get_baserevid(self, claim, baserevid):
         """Check that claim.on_item is set and matches baserevid if used."""
@@ -6869,7 +6819,7 @@ class DataSite(APISite):
             props = 'sitelinks'
 
         assert props in wbdata, \
-            "API wbgetentities response lacks %s key" % props
+            "API wbgetentities response lacks {0!s} key".format(props)
         return wbdata[props]
 
     @deprecated("pywikibot.WikibasePage")
@@ -6899,7 +6849,7 @@ class DataSite(APISite):
                 ids = ids.upper()
 
             assert ids in wbdata['entities'], \
-                "API wbgetentities response lacks %s key" % ids
+                "API wbgetentities response lacks {0!s} key".format(ids)
 
             return wbdata['entities'][ids]
         else:

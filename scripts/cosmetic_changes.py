@@ -80,11 +80,9 @@ class CosmeticChangesBot(MultipleSitesBot, ExistingPageBot, NoRedirectPageBot):
                                  summary=self.getOption('summary'),
                                  async=self.getOption('async'))
         except pywikibot.LockedPage:
-            pywikibot.output("Page %s is locked?!"
-                             % self.current_page.title(asLink=True))
+            pywikibot.output("Page {0!s} is locked?!".format(self.current_page.title(asLink=True)))
         except pywikibot.EditConflict:
-            pywikibot.output("An edit conflict has occurred at %s."
-                             % self.current_page.title(asLink=True))
+            pywikibot.output("An edit conflict has occurred at {0!s}.".format(self.current_page.title(asLink=True)))
 
 
 def main(*args):

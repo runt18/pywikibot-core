@@ -106,7 +106,7 @@ def main(give_url, image_url, desc):
         ilinks = get_imagelinks(url)
 
     for image in ilinks:
-        if pywikibot.input_yn(u'Include image %s?' % image, default=False, automatic_quit=False):
+        if pywikibot.input_yn(u'Include image {0!s}?'.format(image), default=False, automatic_quit=False):
             desc = pywikibot.input(u"Give the description of this image:")
             categories = []
             while True:
@@ -115,10 +115,9 @@ def main(give_url, image_url, desc):
                 if not cat.strip():
                     break
                 if ":" in cat:
-                    categories.append(u"[[%s]]" % cat)
+                    categories.append(u"[[{0!s}]]".format(cat))
                 else:
-                    categories.append(u"[[%s:%s]]"
-                                      % (mysite.namespace(14), cat))
+                    categories.append(u"[[{0!s}:{1!s}]]".format(mysite.namespace(14), cat))
             desc += "\r\n\r\n" + basicdesc + "\r\n\r\n" + \
                     "\r\n".join(categories)
             uploadBot = upload.UploadRobot(image, description=desc)

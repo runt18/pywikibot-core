@@ -171,7 +171,7 @@ def getFlinfoDescription(photo_id):
     parameters = urlencode({'id': photo_id, 'raw': 'on'})
 
     return fetch(
-        'http://wikipedia.ramselehof.de/flinfo.php?%s' % parameters).content
+        'http://wikipedia.ramselehof.de/flinfo.php?{0!s}'.format(parameters)).content
 
 
 def getFilename(photoInfo, site=None, project=u'Flickr'):
@@ -204,17 +204,16 @@ def getFilename(photoInfo, site=None, project=u'Flickr'):
             title = u''
             # Should probably have the id of the photo as last resort.
 
-    if pywikibot.Page(site, u'File:%s - %s - %s.jpg'
-                      % (title, project, username)).exists():
+    if pywikibot.Page(site, u'File:{0!s} - {1!s} - {2!s}.jpg'.format(title, project, username)).exists():
         i = 1
         while True:
-            name = '%s - %s - %s (%d).jpg' % (title, project, username, i)
+            name = '{0!s} - {1!s} - {2!s} ({3:d}).jpg'.format(title, project, username, i)
             if pywikibot.Page(site, 'File:' + name).exists():
                 i += 1
             else:
                 return name
     else:
-        return u'%s - %s - %s.jpg' % (title, project, username)
+        return u'{0!s} - {1!s} - {2!s}.jpg'.format(title, project, username)
 
 
 def cleanUpTitle(title):
@@ -251,7 +250,7 @@ def buildDescription(flinfoDescription=u'', flickrreview=False, reviewer=u'',
     The description is based on the info from flickrinfo and improved.
 
     """
-    description = u'== {{int:filedesc}} ==\n%s' % flinfoDescription
+    description = u'== {{{{int:filedesc}}}} ==\n{0!s}'.format(flinfoDescription)
     if removeCategories:
         description = textlib.removeCategoryLinks(description,
                                                   pywikibot.Site(
@@ -295,7 +294,7 @@ def processPhoto(flickr, photo_id=u'', flickrreview=False, reviewer=u'',
         # Don't upload duplicate images, should add override option
         duplicates = findDuplicateImages(photo)
         if duplicates:
-            pywikibot.output(u'Found duplicate image at %s' % duplicates.pop())
+            pywikibot.output(u'Found duplicate image at {0!s}'.format(duplicates.pop()))
         else:
             filename = getFilename(photoInfo)
             flinfoDescription = getFlinfoDescription(photo_id)

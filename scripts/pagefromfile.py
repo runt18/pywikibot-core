@@ -136,7 +136,7 @@ class PageFromFileRobot(Bot):
             mysite, 'pagefromfile-msg_top')
         comment_bottom = comment + " - " + i18n.twtranslate(
             mysite, 'pagefromfile-msg_bottom')
-        comment_force = "%s *** %s ***" % (
+        comment_force = "{0!s} *** {1!s} ***".format(
             comment, i18n.twtranslate(mysite, 'pagefromfile-msg_force'))
 
         # Remove trailing newlines (cause troubles when creating redirects)
@@ -144,14 +144,14 @@ class PageFromFileRobot(Bot):
 
         if page.exists():
             if not self.getOption('redirect') and page.isRedirectPage():
-                pywikibot.output(u"Page %s is redirect, skipping!" % title)
+                pywikibot.output(u"Page {0!s} is redirect, skipping!".format(title))
                 return
             pagecontents = page.get(get_redirect=True)
             nocontent = self.getOption('nocontent')
             if nocontent and (
                     nocontent in pagecontents or
                     nocontent.lower() in pagecontents):
-                pywikibot.output('Page has %s so it is skipped' % nocontent)
+                pywikibot.output('Page has {0!s} so it is skipped'.format(nocontent))
                 return
             if self.getOption('append'):
                 separator = self.getOption('append')[1]
@@ -167,11 +167,10 @@ class PageFromFileRobot(Bot):
                                  title, self.getOption('append')[0]))
                 contents = above + separator + below
             elif self.getOption('force'):
-                pywikibot.output(u"Page %s already exists, ***overwriting!"
-                                 % title)
+                pywikibot.output(u"Page {0!s} already exists, ***overwriting!".format(title))
                 comment = comment_force
             else:
-                pywikibot.output(u"Page %s already exists, not adding!" % title)
+                pywikibot.output(u"Page {0!s} already exists, not adding!".format(title))
                 return
         else:
             if self.getOption('autosummary'):
@@ -212,7 +211,7 @@ class PageFromFileReader(object):
 
     def run(self):
         """Read file and yield page title and content."""
-        pywikibot.output('\n\nReading \'%s\'...' % self.filename)
+        pywikibot.output('\n\nReading \'{0!s}\'...'.format(self.filename))
         try:
             with codecs.open(self.filename, 'r',
                              encoding=config.textfile_encoding) as f:
@@ -329,11 +328,11 @@ def main(*args):
         elif arg == '-showdiff':
             options['showdiff'] = True
         else:
-            pywikibot.output(u"Disregarding unknown argument %s." % arg)
+            pywikibot.output(u"Disregarding unknown argument {0!s}.".format(arg))
 
     failed_filename = False
     while not os.path.isfile(filename):
-        pywikibot.output('\nFile \'%s\' does not exist. ' % filename)
+        pywikibot.output('\nFile \'{0!s}\' does not exist. '.format(filename))
         _input = pywikibot.input(
             'Please enter the file name [q to quit]:')
         if _input == 'q':
