@@ -173,22 +173,20 @@ class CaseChecker(object):
                 self.titleList = [self.Page(t) for t in f]
             self.failedTitles += '.failed'
 
-        self.lclToLatDict = dict([(ord(self.localSuspects[i]),
-                                   self.latinSuspects[i])
-                                  for i in xrange(len(self.localSuspects))])
-        self.latToLclDict = dict([(ord(self.latinSuspects[i]),
-                                   self.localSuspects[i])
-                                  for i in xrange(len(self.localSuspects))])
+        self.lclToLatDict = {ord(self.localSuspects[i]):
+                                   self.latinSuspects[i]
+                                  for i in xrange(len(self.localSuspects))}
+        self.latToLclDict = {ord(self.latinSuspects[i]):
+                                   self.localSuspects[i]
+                                  for i in xrange(len(self.localSuspects))}
 
         if self.localKeyboard is not None:
-            self.lclToLatKeybDict = dict(
-                [(ord(self.localKeyboard[i]),
-                  self.latinKeyboard[i])
-                 for i in xrange(len(self.localKeyboard))])
-            self.latToLclKeybDict = dict(
-                [(ord(self.latinKeyboard[i]),
-                  self.localKeyboard[i])
-                 for i in xrange(len(self.localKeyboard))])
+            self.lclToLatKeybDict = {ord(self.localKeyboard[i]):
+                  self.latinKeyboard[i]
+                 for i in xrange(len(self.localKeyboard))}
+            self.latToLclKeybDict = {ord(self.latinKeyboard[i]):
+                  self.localKeyboard[i]
+                 for i in xrange(len(self.localKeyboard))}
         else:
             self.lclToLatKeybDict = {}
             self.latToLclKeybDict = {}

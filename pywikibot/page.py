@@ -1927,8 +1927,7 @@ class BasePage(UnicodeMixin, ComparableMixin):
         if unprotect:
             warn(u'"unprotect" argument of protect() is deprecated',
                  DeprecationWarning, 2)
-            protections = dict(
-                [(p_type, "") for p_type in self.applicable_protections()])
+            protections = {p_type: "" for p_type in self.applicable_protections()}
         answer = 'y'
         if called_using_deprecated_arg and prompt is None:
             prompt = True

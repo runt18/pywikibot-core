@@ -36,8 +36,8 @@ class TestArchiveBot(TestCase):
     """Test archivebot script on 40+ Wikipedia sites."""
 
     family = 'wikipedia'
-    sites = dict([(code, {'family': 'wikipedia', 'code': code})
-                 for code in THREADS])
+    sites = {code: {'family': 'wikipedia', 'code': code}
+                 for code in THREADS}
 
     cached = True
 
