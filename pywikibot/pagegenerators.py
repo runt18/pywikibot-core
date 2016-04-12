@@ -1039,7 +1039,7 @@ def LogeventsPageGenerator(logtype=None, user=None, site=None, namespace=0,
 @deprecated("LogeventsPageGenerator")
 @deprecated_args(number="total", mode="logtype", repeat=None)
 def LogpagesPageGenerator(total=500, logtype='', user=None,
-                          site=None, namespace=[]):
+                          site=None, namespace=None):
     """
     Generate Pages for specified modes of logevents.
 
@@ -1057,13 +1057,15 @@ def LogpagesPageGenerator(total=500, logtype='', user=None,
     @param total: Maximum number of pages to retrieve in total
     @type total: int
     """
+    if namespace is None:
+        namespace = []
     return LogeventsPageGenerator(total=total, logtype=logtype, user=user,
                                   site=site, namespace=namespace)
 
 
 @deprecated_args(number='total', step=None, namespace='namespaces',
                  repeat=None, get_redirect=None)
-def NewpagesPageGenerator(site=None, namespaces=[0], total=None):
+def NewpagesPageGenerator(site=None, namespaces=None, total=None):
     """
     Iterate Page objects for all new titles in a single namespace.
 
@@ -1072,6 +1074,8 @@ def NewpagesPageGenerator(site=None, namespaces=[0], total=None):
     @param site: Site for generator results.
     @type site: L{pywikibot.site.BaseSite}
     """
+    if namespaces is None:
+        namespaces = [0]
     # API does not (yet) have a newpages function, so this tries to duplicate
     # it by filtering the recentchanges output
     # defaults to namespace 0 because that's how Special:Newpages defaults
@@ -2519,9 +2523,11 @@ class XMLDumpOldPageGenerator(IteratorNextMixin):
     """Xml generator that yields Page objects with old text loaded."""
 
     @deprecated_args(xmlFilename='filename', xmlStart='start')
-    def __init__(self, filename, start=None, namespaces=[], site=None,
+    def __init__(self, filename, start=None, namespaces=None, site=None,
                  text_predicate=None):
         """Constructor."""
+        if namespaces is None:
+                namespaces = []
         # xmlFilename and xmlStart mapped to not break git blame
         # use filename and start on new/changed lines
         xmlFilename = filename

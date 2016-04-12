@@ -4318,7 +4318,7 @@ class APISite(BaseSite):
     @deprecated('APISite.logevents()')
     @deprecated_args(repeat=None)
     def logpages(self, number=50, mode=None, title=None, user=None,
-                 namespace=[], start=None, end=None, tag=None, newer=False,
+                 namespace=None, start=None, end=None, tag=None, newer=False,
                  dump=False, offset=None):
         """
         Iterate log pages. DEPRECATED.
@@ -4327,6 +4327,8 @@ class APISite(BaseSite):
 
         @rtype: tuple of Page, str, int, str
         """
+        if namespace is None:
+                namespace = []
         if offset:
             assert not start
             assert isinstance(offset, int)

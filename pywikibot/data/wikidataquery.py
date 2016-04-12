@@ -255,8 +255,10 @@ class HasClaim(Query):
 
     queryType = "claim"
 
-    def __init__(self, prop, items=[]):
+    def __init__(self, prop, items=None):
         """Constructor."""
+        if items is None:
+            items = []
         self.prop = self.convertWDType(prop)
 
         if isinstance(items, Query):
@@ -316,7 +318,7 @@ class Tree(Query):
 
     queryType = "tree"
 
-    def __init__(self, item, forward=[], reverse=[]):
+    def __init__(self, item, forward=None, reverse=None):
         """
         Constructor.
 
@@ -324,6 +326,10 @@ class Tree(Query):
         @param forward: List of forward properties, can be empty
         @param reverse: List of reverse properties, can be empty
         """
+        if forward is None:
+            forward = []
+        if reverse is None:
+            reverse = []
         # check sensible things coming in, as we lose info once we do
         # type conversion
         if not self.isOrContainsOnlyTypes(item, [int, ItemPage]):
@@ -495,12 +501,16 @@ class WikidataQuery(object):
         """Get the URL given the query string."""
         return "%s/api?%s" % (self.host, queryStr)
 
-    def getQueryString(self, q, labels=[], props=[]):
+    def getQueryString(self, q, labels=None, props=None):
         """
         Get the query string for a given query or queryset.
 
         @return: string including labels and props
         """
+        if labels is None:
+            labels = []
+        if props is None:
+            props = []
         qStr = "q=%s" % quote(str(q))
 
         if labels:
@@ -605,12 +615,16 @@ class WikidataQuery(object):
 
         return data
 
-    def query(self, q, labels=[], props=[]):
+    def query(self, q, labels=None, props=None):
         """
         Actually run a query over the API.
 
         @return: dict of the interpreted JSON or None on failure
         """
+        if labels is None:
+            labels = []
+        if props is None:
+            props = []
         fullQueryString = self.getQueryString(q, labels, props)
 
         # try to get cached data first

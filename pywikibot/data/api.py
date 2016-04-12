@@ -3100,7 +3100,7 @@ def encode_url(query):
     return urlencode(query)
 
 
-def update_page(page, pagedict, props=[]):
+def update_page(page, pagedict, props=None):
     """Update attributes of Page object page, based on query data in pagedict.
 
     @param page: object to be updated
@@ -3113,6 +3113,8 @@ def update_page(page, pagedict, props=[]):
         parameter.
     @type props: iterable of string
     """
+    if props is None:
+        props = []
     if "pageid" in pagedict:
         page._pageid = int(pagedict['pageid'])
     elif "missing" in pagedict:

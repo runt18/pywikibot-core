@@ -91,7 +91,7 @@ class UploadRobot(BaseBot):
     def __init__(self, url, urlEncoding=None, description=u'',
                  useFilename=None, keepFilename=False,
                  verifyDescription=True, ignoreWarning=False,
-                 targetSite=None, uploadByUrl=False, aborts=[], chunk_size=0,
+                 targetSite=None, uploadByUrl=False, aborts=None, chunk_size=0,
                  **kwargs):
         """
         Constructor.
@@ -134,6 +134,8 @@ class UploadRobot(BaseBot):
             file_url param instead
 
         """
+        if aborts is None:
+            aborts = []
         super(UploadRobot, self).__init__(**kwargs)
         always = self.getOption('always')
         if (always and ignoreWarning is not True and aborts is not True):

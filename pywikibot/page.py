@@ -1947,7 +1947,7 @@ class BasePage(UnicodeMixin, ComparableMixin):
             return self.site.protect(self, protections, reason, **kwargs)
 
     def change_category(self, oldCat, newCat, comment=None, sortKey=None,
-                        inPlace=True, include=[]):
+                        inPlace=True, include=None):
         """
         Remove page from oldCat and add it to newCat.
 
@@ -1972,6 +1972,8 @@ class BasePage(UnicodeMixin, ComparableMixin):
         @return: True if page was saved changed, otherwise False.
         @rtype: bool
         """
+        if include is None:
+            include = []
         # get list of Category objects the article is in and remove possible
         # duplicates
         cats = []
@@ -3150,7 +3152,7 @@ class User(Page):
 
     @deprecate_arg("limit", "total")  # To be consistent with rest of framework
     @deprecate_arg("namespace", "namespaces")
-    def contributions(self, total=500, namespaces=[]):
+    def contributions(self, total=500, namespaces=None):
         """
         Yield tuples describing this user edits.
 
@@ -3164,6 +3166,8 @@ class User(Page):
         @param namespaces: only iterate links in these namespaces
         @type namespaces: list
         """
+        if namespaces is None:
+                namespaces = []
         for contrib in self.site.usercontribs(
                 user=self.username, namespaces=namespaces, total=total):
             ts = pywikibot.Timestamp.fromISOformat(contrib['timestamp'])
