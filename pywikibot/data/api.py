@@ -1905,8 +1905,8 @@ class Request(MutableMapping):
                 modules = set([self.action])
             if modules:
                 self.site._paraminfo.fetch(modules)
-                use_get = all(['mustbeposted' not in self.site._paraminfo[mod]
-                               for mod in modules])
+                use_get = all( 'mustbeposted' not in self.site._paraminfo[mod]
+                               for mod in modules)
             else:
                 # If modules is empty, just 'meta' was given, which doesn't
                 # require POSTs, and is required for ParamInfo
