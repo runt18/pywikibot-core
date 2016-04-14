@@ -46,13 +46,13 @@ class RotatingFileHandler(logging.handlers.RotatingFileHandler):
         root, ext = os.path.splitext(self.baseFilename)
         if self.backupCount > 0:
             for i in range(self.backupCount - 1, 0, -1):
-                sfn = "%s.%d%s" % (root, i, ext)
-                dfn = "%s.%d%s" % (root, i + 1, ext)
+                sfn = "{0!s}.{1:d}{2!s}".format(root, i, ext)
+                dfn = "{0!s}.{1:d}{2!s}".format(root, i + 1, ext)
                 if os.path.exists(sfn):
                     if os.path.exists(dfn):
                         os.remove(dfn)
                     os.rename(sfn, dfn)
-            dfn = "%s.1%s" % (root, ext)
+            dfn = "{0!s}.1{1!s}".format(root, ext)
             if os.path.exists(dfn):
                 os.remove(dfn)
             os.rename(self.baseFilename, dfn)
@@ -60,7 +60,7 @@ class RotatingFileHandler(logging.handlers.RotatingFileHandler):
             if not hasattr(self, '_lastNo'):
                 self._lastNo = 1
             while True:
-                fn = "%s.%d%s" % (root, self._lastNo, ext)
+                fn = "{0!s}.{1:d}{2!s}".format(root, self._lastNo, ext)
                 self._lastNo += 1
                 if not os.path.exists(fn):
                     break

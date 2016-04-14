@@ -163,7 +163,7 @@ def _format_isbn_match(match, strict=True):
         except stdnum_isbn.ValidationError as e:
             if strict:
                 raise
-            pywikibot.log('ISBN "%s" validation error: %s' % (isbn, e))
+            pywikibot.log('ISBN "{0!s}" validation error: {1!s}'.format(isbn, e))
             return isbn
 
         return stdnum_isbn.format(isbn)
@@ -173,7 +173,7 @@ def _format_isbn_match(match, strict=True):
         except scripts_isbn.InvalidIsbnException as e:
             if strict:
                 raise
-            pywikibot.log('ISBN "%s" validation error: %s' % (isbn, e))
+            pywikibot.log('ISBN "{0!s}" validation error: {1!s}'.format(isbn, e))
             return isbn
 
         isbn = scripts_isbn.getIsbn(isbn)
@@ -182,7 +182,7 @@ def _format_isbn_match(match, strict=True):
         except scripts_isbn.InvalidIsbnException as e:
             if strict:
                 raise
-            pywikibot.log('ISBN "%s" validation error: %s' % (isbn, e))
+            pywikibot.log('ISBN "{0!s}" validation error: {1!s}'.format(isbn, e))
         return isbn.code
 
 
@@ -287,8 +287,7 @@ class CosmeticChangesToolkit(object):
         Remove their language code prefix.
         """
         if not self.talkpage and pywikibot.calledModuleName() != 'interwiki':
-            interwikiR = re.compile(r'\[\[%s\s?:([^\[\]\n]*)\]\]'
-                                    % self.site.code)
+            interwikiR = re.compile(r'\[\[{0!s}\s?:([^\[\]\n]*)\]\]'.format(self.site.code))
             text = interwikiR.sub(r'[[\1]]', text)
         return text
 
@@ -370,8 +369,7 @@ class CosmeticChangesToolkit(object):
             # Removing the stars' issue
             starstext = textlib.removeDisabledParts(text)
             for star in starsList:
-                regex = re.compile(r'(\{\{(?:template:|)%s\|.*?\}\}[\s]*)'
-                                   % star, re.I)
+                regex = re.compile(r'(\{{\{{(?:template:|){0!s}\|.*?\}}\}}[\s]*)'.format(star), re.I)
                 found = regex.findall(starstext)
                 if found != []:
                     text = regex.sub('', text)
@@ -395,8 +393,8 @@ class CosmeticChangesToolkit(object):
             text = text.strip() + self.site.family.interwiki_text_separator
             allstars.sort()
             for element in allstars:
-                text += '%s%s' % (element.strip(), config.line_separator)
-                pywikibot.log(u'%s' % element.strip())
+                text += '{0!s}{1!s}'.format(element.strip(), config.line_separator)
+                pywikibot.log(u'{0!s}'.format(element.strip()))
         # Adding the interwiki
         if interwikiLinks:
             text = textlib.replaceLanguageLinks(text, interwikiLinks,
@@ -438,15 +436,14 @@ class CosmeticChangesToolkit(object):
             # lowerspaced and underscored namespaces
             for i in range(len(namespaces)):
                 item = namespaces[i].replace(' ', '[ _]')
-                item = u'[%s%s]' % (item[0], item[0].lower()) + item[1:]
+                item = u'[{0!s}{1!s}]'.format(item[0], item[0].lower()) + item[1:]
                 namespaces[i] = item
             namespaces.append(first_lower(thisNs))
             if thisNs and namespaces:
                 text = textlib.replaceExcept(
                     text,
-                    r'\[\[\s*(%s) *:(?P<nameAndLabel>.*?)\]\]'
-                    % '|'.join(namespaces),
-                    r'[[%s:\g<nameAndLabel>]]' % thisNs,
+                    r'\[\[\s*({0!s}) *:(?P<nameAndLabel>.*?)\]\]'.format('|'.join(namespaces)),
+                    r'[[{0!s}:\g<nameAndLabel>]]'.format(thisNs),
                     exceptions)
         return text
 
@@ -564,14 +561,14 @@ class CosmeticChangesToolkit(object):
 
                     if titleWithSection == label or \
                        first_lower(titleWithSection) == label:
-                        newLink = "[[%s]]" % label
+                        newLink = "[[{0!s}]]".format(label)
                     # Check if we can create a link with trailing characters
                     # instead of a pipelink
                     elif (len(titleWithSection) <= len(label) and
                           label[:len(titleWithSection)] == titleWithSection and
                           re.sub(trailR, '',
                                  label[len(titleWithSection):]) == ''):
-                        newLink = "[[%s]]%s" % (label[:len(titleWithSection)],
+                        newLink = "[[{0!s}]]{1!s}".format(label[:len(titleWithSection)],
                                                 label[len(titleWithSection):])
                     else:
                         # Try to capitalize the first letter of the title.
@@ -581,7 +578,7 @@ class CosmeticChangesToolkit(object):
                         # uppercase
                         if self.site.sitename == 'wikipedia:de':
                             titleWithSection = first_upper(titleWithSection)
-                        newLink = "[[%s|%s]]" % (titleWithSection, label)
+                        newLink = "[[{0!s}|{1!s}]]".format(titleWithSection, label)
                     # re-add spaces that were pulled out of the link.
                     # Examples:
                     #   text[[ title ]]text        -> text [[title]] text
@@ -676,7 +673,7 @@ class CosmeticChangesToolkit(object):
         return textlib.replaceExcept(
             text,
             r'(?m)^(={1,7}) *(?P<title>[^=]+?) *\1 *\r?\n',
-            r'\1 \g<title> \1%s' % config.LS,
+            r'\1 \g<title> \1{0!s}'.format(config.LS),
             ['comment', 'math', 'nowiki', 'pre'])
 
     def putSpacesInLists(self, text):
@@ -711,7 +708,7 @@ class CosmeticChangesToolkit(object):
                 if new is None:
                     new = ''
                 else:
-                    new = '{{%s}}' % new
+                    new = '{{{{{0!s}}}}}'.format(new)
 
                 text = textlib.replaceExcept(
                     text,
@@ -893,8 +890,7 @@ class CosmeticChangesToolkit(object):
         # This only works if there are only two items in digits dict
         old = digits[list(digits.keys())[0]]
         # not to let bot edits in latin content
-        exceptions.append(re.compile(u"[^%(fa)s] *?\"*? *?, *?[^%(fa)s]"
-                                     % {'fa': faChrs}))
+        exceptions.append(re.compile(u"[^{fa!s}] *?\"*? *?, *?[^{fa!s}]".format(**{'fa': faChrs})))
         text = textlib.replaceExcept(text, ',', '،', exceptions, site=self.site)
         if self.site.code == 'ckb':
             text = textlib.replaceExcept(text,

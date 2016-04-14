@@ -82,8 +82,7 @@ def translate(page=None, hints=None, auto=True, removebrackets=False,
                         result.add(x)
                 else:
                     if config.verbose_output:
-                        pywikibot.output(u"Ignoring unknown language code %s"
-                                         % newcode)
+                        pywikibot.output(u"Ignoring unknown language code {0!s}".format(newcode))
 
     # Autotranslate dates into all other languages, the rest will come from
     # existing interwiki links.
@@ -94,8 +93,7 @@ def translate(page=None, hints=None, auto=True, removebrackets=False,
         if dictName:
             if True:
                 pywikibot.output(
-                    u'TitleTranslate: %s was recognized as %s with value %d'
-                    % (page.title(), dictName, value))
+                    u'TitleTranslate: {0!s} was recognized as {1!s} with value {2:d}'.format(page.title(), dictName, value))
                 for entryLang, entry in date.formats[dictName].items():
                     if entryLang not in site.languages():
                         continue

@@ -131,8 +131,7 @@ class TWNTestCaseBase(TWNSetMessagePackageBase):
     def setUpClass(cls):
         """Verify that the test translations are not empty."""
         if not isinstance(cls.message_package, StringTypes):
-            raise TypeError('%s.message_package must be a package name'
-                            % cls.__name__)
+            raise TypeError('{0!s}.message_package must be a package name'.format(cls.__name__))
         # The call to set_messages_package below exists only to confirm
         # that the package exists and messages are available, so
         # that tests can be skipped if the i18n data doesnt exist.
@@ -141,8 +140,7 @@ class TWNTestCaseBase(TWNSetMessagePackageBase):
         has_messages = i18n.messages_available()
         i18n._messages_package_name = cls.orig_messages_package_name
         if not has_messages:
-            raise unittest.SkipTest("i18n messages package '%s' not available."
-                                    % cls.message_package)
+            raise unittest.SkipTest("i18n messages package '{0!s}' not available.".format(cls.message_package))
         super(TWNTestCaseBase, cls).setUpClass()
 
 
@@ -374,8 +372,7 @@ class InputTestCase(TWNTestCaseBase, UserInterfaceLangTestCase, PwbTestCase):
 
         if cls.code in i18n.twget_keys(cls.message):
             raise unittest.SkipTest(
-                '%s has a translation for %s'
-                % (cls.code, cls.message))
+                '{0!s} has a translation for {1!s}'.format(cls.code, cls.message))
 
     def test_pagegen_i18n_input(self):
         """Test i18n.input fallback via pwb and LC_ALL."""

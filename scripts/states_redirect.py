@@ -73,7 +73,7 @@ class StatesRedirectBot(pywikibot.Bot):
         if so, create a redirect from Something, ST..
         """
         for sn in self.abbrev:
-            R = re.compile(r', %s$' % sn)
+            R = re.compile(r', {0!s}$'.format(sn))
             if R.search(page.title()):
                 pl = pywikibot.Page(self.site, page.title().replace(sn,
                                     self.abbrev[sn]))
@@ -85,12 +85,10 @@ class StatesRedirectBot(pywikibot.Bot):
                     goal = pl.getRedirectTarget().title()
                     if pywikibot.Page(self.site, goal).exists():
                         pywikibot.output(
-                            u"Not creating %s - redirect already exists."
-                            % goal)
+                            u"Not creating {0!s} - redirect already exists.".format(goal))
                     else:
                         pywikibot.warning(
-                            u"%s already exists but redirects elsewhere!"
-                            % goal)
+                            u"{0!s} already exists but redirects elsewhere!".format(goal))
                 except pywikibot.IsNotRedirectPage:
                     pywikibot.warning(
                         u"Page %s already exists and is not a redirect "
@@ -109,7 +107,7 @@ class StatesRedirectBot(pywikibot.Bot):
                         change = 'y'
                     else:
                         change = pywikibot.input_choice(
-                            u'Create redirect %s?' % pl.title(),
+                            u'Create redirect {0!s}?'.format(pl.title()),
                             (('yes', 'y'), ('no', 'n')))
                     if change == 'y':
                         pl.set_redirect_target(
@@ -139,7 +137,7 @@ def main(*args):
             force = True
         else:
             pywikibot.warning(
-                u'argument "%s" not understood; ignoring.' % arg)
+                u'argument "{0!s}" not understood; ignoring.'.format(arg))
 
     bot = StatesRedirectBot(start, force)
     bot.run()

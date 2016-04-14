@@ -456,15 +456,13 @@ class WelcomeBot(object):
             site_netext = netext[self.site.family.name]
         except KeyError:
             raise KeyError(
-                u'Site %s not managed by welcome.py: family "%s" missing in netext.'
-                % (self.site, self.site.family.name))
+                u'Site {0!s} not managed by welcome.py: family "{1!s}" missing in netext.'.format(self.site, self.site.family.name))
         # Raises KeyError if site is not in netext with language.
         try:
             site_netext = site_netext[self.site.code]
         except KeyError:
             raise KeyError(
-                u'Site %s not managed by welcome.py: lang "%s" missing in netext[%s].'
-                % (self.site, self.site.code, self.site.family.name))
+                u'Site {0!s} not managed by welcome.py: lang "{1!s}" missing in netext[{2!s}].'.format(self.site, self.site.code, self.site.family.name))
 
     def badNameFilter(self, name, force=False):
         """Check for bad names."""
@@ -513,8 +511,7 @@ class WelcomeBot(object):
                                                          bad_pag))
             list_loaded = list()
             if badword_page.exists():
-                pywikibot.output(u'\nLoading the bad words list from %s...'
-                                 % self.site)
+                pywikibot.output(u'\nLoading the bad words list from {0!s}...'.format(self.site))
                 list_loaded = load_word_function(badword_page.get())
             else:
                 showStatus(4)
@@ -530,8 +527,7 @@ class WelcomeBot(object):
             if wtlpg:
                 whitelist_page = pywikibot.Page(self.site, wtlpg)
                 if whitelist_page.exists():
-                    pywikibot.output(u'\nLoading the whitelist from %s...'
-                                     % self.site)
+                    pywikibot.output(u'\nLoading the whitelist from {0!s}...'.format(self.site))
                     list_white = load_word_function(whitelist_page.get())
                 else:
                     showStatus(4)
@@ -581,8 +577,7 @@ class WelcomeBot(object):
             if answer.lower() in ['yes', 'y'] or not globalvar.confirm:
                 showStatus()
                 pywikibot.output(
-                    u'%s is possibly an unwanted username. It will be reported.'
-                    % name)
+                    u'{0!s} is possibly an unwanted username. It will be reported.'.format(name))
                 if hasattr(self, '_BAQueue'):
                     self._BAQueue.append(name)
                 else:
@@ -607,14 +602,13 @@ class WelcomeBot(object):
                 n = re.compile(re.escape(username), re.UNICODE)
                 y = n.search(text_get, pos)
                 if y:
-                    pywikibot.output(u'%s is already in the report page.'
-                                     % username)
+                    pywikibot.output(u'{0!s} is already in the report page.'.format(username))
                 else:
                     # Adding the log.
                     rep_text += i18n.translate(self.site,
                                                report_text) % username
                     if self.site.code == 'it':
-                        rep_text = "%s%s}}" % (rep_text, self.bname[username])
+                        rep_text = "{0!s}{1!s}}}}}".format(rep_text, self.bname[username])
 
             com = i18n.twtranslate(self.site, 'welcome-bad_username')
             if rep_text != '':
@@ -654,14 +648,14 @@ class WelcomeBot(object):
                 'Log page is not exist, getting information for page creation')
             text = i18n.translate(self.site, logpage_header,
                                   fallback=i18n.DEFAULT_FALLBACK)
-            text += u'\n!%s' % self.site.namespace(2)
-            text += u'\n!%s' % str.capitalize(
-                self.site.mediawiki_message('contribslink'))
+            text += u'\n!{0!s}'.format(self.site.namespace(2))
+            text += u'\n!{0!s}'.format(str.capitalize(
+                self.site.mediawiki_message('contribslink')))
 
         for result in queue:
             # Adding the log... (don't take care of the variable's name...).
             luser = pywikibot.url2link(result.name(), self.site, self.site)
-            text += u'\n{{WLE|user=%s|contribs=%d}}' % (
+            text += u'\n{{{{WLE|user={0!s}|contribs={1:d}}}}}'.format(
                 luser, result.editCount())
         # update log page.
         while True:
@@ -690,8 +684,7 @@ class WelcomeBot(object):
             if not signPageName:
                 showStatus(4)
                 pywikibot.output(
-                    "%s doesn't allow random signature, force disable."
-                    % self.site)
+                    "{0!s} doesn't allow random signature, force disable.".format(self.site))
                 globalvar.randomSign = False
                 return
 
@@ -729,26 +722,23 @@ class WelcomeBot(object):
             for users in us:
                 if users.isBlocked():
                     showStatus(3)
-                    pywikibot.output(u'%s has been blocked!' % users.name())
+                    pywikibot.output(u'{0!s} has been blocked!'.format(users.name()))
                     continue
                 if 'bot' in users.groups():
                     showStatus(3)
-                    pywikibot.output(u'%s is a bot!' % users.name())
+                    pywikibot.output(u'{0!s} is a bot!'.format(users.name()))
                     continue
                 if 'bot' in users.name().lower():
                     showStatus(3)
-                    pywikibot.output(u'%s might be a global bot!'
-                                     % users.name())
+                    pywikibot.output(u'{0!s} might be a global bot!'.format(users.name()))
                     continue
                 if users.editCount() >= globalvar.attachEditCount:
                     showStatus(2)
-                    pywikibot.output(u'%s has enough edits to be welcomed.'
-                                     % users.name())
+                    pywikibot.output(u'{0!s} has enough edits to be welcomed.'.format(users.name()))
                     ustp = users.getUserTalkPage()
                     if ustp.exists():
                         showStatus(3)
-                        pywikibot.output(u'%s has been already welcomed.'
-                                         % users.name())
+                        pywikibot.output(u'{0!s} has been already welcomed.'.format(users.name()))
                         continue
                     else:
                         if self.badNameFilter(users.name()):
@@ -793,8 +783,7 @@ class WelcomeBot(object):
                         elif welcomed_count == 0:
                             pywikibot.output(u'No users have been welcomed.')
                         else:
-                            pywikibot.output(u'%s users have been welcomed.'
-                                             % welcomed_count)
+                            pywikibot.output(u'{0!s} users have been welcomed.'.format(welcomed_count))
                         if welcomed_count >= globalvar.dumpToLog:
                             if self.makelogpage(self.welcomed_users):
                                 self.welcomed_users = list()
@@ -806,12 +795,10 @@ class WelcomeBot(object):
                     if users.editCount() == 0:
                         if not globalvar.quiet:
                             showStatus(1)
-                            pywikibot.output(u'%s has no contributions.'
-                                             % users.name())
+                            pywikibot.output(u'{0!s} has no contributions.'.format(users.name()))
                     else:
                         showStatus(1)
-                        pywikibot.output(u'%s has only %d contributions.'
-                                         % (users.name(), users.editCount()))
+                        pywikibot.output(u'{0!s} has only {1:d} contributions.'.format(users.name(), users.editCount()))
                     # That user mustn't be welcomed.
                     continue
             if globalvar.makeWelcomeLog and i18n.translate(
@@ -821,8 +808,7 @@ class WelcomeBot(object):
                     pywikibot.output(u'Putting the log of the latest user...')
                 else:
                     pywikibot.output(
-                        u'Putting the log of the latest %d users...'
-                        % welcomed_count)
+                        u'Putting the log of the latest {0:d} users...'.format(welcomed_count))
                 if self.makelogpage(self.welcomed_users):
                     self.welcomed_users = list()
                 else:
@@ -843,8 +829,7 @@ class WelcomeBot(object):
                     else:
                         strfstr = time.strftime(
                             u"%d %b %Y %H:%M:%S (UTC)", time.gmtime())
-                    pywikibot.output(u'Sleeping %d seconds before rerun. %s'
-                                     % (globalvar.timeRecur, strfstr))
+                    pywikibot.output(u'Sleeping {0:d} seconds before rerun. {1!s}'.format(globalvar.timeRecur, strfstr))
                     pywikibot.stopme()
                     time.sleep(globalvar.timeRecur)
                 else:
@@ -974,8 +959,7 @@ def main(*args):
 
     # Filename and Pywikibot path
     # file where is stored the random signature index
-    filename = pywikibot.config.datafilepath('welcome-%s-%s.data'
-                                             % (pywikibot.Site().family.name,
+    filename = pywikibot.config.datafilepath('welcome-{0!s}-{1!s}.data'.format(pywikibot.Site().family.name,
                                                 pywikibot.Site().code))
     if globalvar.offset and globalvar.timeoffset:
         pywikibot.warning(

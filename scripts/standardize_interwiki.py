@@ -64,11 +64,11 @@ comm = pywikibot.translate(site, comment)
 try:
     for pl in site.allpages(start):
         plname = pl.title()
-        pywikibot.output(u'\nLoading %s...' % plname)
+        pywikibot.output(u'\nLoading {0!s}...'.format(plname))
         try:
             oldtext = pl.get()
         except pywikibot.IsRedirectPage:
-            pywikibot.output(u"%s is a redirect!" % plname)
+            pywikibot.output(u"{0!s} is a redirect!".format(plname))
             continue
         old = pl.interwiki()
         new = {}
@@ -82,7 +82,7 @@ try:
                 try:
                     pl.put(newtext, comment=comm)
                 except pywikibot.LockedPage:
-                    pywikibot.output(u"%s is locked" % plname)
+                    pywikibot.output(u"{0!s} is locked".format(plname))
                     continue
             else:
                 pywikibot.output(u'No changes needed.')

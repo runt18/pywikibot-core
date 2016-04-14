@@ -77,7 +77,7 @@ def make_categories(page, list, site=None):
         site = pywikibot.Site()
     pllist = []
     for p in list:
-        cattitle = "%s:%s" % (site.namespaces.CATEGORY, p)
+        cattitle = "{0!s}:{1!s}".format(site.namespaces.CATEGORY, p)
         pllist.append(pywikibot.Page(site, cattitle))
     page.put_async(textlib.replaceCategoryLinks(page.get(), pllist,
                                                 site=page.site),
@@ -111,14 +111,14 @@ def main(*args):
             text = p.get()
             cats = p.categories()
             if not cats:
-                pywikibot.output(u"========== %s ==========" % p.title())
+                pywikibot.output(u"========== {0!s} ==========".format(p.title()))
                 pywikibot.output('No categories')
                 pywikibot.output('-' * 40)
                 newcats = choosecats(text)
                 if newcats != [] and newcats is not None:
                     make_categories(p, newcats, mysite)
             elif docorrections:
-                pywikibot.output(u"========== %s ==========" % p.title())
+                pywikibot.output(u"========== {0!s} ==========".format(p.title()))
                 for c in cats:
                     pywikibot.output(c.title())
                 pywikibot.output('-' * 40)
@@ -128,7 +128,7 @@ def main(*args):
                 elif newcats != []:
                     make_categories(p, newcats, mysite)
         except pywikibot.IsRedirectPage:
-            pywikibot.output(u'%s is a redirect' % p.title())
+            pywikibot.output(u'{0!s} is a redirect'.format(p.title()))
 
 if __name__ == "__main__":
     try:

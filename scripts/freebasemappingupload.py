@@ -40,8 +40,7 @@ class FreebaseMapperRobot(object):
         self.repo = pywikibot.Site('wikidata', 'wikidata').data_repository()
         self.filename = filename
         if not os.path.exists(self.filename):
-            pywikibot.output('Cannot find %s. Try providing the absolute path.'
-                             % self.filename)
+            pywikibot.output('Cannot find {0!s}. Try providing the absolute path.'.format(self.filename))
             sys.exit(1)
 
     def run(self):
@@ -83,15 +82,14 @@ class FreebaseMapperRobot(object):
         else:
             # Just pick up the first label
             label = list(data.labels.values())[0]
-        pywikibot.output('Parsed: %s <--> %s' % (qid, mid))
-        pywikibot.output('%s is %s' % (data.getID(), label))
+        pywikibot.output('Parsed: {0!s} <--> {1!s}'.format(qid, mid))
+        pywikibot.output('{0!s} is {1!s}'.format(data.getID(), label))
         if data.claims and 'P646' in data.claims:
             # We assume that there is only one claim.
             # If there are multiple ones, our logs might be wrong
             # but the constraint value reports will catch them
             if mid != data.claims['P646'][0].getTarget():
-                pywikibot.output('Mismatch: expected %s, has %s instead'
-                                 % (mid, data.claims['P646'][0].getTarget()))
+                pywikibot.output('Mismatch: expected {0!s}, has {1!s} instead'.format(mid, data.claims['P646'][0].getTarget()))
             else:
                 pywikibot.output('Already has mid set, is consistent.')
         else:

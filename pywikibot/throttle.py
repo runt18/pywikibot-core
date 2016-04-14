@@ -80,7 +80,7 @@ class Throttle(object):
         global pid
         self.lock.acquire()
         mysite = self.mysite
-        pywikibot.debug(u"Checking multiplicity: pid = %(pid)s" % globals(),
+        pywikibot.debug(u"Checking multiplicity: pid = {pid!s}".format(**globals()),
                         _logger)
         try:
             processes = []
@@ -130,7 +130,7 @@ class Throttle(object):
             try:
                 f = open(self.ctrlfilename, 'w')
                 for p in processes:
-                    f.write("%(pid)s %(time)s %(site)s\n" % p)
+                    f.write("{pid!s} {time!s} {site!s}\n".format(**p))
             except IOError:
                 pass
             else:
@@ -227,7 +227,7 @@ class Throttle(object):
         try:
             f = open(self.ctrlfilename, 'w')
             for p in processes:
-                f.write("%(pid)s %(time)s %(site)s\n" % p)
+                f.write("{pid!s} {time!s} {site!s}\n".format(**p))
         except IOError:
             return
         f.close()
@@ -241,11 +241,11 @@ class Throttle(object):
         if seconds <= 0:
             return
 
-        message = (u"Sleeping for %(seconds).1f seconds, %(now)s" % {
+        message = (u"Sleeping for {seconds:.1f} seconds, {now!s}".format(**{
             'seconds': seconds,
             'now': time.strftime("%Y-%m-%d %H:%M:%S",
                                  time.localtime())
-        })
+        }))
         if seconds > config.noisysleep:
             pywikibot.output(message)
         else:

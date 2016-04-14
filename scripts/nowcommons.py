@@ -259,8 +259,7 @@ class NowCommonsDeleteBot(Bot):
                 pywikibot.output(color_format(
                     '\n\n>>> {lightpurple}{0}{default} <<<',
                     image_local))
-                pywikibot.output(u'Local: %s\nCommons: %s\n'
-                                 % (url_local, url_commons))
+                pywikibot.output(u'Local: {0!s}\nCommons: {1!s}\n'.format(url_local, url_commons))
                 webbrowser.open(url_local, 0, 1)
                 webbrowser.open(url_commons, 0, 1)
                 if image_local.split('Image:')[1] == image_commons:
@@ -351,8 +350,7 @@ class NowCommonsDeleteBot(Bot):
                 if not filenameOnCommons and not self.getOption('use_hash'):
                     pywikibot.output(u'NowCommons template not found.')
                     continue
-                commonsImagePage = pywikibot.FilePage(commons, 'Image:%s'
-                                                      % filenameOnCommons)
+                commonsImagePage = pywikibot.FilePage(commons, 'Image:{0!s}'.format(filenameOnCommons))
                 if (localImagePage.title(withNamespace=False) ==
                         commonsImagePage.title(withNamespace=False) and
                         self.getOption('use_hash')):
@@ -400,9 +398,8 @@ class NowCommonsDeleteBot(Bot):
                                 if usingPages > 0 and self.getOption('use_hash'):
                                     # just an enter
                                     pywikibot.input(
-                                        u'There are still %s pages with this \
-                                        image, confirm the manual removal from them please.'
-                                        % usingPages)
+                                        u'There are still {0!s} pages with this \
+                                        image, confirm the manual removal from them please.'.format(usingPages))
 
                         else:
                             pywikibot.output(u'Please change them manually.')
@@ -439,17 +436,15 @@ class NowCommonsDeleteBot(Bot):
                                     'information?',
                                     default=False, automatic_quit=False):
                                 localImagePage.delete(
-                                    '%s [[:commons:Image:%s]]'
-                                    % (comment, filenameOnCommons), prompt=False)
+                                    '{0!s} [[:commons:Image:{1!s}]]'.format(comment, filenameOnCommons), prompt=False)
                         else:
                             localImagePage.delete(
-                                comment + ' [[:commons:Image:%s]]'
-                                % filenameOnCommons, prompt=False)
+                                comment + ' [[:commons:Image:{0!s}]]'.format(filenameOnCommons), prompt=False)
                     else:
                         pywikibot.output(
                             u'The image is not identical to the one on Commons.')
             except (pywikibot.NoPage, pywikibot.IsRedirectPage) as e:
-                pywikibot.output(u'%s' % e[0])
+                pywikibot.output(u'{0!s}'.format(e[0]))
                 continue
 
 

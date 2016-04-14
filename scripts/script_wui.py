@@ -174,10 +174,10 @@ class ScriptWUIBot(pywikibot.botirc.IRCBot):
         # test actual page against (template incl.) list
         page = match.group('page').decode(self.site.encoding())
         if page in self.refs:
-            pywikibot.output(u"RELOAD: %s" % page)
+            pywikibot.output(u"RELOAD: {0!s}".format(page))
             self.refs[page].get(force=True)   # re-load (refresh) page content
         if page == self.templ:
-            pywikibot.output(u"SHELL: %s" % page)
+            pywikibot.output(u"SHELL: {0!s}".format(page))
             self.do_check(page)
 
     def on_timer(self):
@@ -203,7 +203,7 @@ class ScriptWUIBot(pywikibot.botirc.IRCBot):
                 now - datetime.timedelta(microseconds=1))
 
             if (delay <= bot_config['CRONMaxDelay']):
-                pywikibot.output(u"CRONTAB: %s / %s / %s" % (page, rev, timestmp))
+                pywikibot.output(u"CRONTAB: {0!s} / {1!s} / {2!s}".format(page, rev, timestmp))
                 self.do_check(page.title(), int(rev))
 
     def do_check(self, page_title, rev=None, params=None):
@@ -268,7 +268,7 @@ def main_script(page, rev=None, params=NotImplemented):  # pylint: disable=unuse
     sys.argv = __sys_argv
 
     pywikibot.output(
-        u'environment: garbage; %s / memory; %s / members; %s' % (
+        u'environment: garbage; {0!s} / memory; {1!s} / members; {2!s}'.format(
             gc.collect(),
             resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * resource.getpagesize(),
             len(dir())))
@@ -293,8 +293,7 @@ def wiki_logger(buffer, page, rev=None):
     outpage = pywikibot.Page(pywikibot.Site(), bot_config['ConfCSSoutput'])
     text = outpage.get()
     outpage.put(
-        text + u"\n== Simulation vom %s mit [%s code:%s] ==\n<pre>\n%s</pre>\n\n"
-        % (pywikibot.Timestamp.now().isoformat(' '), link, rev, buffer))
+        text + u"\n== Simulation vom {0!s} mit [{1!s} code:{2!s}] ==\n<pre>\n{3!s}</pre>\n\n".format(pywikibot.Timestamp.now().isoformat(' '), link, rev, buffer))
 #                comment = pywikibot.translate(self.site.lang, bot_config['msg']))
 
 

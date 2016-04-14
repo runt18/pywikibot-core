@@ -57,9 +57,9 @@ class GraphSavingThread(threading.Thread):
             filename = config.datafilepath(
                 'interwiki-graphs/' + getFilename(self.originPage, format))
             if self.graph.write(filename, prog='dot', format=format):
-                pywikibot.output(u'Graph saved as %s' % filename)
+                pywikibot.output(u'Graph saved as {0!s}'.format(filename))
             else:
-                pywikibot.output(u'Graph could not be saved as %s' % filename)
+                pywikibot.output(u'Graph could not be saved as {0!s}'.format(filename))
 
 
 class Subject(object):
@@ -144,13 +144,13 @@ class GraphDrawer(object):
         @raises GraphImpossible: pydot is not installed
         """
         if isinstance(pydot, ImportError):
-            raise GraphImpossible('pydot is not installed: %s.' % pydot)
+            raise GraphImpossible('pydot is not installed: {0!s}.'.format(pydot))
         self.graph = None
         self.subject = subject
 
     def getLabel(self, page):
         """Get label for page."""
-        return '"%s:%s"' % (page.site.code, page.title())
+        return '"{0!s}:{1!s}"'.format(page.site.code, page.title())
 
     def _octagon_site_set(self):
         """Build a list of sites with more than one valid page."""
@@ -167,8 +167,7 @@ class GraphDrawer(object):
     def addNode(self, page):
         """Add a node for page."""
         node = pydot.Node(self.getLabel(page), shape='rectangle')
-        node.set_URL("\"http://%s%s\""
-                     % (page.site.hostname(),
+        node.set_URL("\"http://{0!s}{1!s}\"".format(page.site.hostname(),
                         page.site.get_address(page.title(asUrl=True))))
         node.set_style('filled')
         node.set_fillcolor('white')
@@ -206,8 +205,7 @@ class GraphDrawer(object):
             # https://sourceforge.net/p/pywikipediabot/bugs/401/
             elif self.graph.get_edge(sourceLabel, targetLabel):
                 pywikibot.output(
-                    u'BUG: Tried to create duplicate edge from %s to %s'
-                    % (refPage.title(asLink=True), page.title(asLink=True)))
+                    u'BUG: Tried to create duplicate edge from {0!s} to {1!s}'.format(refPage.title(asLink=True), page.title(asLink=True)))
                 # duplicate edges would be bad because then get_edge() would
                 # give a list of edges, not a single edge when we handle the
                 # opposite edge.
@@ -237,8 +235,7 @@ class GraphDrawer(object):
 
         For more info see U{http://meta.wikimedia.org/wiki/Interwiki_graphs}
         """
-        pywikibot.output(u'Preparing graph for %s'
-                         % self.subject.originPage.title())
+        pywikibot.output(u'Preparing graph for {0!s}'.format(self.subject.originPage.title()))
         # create empty graph
         self.graph = pydot.Dot()
         # self.graph.set('concentrate', 'true')
@@ -269,9 +266,9 @@ def getFilename(page, extension=None):
     @return: filename of <family>-<lang>-<page>.<ext>
     @rtype: str
     """
-    filename = '%s-%s-%s' % (page.site.family.name,
+    filename = '{0!s}-{1!s}-{2!s}'.format(page.site.family.name,
                              page.site.code,
                              page.title(as_filename=True))
     if extension:
-        filename += '.%s' % extension
+        filename += '.{0!s}'.format(extension)
     return filename

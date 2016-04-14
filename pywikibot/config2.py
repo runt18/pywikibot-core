@@ -321,8 +321,7 @@ def get_base_dir(test_directory=None):
                 elif win_version in (6, 10):
                     sub_dir = ["AppData", "Roaming"]
                 else:
-                    raise WindowsError(u'Windows version %s not supported yet.'
-                                       % win_version)
+                    raise WindowsError(u'Windows version {0!s} not supported yet.'.format(win_version))
                 base_dir_cand.extend([[home] + sub_dir + [DIRNAME_WIN],
                                      [home] + sub_dir + [DIRNAME_WIN_FBCK]])
             else:
@@ -340,10 +339,10 @@ def get_base_dir(test_directory=None):
         base_dir = os.path.normpath(os.path.join(os.getcwd(), base_dir))
     # make sure this path is valid and that it contains user-config file
     if not os.path.isdir(base_dir):
-        raise RuntimeError("Directory '%s' does not exist." % base_dir)
+        raise RuntimeError("Directory '{0!s}' does not exist.".format(base_dir))
     # check if user-config.py is in base_dir
     if not exists(base_dir):
-        exc_text = "No user-config.py found in directory '%s'.\n" % base_dir
+        exc_text = "No user-config.py found in directory '{0!s}'.\n".format(base_dir)
         if __no_user_config:
             if __no_user_config != '2':
                 output(exc_text)
@@ -903,7 +902,7 @@ def _win32_extension_command(extension):
         key1 = winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_name)
         _progID = winreg.EnumValue(key1, 0)[0]
         _key2 = _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT,
-                                '%s\shell\open\command' % _progID)
+                                '{0!s}\shell\open\command'.format(_progID))
         _cmd = _winreg.QueryValueEx(_key2, None)[0]
         # See T102465 for issues relating to using this value.
         cmd = _cmd
@@ -980,11 +979,9 @@ for _filename in _fns:
                 with open(_filename, 'rb') as f:
                     exec(compile(f.read(), _filename, 'exec'), _uc)
             else:
-                warning("Skipped '%(fn)s': writeable by others."
-                        % {'fn': _filename})
+                warning("Skipped '{fn!s}': writeable by others.".format(**{'fn': _filename}))
         else:
-            warning("Skipped '%(fn)s': owned by someone else."
-                    % {'fn': _filename})
+            warning("Skipped '{fn!s}': owned by someone else.".format(**{'fn': _filename}))
 
 
 class _DifferentTypeError(UserWarning, TypeError):
@@ -1133,8 +1130,8 @@ if __name__ == "__main__":
                         if isinstance(_value, dict):
                             _value = '{ ...xxxxxxxx... }'
                         elif hasattr(_value, '__dict__'):
-                            _value = '%s( ...xxxxxxxx... )' % \
-                                     _value.__class__.__name__
+                            _value = '{0!s}( ...xxxxxxxx... )'.format( \
+                                     _value.__class__.__name__)
                         else:
                             _value = repr('xxxxxxxx')
                     else:

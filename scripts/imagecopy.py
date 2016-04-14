@@ -412,7 +412,7 @@ class TkdialogIC(Tkdialog):
         # uploader.decode('utf-8')
         scrollbar = Tkinter.Scrollbar(self.root, orient=Tkinter.VERTICAL)
         label = Tkinter.Label(self.root, text=u"Enter new name or leave blank.")
-        imageinfo = Tkinter.Label(self.root, text='Uploaded by %s.' % uploader)
+        imageinfo = Tkinter.Label(self.root, text='Uploaded by {0!s}.'.format(uploader))
         textarea = Tkinter.Text(self.root)
         textarea.insert(Tkinter.END, content.encode('utf-8'))
         textarea.config(state=Tkinter.DISABLED,
@@ -539,7 +539,7 @@ def main(*args):
                     newname = imagepage.title(withNamespace=False)
                     CommonsPage = pywikibot.Page(pywikibot.Site('commons',
                                                                 'commons'),
-                                                 u'File:%s' % newname)
+                                                 u'File:{0!s}'.format(newname))
                     if CommonsPage.exists():
                         skip = True
                 else:

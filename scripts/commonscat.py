@@ -238,17 +238,13 @@ class CommonscatBot(Bot):
     def treat(self, page):
         """Load the given page, do some changes, and save it."""
         if not page.exists():
-            pywikibot.output(u'Page %s does not exist. Skipping.'
-                             % page.title(asLink=True))
+            pywikibot.output(u'Page {0!s} does not exist. Skipping.'.format(page.title(asLink=True)))
         elif page.isRedirectPage():
-            pywikibot.output(u'Page %s is a redirect. Skipping.'
-                             % page.title(asLink=True))
+            pywikibot.output(u'Page {0!s} is a redirect. Skipping.'.format(page.title(asLink=True)))
         elif page.isCategoryRedirect():
-            pywikibot.output(u'Page %s is a category redirect. Skipping.'
-                             % page.title(asLink=True))
+            pywikibot.output(u'Page {0!s} is a category redirect. Skipping.'.format(page.title(asLink=True)))
         elif page.isDisambig():
-            pywikibot.output(u'Page %s is a disambiguation. Skipping.'
-                             % page.title(asLink=True))
+            pywikibot.output(u'Page {0!s} is a disambiguation. Skipping.'.format(page.title(asLink=True)))
         else:
             self.addCommonscat(page)
 
@@ -296,16 +292,14 @@ class CommonscatBot(Bot):
             page.site.code)
         commonscatLink = self.getCommonscatLink(page)
         if commonscatLink:
-            pywikibot.output(u'Commonscat template is already on %s'
-                             % page.title())
+            pywikibot.output(u'Commonscat template is already on {0!s}'.format(page.title()))
             (currentCommonscatTemplate,
              currentCommonscatTarget, LinkText, Note) = commonscatLink
             checkedCommonscatTarget = self.checkCommonscatLink(
                 currentCommonscatTarget)
             if (currentCommonscatTarget == checkedCommonscatTarget):
                 # The current commonscat link is good
-                pywikibot.output(u'Commonscat link at %s to Category:%s is ok'
-                                 % (page.title(), currentCommonscatTarget))
+                pywikibot.output(u'Commonscat link at {0!s} to Category:{1!s} is ok'.format(page.title(), currentCommonscatTarget))
                 return True
             elif checkedCommonscatTarget != u'':
                 # We have a new Commonscat link, replace the old one
@@ -324,15 +318,14 @@ class CommonscatBot(Bot):
                 # TODO: if the commonsLink == u'', should it be removed?
 
         elif self.skipPage(page):
-            pywikibot.output("Found a template in the skip list. Skipping %s"
-                             % page.title())
+            pywikibot.output("Found a template in the skip list. Skipping {0!s}".format(page.title()))
         else:
             commonscatLink = self.findCommonscatLink(page)
             if (commonscatLink != u''):
                 if commonscatLink == page.title():
-                    textToAdd = u'{{%s}}' % primaryCommonscat
+                    textToAdd = u'{{{{{0!s}}}}}'.format(primaryCommonscat)
                 else:
-                    textToAdd = u'{{%s|%s}}' % (primaryCommonscat,
+                    textToAdd = u'{{{{{0!s}|{1!s}}}}}'.format(primaryCommonscat,
                                                 commonscatLink)
                 rv = add_text(page, textToAdd,
                               self.getOption('summary'),
@@ -351,19 +344,16 @@ class CommonscatBot(Bot):
                               oldcat.lower() in page.title().lower()):
             linktitle = oldcat
         if linktitle and newcat != page.title(withNamespace=False):
-            newtext = re.sub(u'(?i)\{\{%s\|?[^{}]*(?:\{\{.*\}\})?\}\}'
-                             % oldtemplate,
-                             u'{{%s|%s|%s}}' % (newtemplate, newcat, linktitle),
+            newtext = re.sub(u'(?i)\{{\{{{0!s}\|?[^{{}}]*(?:\{{\{{.*\}}\}})?\}}\}}'.format(oldtemplate),
+                             u'{{{{{0!s}|{1!s}|{2!s}}}}}'.format(newtemplate, newcat, linktitle),
                              page.get())
         elif newcat == page.title(withNamespace=False):
-            newtext = re.sub(u'(?i)\{\{%s\|?[^{}]*(?:\{\{.*\}\})?\}\}'
-                             % oldtemplate,
-                             u'{{%s}}' % newtemplate,
+            newtext = re.sub(u'(?i)\{{\{{{0!s}\|?[^{{}}]*(?:\{{\{{.*\}}\}})?\}}\}}'.format(oldtemplate),
+                             u'{{{{{0!s}}}}}'.format(newtemplate),
                              page.get())
         elif oldcat.strip() != newcat:  # strip trailing white space
-            newtext = re.sub(u'(?i)\{\{%s\|?[^{}]*(?:\{\{.*\}\})?\}\}'
-                             % oldtemplate,
-                             u'{{%s|%s}}' % (newtemplate, newcat),
+            newtext = re.sub(u'(?i)\{{\{{{0!s}\|?[^{{}}]*(?:\{{\{{.*\}}\}})?\}}\}}'.format(oldtemplate),
+                             u'{{{{{0!s}|{1!s}}}}}'.format(newtemplate, newcat),
                              page.get())
         else:  # nothing left to do
             return
@@ -387,7 +377,7 @@ class CommonscatBot(Bot):
         """
         for ipageLink in page.langlinks():
             ipage = pywikibot.page.Page(ipageLink)
-            pywikibot.log("Looking for template on %s" % (ipage.title()))
+            pywikibot.log("Looking for template on {0!s}".format((ipage.title())))
             try:
                 if (not ipage.exists() or ipage.isRedirectPage() or
                         ipage.isDisambig()):
@@ -400,8 +390,7 @@ class CommonscatBot(Bot):
                 checkedCommonscat = self.checkCommonscatLink(possibleCommonscat)
                 if (checkedCommonscat != u''):
                     pywikibot.output(
-                        u"Found link for %s at [[%s:%s]] to %s."
-                        % (page.title(), ipage.site.code,
+                        u"Found link for {0!s} at [[{1!s}:{2!s}]] to {3!s}.".format(page.title(), ipage.site.code,
                            ipage.title(), checkedCommonscat))
                     return checkedCommonscat
             except pywikibot.BadTitle:

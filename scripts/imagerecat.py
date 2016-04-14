@@ -166,7 +166,7 @@ def getCommonshelperCats(imagepage):
             if tries < maxtries:
                 tries += 1
                 commonsHelperPage = fetch(
-                    "https://toolserver.org/~daniel/WikiSense/CommonSense.php?%s" % parameters)
+                    "https://toolserver.org/~daniel/WikiSense/CommonSense.php?{0!s}".format(parameters))
                 matches = commonsenseRe.search(
                     commonsHelperPage.content)
                 gotInfo = True
@@ -204,7 +204,7 @@ def getOpenStreetMapCats(latitude, longitude):
     result = []
     locationList = getOpenStreetMap(latitude, longitude)
     for i in range(0, len(locationList)):
-        pywikibot.log(u'Working on %r' % locationList[i])
+        pywikibot.log(u'Working on {0!r}'.format(locationList[i]))
         if i <= len(locationList) - 3:
             category = getCategoryByName(name=locationList[i],
                                          parent=locationList[i + 1],
@@ -230,7 +230,7 @@ def getOpenStreetMap(latitude, longitude):
     parameters = urlencode({'lat': latitude, 'lon': longitude, 'accept-language': 'en'})
     while not gotInfo:
         try:
-            page = fetch('https://nominatim.openstreetmap.org/reverse?format=xml&%s' % parameters)
+            page = fetch('https://nominatim.openstreetmap.org/reverse?format=xml&{0!s}'.format(parameters))
             et = xml.etree.ElementTree.fromstring(page.content)
             gotInfo = True
         except IOError:
@@ -247,10 +247,9 @@ def getOpenStreetMap(latitude, longitude):
         if addresspart.tag in validParts:
             result.append(addresspart.text)
         elif addresspart.tag in invalidParts:
-            pywikibot.output(u'Dropping %s, %s' % (addresspart.tag, addresspart.text))
+            pywikibot.output(u'Dropping {0!s}, {1!s}'.format(addresspart.tag, addresspart.text))
         else:
-            pywikibot.warning('%s, %s is not in addressparts lists'
-                              % (addresspart.tag, addresspart.text))
+            pywikibot.warning('{0!s}, {1!s} is not in addressparts lists'.format(addresspart.tag, addresspart.text))
     return result
 
 
@@ -385,7 +384,7 @@ def filterParents(categories):
     filterCategoriesRe = re.compile(r'\[\[Category:([^\]]*)\]\]')
     try:
         filterCategoriesPage = fetch(
-            "https://toolserver.org/~multichill/filtercats.php?%s" % parameters)
+            "https://toolserver.org/~multichill/filtercats.php?{0!s}".format(parameters))
         result = filterCategoriesRe.findall(
             filterCategoriesPage.content)
     except IOError:
@@ -436,16 +435,16 @@ def getCheckCategoriesTemplate(usage, galleries, ncats):
               'CURRENTMONTHNAME}}|day={{subst:CURRENTDAY}}\n')
     usageCounter = 1
     for (lang, project, article) in usage:
-        result += u'|lang%d=%s' % (usageCounter, lang)
-        result += u'|wiki%d=%s' % (usageCounter, project)
-        result += u'|article%d=%s' % (usageCounter, article)
+        result += u'|lang{0:d}={1!s}'.format(usageCounter, lang)
+        result += u'|wiki{0:d}={1!s}'.format(usageCounter, project)
+        result += u'|article{0:d}={1!s}'.format(usageCounter, article)
         result += u'\n'
         usageCounter += 1
     galleryCounter = 1
     for gallery in galleries:
-        result += u'|gallery%d=%s' % (galleryCounter, gallery.replace('_', ' ')) + u'\n'
+        result += u'|gallery{0:d}={1!s}'.format(galleryCounter, gallery.replace('_', ' ')) + u'\n'
         galleryCounter += 1
-    result += u'|ncats=%d\n' % ncats
+    result += u'|ncats={0:d}\n'.format(ncats)
     result += u'}}\n'
     return result
 

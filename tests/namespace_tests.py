@@ -205,8 +205,7 @@ class TestNamespaceObject(TestCase):
         """Test Namespace.__repr__."""
         a = Namespace(id=0, canonical_name=u'Foo')
         s = repr(a)
-        r = "Namespace(id=0, custom_name=%r, canonical_name=%r, aliases=[])" \
-            % (unicode('Foo'), unicode('Foo'))
+        r = "Namespace(id=0, custom_name={0!r}, canonical_name={1!r}, aliases=[])".format(unicode('Foo'), unicode('Foo'))
         self.assertEqual(s, r)
 
         a.defaultcontentmodel = 'bar'

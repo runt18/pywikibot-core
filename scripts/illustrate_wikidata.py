@@ -50,14 +50,13 @@ class IllustrateRobot(WikidataBot):
 
         claim = pywikibot.Claim(self.repo, self.wdproperty)
         if claim.type != 'commonsMedia':
-            raise ValueError(u'%s is of type %s, should be commonsMedia'
-                             % (self.wdproperty, claim.type))
+            raise ValueError(u'{0!s} is of type {1!s}, should be commonsMedia'.format(self.wdproperty, claim.type))
 
     def treat(self, page, item):
         """Treat a page / item."""
         self.current_page = page
 
-        pywikibot.output(u'Found %s' % item.title())
+        pywikibot.output(u'Found {0!s}'.format(item.title()))
         imagename = page.properties().get('page_image')
 
         if not imagename:
@@ -65,8 +64,7 @@ class IllustrateRobot(WikidataBot):
 
         claims = item.get().get('claims')
         if self.wdproperty in claims:
-            pywikibot.output('Item %s already contains image (%s)'
-                             % (item.title(), self.wdproperty))
+            pywikibot.output('Item {0!s} already contains image ({1!s})'.format(item.title(), self.wdproperty))
             return
 
         newclaim = pywikibot.Claim(self.repo, self.wdproperty)
@@ -77,11 +75,11 @@ class IllustrateRobot(WikidataBot):
             image = pywikibot.FilePage(image.getRedirectTarget())
 
         if not image.exists():
-            pywikibot.output('[[%s]] doesn\'t exist so I can\'t link to it' % (image.title(),))
+            pywikibot.output('[[{0!s}]] doesn\'t exist so I can\'t link to it'.format(image.title()))
             return
 
         newclaim.setTarget(image)
-        pywikibot.output('Adding %s --> %s' % (newclaim.getID(), newclaim.getTarget()))
+        pywikibot.output('Adding {0!s} --> {1!s}'.format(newclaim.getID(), newclaim.getTarget()))
         item.addClaim(newclaim)
 
         # A generator might yield pages from multiple sites

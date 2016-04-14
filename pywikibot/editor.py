@@ -46,26 +46,26 @@ class TextEditor(object):
         # Linux editors. We use startswith() because some users might use
         # parameters.
         if config.editor.startswith('kate'):
-            command = ['-l', '%i' % (line + 1), '-c', '%i' % (column + 1)]
+            command = ['-l', '{0:d}'.format((line + 1)), '-c', '{0:d}'.format((column + 1))]
         elif config.editor.startswith('gedit'):
-            command = ['+%i' % (line + 1)]  # seems not to support columns
+            command = ['+{0:d}'.format((line + 1))]  # seems not to support columns
         elif config.editor.startswith('emacs'):
-            command = ['+%i' % (line + 1)]  # seems not to support columns
+            command = ['+{0:d}'.format((line + 1))]  # seems not to support columns
         elif config.editor.startswith('jedit'):
-            command = ['+line:%i' % (line + 1)]  # seems not to support columns
+            command = ['+line:{0:d}'.format((line + 1))]  # seems not to support columns
         elif config.editor.startswith('vim'):
-            command = ['+%i' % (line + 1)]  # seems not to support columns
+            command = ['+{0:d}'.format((line + 1))]  # seems not to support columns
         elif config.editor.startswith('nano'):
-            command = ['+%i,%i' % (line + 1, column + 1)]
+            command = ['+{0:d},{1:d}'.format(line + 1, column + 1)]
         # Windows editors
         elif config.editor.lower().endswith('notepad++.exe'):
-            command = ['-n%i' % (line + 1)]  # seems not to support columns
+            command = ['-n{0:d}'.format((line + 1))]  # seems not to support columns
         else:
             command = []
 
         # See T102465 for problems relating to using config.editor unparsed.
         command = [config.editor] + command + [file_name]
-        pywikibot.log(u'Running editor: %s' % TextEditor._concat(command))
+        pywikibot.log(u'Running editor: {0!s}'.format(TextEditor._concat(command)))
         return command
 
     @staticmethod
@@ -96,7 +96,7 @@ class TextEditor(object):
         """
         if config.editor:
             handle, tempFilename = tempfile.mkstemp()
-            tempFilename = '%s.%s' % (tempFilename,
+            tempFilename = '{0!s}.{1!s}'.format(tempFilename,
                                       config.editor_filename_extension)
             try:
                 with codecs.open(tempFilename, 'w',

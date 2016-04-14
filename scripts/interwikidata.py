@@ -109,8 +109,7 @@ class IWBot(ExistingPageBot, SingleSiteBot):
                   'value': self.current_page.title()}
                  }
                 }
-        summary = (u'Bot: New item with sitelink from %s'
-                   % self.current_page.title(asLink=True, insite=self.repo))
+        summary = (u'Bot: New item with sitelink from {0!s}'.format(self.current_page.title(asLink=True, insite=self.repo)))
 
         item = pywikibot.ItemPage(self.repo)
         item.editEntity(data, new='item', summary=summary)
@@ -135,8 +134,8 @@ class IWBot(ExistingPageBot, SingleSiteBot):
         dbnames = [iw_site.dbName() for iw_site in self.iwlangs]
         if set(dbnames) < set(self.current_item.sitelinks.keys()):
             if not self.handle_complicated():
-                warning('Interwiki conflict in %s, skipping...' %
-                        self.current_page.title(asLink=True))
+                warning('Interwiki conflict in {0!s}, skipping...'.format(
+                        self.current_page.title(asLink=True)))
                 return False
         output('Cleaning up the page')
         new_text = pywikibot.textlib.removeLanguageLinks(
@@ -150,23 +149,23 @@ class IWBot(ExistingPageBot, SingleSiteBot):
             try:
                 wd_data.add(pywikibot.ItemPage.fromPage(iw_page))
             except pywikibot.NoPage:
-                warning('Interwiki %s does not exist, skipping...' %
-                        iw_page.title(asLink=True))
+                warning('Interwiki {0!s} does not exist, skipping...'.format(
+                        iw_page.title(asLink=True)))
                 continue
             except pywikibot.InvalidTitle:
-                warning('Invalid title %s, skipping...' %
-                        iw_page.title(asLink=True))
+                warning('Invalid title {0!s}, skipping...'.format(
+                        iw_page.title(asLink=True)))
                 continue
         if len(wd_data) != 1:
-            warning('Interwiki conflict in %s, skipping...' %
-                    self.current_page.title(asLink=True))
+            warning('Interwiki conflict in {0!s}, skipping...'.format(
+                    self.current_page.title(asLink=True)))
             return False
         item = list(wd_data).pop()
         if self.current_page.site.dbName() in item.sitelinks:
-            warning('Interwiki conflict in %s, skipping...' %
-                    item.title(asLink=True))
+            warning('Interwiki conflict in {0!s}, skipping...'.format(
+                    item.title(asLink=True)))
             return False
-        output('Adding link to %s' % item.title())
+        output('Adding link to {0!s}'.format(item.title()))
         item.setSitelink(self.current_page)
         return item
 

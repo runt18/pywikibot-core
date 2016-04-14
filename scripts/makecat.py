@@ -115,7 +115,7 @@ def asktoadd(pl):
         return
     ctoshow = 500
     pywikibot.output(u'')
-    pywikibot.output(u"==%s==" % pl.title())
+    pywikibot.output(u"=={0!s}==".format(pl.title()))
     while True:
         # TODO: Use pywikibot.inputChoice?
         # (needs the support for 'other options')
@@ -136,7 +136,7 @@ def asktoadd(pl):
             include(pl)
             break
         elif answer == 'n':
-            excludefile.write('%s\n' % pl.title())
+            excludefile.write('{0!s}\n'.format(pl.title()))
             break
         elif answer == 'i':
             break
@@ -166,13 +166,12 @@ def asktoadd(pl):
                 pywikibot.output(u"Page does not exist; not added.")
             break
         elif answer == 'l':
-            pywikibot.output(u"Number of pages still to check: %s"
-                             % len(tocheck))
+            pywikibot.output(u"Number of pages still to check: {0!s}".format(len(tocheck)))
             pywikibot.output(u"Pages to be checked:")
             pywikibot.output(u" - ".join(page.title() for page in tocheck))
-            pywikibot.output(u"==%s==" % pl.title())
+            pywikibot.output(u"=={0!s}==".format(pl.title()))
         elif answer == 't':
-            pywikibot.output(u"==%s==" % pl.title())
+            pywikibot.output(u"=={0!s}==".format(pl.title()))
             try:
                 pywikibot.output(u'' + pl.get(get_redirect=True)[0:ctoshow])
             except pywikibot.NoPage:
@@ -213,8 +212,7 @@ try:
     mysite = pywikibot.Site()
     pywikibot.setAction(i18n.twtranslate(mysite, 'makecat-create', {'cat': workingcatname}))
     workingcat = pywikibot.Category(mysite,
-                                    u'%s:%s'
-                                    % (mysite.namespaces.CATEGORY,
+                                    u'{0!s}:{1!s}'.format(mysite.namespaces.CATEGORY,
                                        workingcatname))
     filename = pywikibot.config.datafilepath(
         'category', workingcatname.encode('ascii', 'xmlcharrefreplace') + '_exclude.txt')
@@ -256,9 +254,8 @@ try:
     articles = list(workingcat.articles(content=True))
     if not articles:
         pywikibot.output(
-            u"Category %s does not exist or is empty. Which page to start with?"
-            % workingcatname)
-        answer = pywikibot.input(u"(Default is [[%s]]):" % workingcatname)
+            u"Category {0!s} does not exist or is empty. Which page to start with?".format(workingcatname))
+        answer = pywikibot.input(u"(Default is [[{0!s}]]):".format(workingcatname))
         if not answer:
             answer = workingcatname
         pywikibot.output(u'' + answer)

@@ -218,8 +218,7 @@ class TestIsbnWikibaseBot(ScriptMainTestCase, WikibaseTestCase, TWNBotTestCase):
                 u'%s: "ISBN-10" property was not found in '
                 u'"IsbnWikibaseBotUnitTest" item page' % cls.__name__)
         raise unittest.SkipTest(
-            u'%s: "IsbnWikibaseBotUnitTest" item page was not found'
-            % cls.__name__)
+            u'{0!s}: "IsbnWikibaseBotUnitTest" item page was not found'.format(cls.__name__))
 
     def setUp(self):
         """Patch Claim.setTarget and ItemPage.editEntity which write."""

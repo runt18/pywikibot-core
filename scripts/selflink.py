@@ -68,8 +68,7 @@ class SelflinkBot(MultipleSitesBot, BaseUnlinkBot):
         # https://de.wikipedia.org/w/index.php?diff=next&oldid=35721641
         if '<imagemap>' in self.current_page.text:
             pywikibot.output(
-                u'Skipping page %s because it contains an image map.'
-                % self.current_page.title(asLink=True))
+                u'Skipping page {0!s} because it contains an image map.'.format(self.current_page.title(asLink=True)))
             return
         self.unlink(self.current_page)
 

@@ -94,8 +94,7 @@ class BlockreviewBot(ExistingPageBot, SingleSiteBot):
                                      self.unblock_tpl[self.site.code],
                                      ns=10)
         except KeyError:
-            pywikibot.error(u'Language "%s" not supported by this bot.'
-                            % self.site.code)
+            pywikibot.error(u'Language "{0!s}" not supported by this bot.'.format(self.site.code))
             raise SystemExit
         return genPage.getReferences(follow_redirects=False,
                                      withTemplateInclusion=True,
@@ -156,10 +155,10 @@ class BlockreviewBot(ExistingPageBot, SingleSiteBot):
                             for sysop in gen:
                                 pywikibot.output(sysop.title())
 
-                        talkText = talkText.replace(u'{{%s}}' % unblock_tpl,
-                                                    u'{{%s|2}}' % unblock_tpl)
-                        talkText = talkText.replace(u'{{%s|1}}' % unblock_tpl,
-                                                    u'{{%s|2}}' % unblock_tpl)
+                        talkText = talkText.replace(u'{{{{{0!s}}}}}'.format(unblock_tpl),
+                                                    u'{{{{{0!s}|2}}}}'.format(unblock_tpl))
+                        talkText = talkText.replace(u'{{{{{0!s}|1}}}}'.format(unblock_tpl),
+                                                    u'{{{{{0!s}|2}}}}'.format(unblock_tpl))
                         talkComment = i18n.translate(self.site.code,
                                                      self.msg_user
                                                      % self.parts)
@@ -175,10 +174,10 @@ class BlockreviewBot(ExistingPageBot, SingleSiteBot):
                                          ignore_save_related_errors=True)
                     else:
                         # nicht blockiert. Fall auf DS abschließen
-                        talkText = talkText.replace(u'{{%s}}' % unblock_tpl,
-                                                    u'{{%s|4}}' % unblock_tpl)
-                        talkText = talkText.replace(u'{{%s|1}}' % unblock_tpl,
-                                                    u'{{%s|4}}' % unblock_tpl)
+                        talkText = talkText.replace(u'{{{{{0!s}}}}}'.format(unblock_tpl),
+                                                    u'{{{{{0!s}|4}}}}'.format(unblock_tpl))
+                        talkText = talkText.replace(u'{{{{{0!s}|1}}}}'.format(unblock_tpl),
+                                                    u'{{{{{0!s}|4}}}}'.format(unblock_tpl))
                         talkComment = i18n.translate(self.site.code,
                                                      self.msg_done)
                 # Step 2
@@ -200,14 +199,13 @@ class BlockreviewBot(ExistingPageBot, SingleSiteBot):
                         self.userPut(project, project.text, projText,
                                      summary=comment, botflag=False,
                                      ignore_save_related_errors=True)
-                        talkText = talkText.replace(u'{{%s|2}}' % unblock_tpl,
-                                                    u'{{%s|3}}' % unblock_tpl)
-                        talkComment = u'Bot: [[%s|Wikipedia:Sperrprüfung]] eingetragen' \
-                                      % project_name
+                        talkText = talkText.replace(u'{{{{{0!s}|2}}}}'.format(unblock_tpl),
+                                                    u'{{{{{0!s}|3}}}}'.format(unblock_tpl))
+                        talkComment = u'Bot: [[{0!s}|Wikipedia:Sperrprüfung]] eingetragen'.format(project_name)
                     else:
                         # User is unblocked. Review can be closed
-                        talkText = talkText.replace(u'{{%s|2}}' % unblock_tpl,
-                                                    u'{{%s|4}}' % unblock_tpl)
+                        talkText = talkText.replace(u'{{{{{0!s}|2}}}}'.format(unblock_tpl),
+                                                    u'{{{{{0!s}|4}}}}'.format(unblock_tpl))
                         talkComment = i18n.translate(self.site.code,
                                                      self.msg_done)
                 # Step 3
@@ -219,8 +217,8 @@ class BlockreviewBot(ExistingPageBot, SingleSiteBot):
                         pass
                     else:
                         # User is unblocked. Review can be closed
-                        talkText = talkText.replace(u'{{%s|3}}' % unblock_tpl,
-                                                    u'{{%s|4}}' % unblock_tpl)
+                        talkText = talkText.replace(u'{{{{{0!s}|3}}}}'.format(unblock_tpl),
+                                                    u'{{{{{0!s}|4}}}}'.format(unblock_tpl))
                         talkComment = i18n.translate(self.site.code,
                                                      self.msg_done)
                 # Step 4

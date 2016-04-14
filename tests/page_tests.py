@@ -177,8 +177,7 @@ class TestPageObjectEnglish(TestCase):
         family_name = (site.family.name + ':'
                        if pywikibot.config2.family != site.family.name
                        else u'')
-        self.assertEqual(str(mainpage), u"[[%s%s:%s]]"
-                                        % (family_name, site.code,
+        self.assertEqual(str(mainpage), u"[[{0!s}{1!s}:{2!s}]]".format(family_name, site.code,
                                            mainpage.title()))
         self.assertLess(mainpage, maintalk)
 
@@ -418,8 +417,7 @@ class TestPageObject(DefaultSiteTestCase):
         mainpage = self.get_mainpage()
         maintalk = mainpage.toggleTalkPage()
         if not maintalk.exists():
-            raise unittest.SkipTest("No talk page for %s's main page"
-                                    % self.get_site())
+            raise unittest.SkipTest("No talk page for {0!s}'s main page".format(self.get_site()))
         self.assertIsInstance(maintalk.get(), unicode)
         self.assertEqual(mainpage.toggleTalkPage(), maintalk)
         self.assertEqual(maintalk.toggleTalkPage(), mainpage)
@@ -608,7 +606,7 @@ class TestPageRepr(TestPageBaseUnicode):
     def test_unicode_value_py3(self):
         """Test to capture actual Python 3 result pre unicode_literals."""
         self.assertEqual(repr(self.page), "Page('Ō')")
-        self.assertEqual('%r' % self.page, "Page('Ō')")
+        self.assertEqual('{0!r}'.format(self.page), "Page('Ō')")
         self.assertEqual('{0!r}'.format(self.page), "Page('Ō')")
 
     @unittest.skipIf(not PY2, 'Python 2 specific test')
@@ -659,8 +657,7 @@ class TestPageBotMayEdit(TestCase):
         page = pywikibot.Page(site, 'not_existent_page_for_pywikibot_tests')
         if page.exists():
             raise unittest.SkipTest(
-                "Page %s exists! Change page name in tests/page_tests.py"
-                % page.title())
+                "Page {0!s} exists! Change page name in tests/page_tests.py".format(page.title()))
 
         # Ban all compliant bots (shortcut).
         page.text = '{{nobots}}'
@@ -670,20 +667,17 @@ class TestPageBotMayEdit(TestCase):
         # Ban all compliant bots not in the list, syntax for de wp.
         page.text = '{{nobots|HagermanBot,Werdnabot}}'
         self.assertTrue(page.botMayEdit(),
-                        u'%s: %s but user=%s'
-                        % (page.text, page.botMayEdit(), user))
+                        u'{0!s}: {1!s} but user={2!s}'.format(page.text, page.botMayEdit(), user))
 
         # Ban all compliant bots not in the list, syntax for de wp.
-        page.text = '{{nobots|%s, HagermanBot,Werdnabot}}' % user
+        page.text = '{{{{nobots|{0!s}, HagermanBot,Werdnabot}}}}'.format(user)
         self.assertFalse(page.botMayEdit(),
-                         u'%s: %s but user=%s'
-                         % (page.text, page.botMayEdit(), user))
+                         u'{0!s}: {1!s} but user={2!s}'.format(page.text, page.botMayEdit(), user))
 
         # Ban all bots, syntax for de wp.
         page.text = '{{nobots|all}}'
         self.assertFalse(page.botMayEdit(),
-                         u'%s: %s but user=%s'
-                         % (page.text, page.botMayEdit(), user))
+                         u'{0!s}: {1!s} but user={2!s}'.format(page.text, page.botMayEdit(), user))
 
         # Allow all bots (shortcut).
         page.text = '{{bots}}'
@@ -693,50 +687,42 @@ class TestPageBotMayEdit(TestCase):
         # Ban all compliant bots not in the list.
         page.text = '{{bots|allow=HagermanBot,Werdnabot}}'
         self.assertFalse(page.botMayEdit(),
-                         u'%s: %s but user=%s'
-                         % (page.text, page.botMayEdit(), user))
+                         u'{0!s}: {1!s} but user={2!s}'.format(page.text, page.botMayEdit(), user))
 
         # Ban all compliant bots in the list.
         page.text = '{{bots|deny=HagermanBot,Werdnabot}}'
         self.assertTrue(page.botMayEdit(),
-                        u'%s: %s but user=%s'
-                        % (page.text, page.botMayEdit(), user))
+                        u'{0!s}: {1!s} but user={2!s}'.format(page.text, page.botMayEdit(), user))
 
         # Ban all compliant bots not in the list.
-        page.text = '{{bots|allow=%s, HagermanBot}}' % user
+        page.text = '{{{{bots|allow={0!s}, HagermanBot}}}}'.format(user)
         self.assertTrue(page.botMayEdit(),
-                        u'%s: %s but user=%s'
-                        % (page.text, page.botMayEdit(), user))
+                        u'{0!s}: {1!s} but user={2!s}'.format(page.text, page.botMayEdit(), user))
 
         # Ban all compliant bots in the list.
-        page.text = '{{bots|deny=%s, HagermanBot}}' % user
+        page.text = '{{{{bots|deny={0!s}, HagermanBot}}}}'.format(user)
         self.assertFalse(page.botMayEdit(),
-                         u'%s: %s but user=%s'
-                         % (page.text, page.botMayEdit(), user))
+                         u'{0!s}: {1!s} but user={2!s}'.format(page.text, page.botMayEdit(), user))
 
         # Allow all bots.
         page.text = '{{bots|allow=all}}'
         self.assertTrue(page.botMayEdit(),
-                        u'%s: %s but user=%s'
-                        % (page.text, page.botMayEdit(), user))
+                        u'{0!s}: {1!s} but user={2!s}'.format(page.text, page.botMayEdit(), user))
 
         # Ban all compliant bots.
         page.text = '{{bots|allow=none}}'
         self.assertFalse(page.botMayEdit(),
-                         u'%s: %s but user=%s'
-                         % (page.text, page.botMayEdit(), user))
+                         u'{0!s}: {1!s} but user={2!s}'.format(page.text, page.botMayEdit(), user))
 
         # Ban all compliant bots.
         page.text = '{{bots|deny=all}}'
         self.assertFalse(page.botMayEdit(),
-                         u'%s: %s but user=%s'
-                         % (page.text, page.botMayEdit(), user))
+                         u'{0!s}: {1!s} but user={2!s}'.format(page.text, page.botMayEdit(), user))
 
         # Allow all bots.
         page.text = '{{bots|deny=none}}'
         self.assertTrue(page.botMayEdit(),
-                        u'%s: %s but user=%s'
-                        % (page.text, page.botMayEdit(), user))
+                        u'{0!s}: {1!s} but user={2!s}'.format(page.text, page.botMayEdit(), user))
 
 
 class TestPageHistory(DefaultSiteTestCase):

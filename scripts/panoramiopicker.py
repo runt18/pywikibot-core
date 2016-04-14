@@ -113,18 +113,16 @@ def getFilename(photoInfo, site=None,
     else:
         title = u''
 
-    if pywikibot.Page(site, u'File:%s - %s - %s.jpg'
-                      % (project, username, title)).exists():
+    if pywikibot.Page(site, u'File:{0!s} - {1!s} - {2!s}.jpg'.format(project, username, title)).exists():
         i = 1
         while True:
-            if (pywikibot.Page(site, u'File:%s - %s - %s (%s).jpg'
-                               % (project, username, title, str(i))).exists()):
+            if (pywikibot.Page(site, u'File:{0!s} - {1!s} - {2!s} ({3!s}).jpg'.format(project, username, title, str(i))).exists()):
                 i += 1
             else:
-                return u'%s - %s - %s (%s).jpg' % (project, username, title,
+                return u'{0!s} - {1!s} - {2!s} ({3!s}).jpg'.format(project, username, title,
                                                    str(i))
     else:
-        return u'%s - %s - %s.jpg' % (project, username, title)
+        return u'{0!s} - {1!s} - {2!s}.jpg'.format(project, username, title)
 
 
 def cleanUpTitle(title):
@@ -185,7 +183,7 @@ def getDescription(photoInfo, panoramioreview=False, reviewer='',
     desc += u'\n'
     cats = u''
     if addCategory:
-        desc += u'\n[[Category:%s]]\n' % (addCategory,)
+        desc += u'\n[[Category:{0!s}]]\n'.format(addCategory)
         cats = True
 
     # Get categories based on location
@@ -194,7 +192,7 @@ def getDescription(photoInfo, panoramioreview=False, reviewer='',
                                                photoInfo.get(u'longitude'))
         cats = imagerecat.applyAllFilters(cats)
         for cat in cats:
-            desc += u'[[Category:%s]]\n' % (cat,)
+            desc += u'[[Category:{0!s}]]\n'.format(cat)
     if not cats:
         desc += u'{{subst:Unc}}\n'
 
@@ -214,7 +212,7 @@ def processPhoto(photoInfo, panoramioreview=False, reviewer='',
         # Don't upload duplicate images, should add override option
         duplicates = findDuplicateImages(photo, site=site)
         if duplicates:
-            pywikibot.output(u'Found duplicate image at %s' % duplicates.pop())
+            pywikibot.output(u'Found duplicate image at {0!s}'.format(duplicates.pop()))
         else:
             filename = getFilename(photoInfo, site=site)
             pywikibot.output(filename)

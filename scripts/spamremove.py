@@ -134,7 +134,7 @@ def main(*args):
         elif i == 1:
             pywikibot.output('1 pages done.')
         else:
-            pywikibot.output('%d pages done.' % i)
+            pywikibot.output('{0:d} pages done.'.format(i))
 
 
 if __name__ == '__main__':

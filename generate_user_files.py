@@ -69,11 +69,11 @@ def change_base_dir():
         return new_base
 
     msg = wrap(u"""WARNING: Your user files will be created in the directory
-'%(new_base)s' you have chosen. To access these files, you will either have
-to use the argument "-dir:%(new_base)s" every time you run the bot, or set
+'{new_base!s}' you have chosen. To access these files, you will either have
+to use the argument "-dir:{new_base!s}" every time you run the bot, or set
 the environment variable "PYWIKIBOT2_DIR" equal to this directory name in
 your operating system. See your operating system documentation for how to
-set environment variables.""" % {'new_base': new_base}, width=76)
+set environment variables.""".format(**{'new_base': new_base}), width=76)
     for line in msg:
         pywikibot.output(line)
     if pywikibot.input_yn('Is this OK?', default=False, automatic_quit=False):
@@ -85,7 +85,7 @@ set environment variables.""" % {'new_base': new_base}, width=76)
 def file_exists(filename):
     """Return whether the file exists and print a message if it exists."""
     if os.path.exists(filename):
-        pywikibot.output(u"'%s' already exists." % filename)
+        pywikibot.output(u"'{0!s}' already exists.".format(filename))
         return True
     return False
 
@@ -272,8 +272,7 @@ def create_user_config(args=None, force=False):
 
         config_text = '\n'.join(res)
         if len(config_text.splitlines()) < 350:
-            warn('Extended config extraction too short: %d'
-                 % len(config_text.splitlines()),
+            warn('Extended config extraction too short: {0:d}'.format(len(config_text.splitlines())),
                  UserWarning)
 
         config_content = EXTENDED_CONFIG
@@ -292,7 +291,7 @@ def create_user_config(args=None, force=False):
                                           usernames=usernames,
                                           config_text=config_text))
 
-        pywikibot.output(u"'%s' written." % _fnc)
+        pywikibot.output(u"'{0!s}' written.".format(_fnc))
     except:
         try:
             os.remove(_fnc)
@@ -322,7 +321,7 @@ def main(*args):
 
     local_args = pywikibot.handle_args(args)
     if local_args:
-        pywikibot.output('Unknown arguments: %s' % ' '.join(local_args))
+        pywikibot.output('Unknown arguments: {0!s}'.format(' '.join(local_args)))
         return False
 
     if config.mylang is not None:
@@ -340,7 +339,7 @@ def main(*args):
     # in the directory. This will repeat if user-config.py also exists in
     # the requested directory.
     if not force or config.verbose_output:
-        pywikibot.output(u'\nYour default user directory is "%s"' % base_dir)
+        pywikibot.output(u'\nYour default user directory is "{0!s}"'.format(base_dir))
         while os.path.isfile(os.path.join(base_dir, "user-config.py")):
             pywikibot.output('user-config.py already exists'
                              ' in the target directory.')

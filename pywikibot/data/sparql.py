@@ -66,7 +66,7 @@ class SparqlQuery(object):
                 for var in qvars:
                     if full_data:
                         if row[var]['type'] not in VALUE_TYPES:
-                            raise ValueError('Unknown type: %s' % row[var]['type'])
+                            raise ValueError('Unknown type: {0!s}'.format(row[var]['type']))
                         valtype = VALUE_TYPES[row[var]['type']]
                         values[var] = valtype(row[var], entity_url=self.entity_url)
                     else:
@@ -83,7 +83,7 @@ class SparqlQuery(object):
         @param query: Query text
         @type query: string
         """
-        url = '%s?query=%s' % (self.endpoint, quote(query))
+        url = '{0!s}?query={1!s}'.format(self.endpoint, quote(query))
         self.last_response = http.fetch(url, headers=headers)
         if not self.last_response.content:
             return None

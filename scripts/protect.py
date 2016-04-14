@@ -100,8 +100,7 @@ class ProtectionRobot(SingleSiteBot):
         """
         self.current_page = page
         if not self.user_confirm(
-                'Do you want to change the protection level of %s?'
-                % page.title(asLink=True, forceInterwiki=True)):
+                'Do you want to change the protection level of {0!s}?'.format(page.title(asLink=True, forceInterwiki=True))):
             return
         applicable = page.applicable_protections()
         protections = dict(
@@ -130,8 +129,7 @@ def check_protection_level(operation, level, levels, default=None):
                 num += 1
             if level == default:
                 default_char = first_char[-1]
-        choice = pywikibot.input_choice('Choice a protection level to %s:'
-                                        % operation, zip(levels, first_char),
+        choice = pywikibot.input_choice('Choice a protection level to {0!s}:'.format(operation), zip(levels, first_char),
                                         default=default_char)
 
         return levels[first_char.index(choice)]
