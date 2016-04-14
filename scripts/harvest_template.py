@@ -83,7 +83,7 @@ class HarvestRobot(WikidataBot):
         """Fetch redirects of the title, so we can check against them."""
         temp = pywikibot.Page(pywikibot.Site(), title, ns=10)
         if not temp.exists():
-            pywikibot.error(u'Template %s does not exist.' % temp.title())
+            pywikibot.error(u'Template {0!s} does not exist.'.format(temp.title()))
             exit()
 
         # Put some output here since it can take a while
@@ -121,7 +121,7 @@ class HarvestRobot(WikidataBot):
             return
 
         if linked_item.title() == item.title():
-            pywikibot.output('%s links to itself. Skipping.' % (linked_page))
+            pywikibot.output('{0!s} links to itself. Skipping.'.format((linked_page)))
             return
 
         return linked_item
@@ -146,8 +146,7 @@ class HarvestRobot(WikidataBot):
                                           ns=10).title(withNamespace=False)
             except pywikibot.exceptions.InvalidTitle:
                 pywikibot.error(
-                    "Failed parsing template; '%s' should be the template name."
-                    % template)
+                    "Failed parsing template; '{0!s}' should be the template name.".format(template))
                 continue
             # We found the template we were looking for
             if template in self.templateTitles:
@@ -163,8 +162,7 @@ class HarvestRobot(WikidataBot):
                         claim = pywikibot.Claim(self.repo, self.fields[field])
                         if claim.getID() in item.get().get('claims'):
                             pywikibot.output(
-                                'A claim for %s already exists. Skipping.'
-                                % claim.getID())
+                                'A claim for {0!s} already exists. Skipping.'.format(claim.getID()))
                             # TODO: Implement smarter approach to merging
                             # harvested values with existing claims esp.
                             # without overwriting humans unintentionally.
@@ -196,18 +194,15 @@ class HarvestRobot(WikidataBot):
                                     image = pywikibot.FilePage(image.getRedirectTarget())
                                 if not image.exists():
                                     pywikibot.output(
-                                        '[[%s]] doesn\'t exist so I can\'t link to it'
-                                        % (image.title(),))
+                                        '[[{0!s}]] doesn\'t exist so I can\'t link to it'.format(image.title()))
                                     continue
                                 claim.setTarget(image)
                             else:
                                 pywikibot.output(
-                                    '%s is not a supported datatype.'
-                                    % claim.type)
+                                    '{0!s} is not a supported datatype.'.format(claim.type))
                                 continue
 
-                            pywikibot.output('Adding %s --> %s'
-                                             % (claim.getID(), claim.getTarget()))
+                            pywikibot.output('Adding {0!s} --> {1!s}'.format(claim.getID(), claim.getTarget()))
                             item.addClaim(claim)
                             # A generator might yield pages from multiple sites
                             source = self.getSource(page.site)

@@ -72,7 +72,7 @@ def getversion(online=True):
             pass
 
     data['hsh'] = data['hsh'][:7]  # make short hash from full hash
-    return '%(tag)s (%(hsh)s, %(rev)s, %(date)s, %(cmp_ver)s)' % data
+    return '{tag!s} ({hsh!s}, {rev!s}, {date!s}, {cmp_ver!s})'.format(**data)
 
 
 def getversiondict():
@@ -112,11 +112,9 @@ def getversiondict():
 
     # git and svn can silently fail, as it may be a nightly.
     if getversion_package in exceptions:
-        warn('Unable to detect version; exceptions raised:\n%r'
-             % exceptions, UserWarning)
+        warn('Unable to detect version; exceptions raised:\n{0!r}'.format(exceptions), UserWarning)
     elif exceptions:
-        pywikibot.debug('version algorithm exceptions:\n%r'
-                        % exceptions, _logger)
+        pywikibot.debug('version algorithm exceptions:\n{0!r}'.format(exceptions), _logger)
 
     if isinstance(date, basestring):
         datestring = date
@@ -156,7 +154,7 @@ def svn_rev_info(path):
                 t = tag.split('://')
                 t[1] = t[1].replace('svn.wikimedia.org/svnroot/pywikipedia/',
                                     '')
-                tag = '[%s] %s' % (t[0], t[1])
+                tag = '[{0!s}] {1!s}'.format(t[0], t[1])
                 for i in range(4):
                     entries.readline()
                 date = time.strptime(entries.readline()[:19],
@@ -191,7 +189,7 @@ def github_svn_rev2hash(tag, rev):
     """
     from pywikibot.comms import http
 
-    uri = 'https://github.com/wikimedia/%s/!svn/vcc/default' % tag
+    uri = 'https://github.com/wikimedia/{0!s}/!svn/vcc/default'.format(tag)
     request = http.fetch(uri=uri, method='PROPFIND',
                          body="<?xml version='1.0' encoding='utf-8'?>"
                               "<propfind xmlns=\"DAV:\"><allprop/></propfind>",
@@ -226,13 +224,13 @@ def getversion_svn_setuptools(path=None):
     rev = svninfo.get_revision()
     log.set_threshold(old_level)
     if not isinstance(rev, int):
-        raise TypeError('SvnInfo.get_revision() returned type %s' % type(rev))
+        raise TypeError('SvnInfo.get_revision() returned type {0!s}'.format(type(rev)))
     if rev < 0:
-        raise ValueError('SvnInfo.get_revision() returned %d' % rev)
+        raise ValueError('SvnInfo.get_revision() returned {0:d}'.format(rev))
     if rev == 0:
         raise ParseError('SvnInfo: invalid workarea')
     hsh, date = github_svn_rev2hash(tag, rev)
-    rev = 's%s' % rev
+    rev = 's{0!s}'.format(rev)
     return (tag, rev, date, hsh)
 
 
@@ -259,7 +257,7 @@ def getversion_svn(path=None):
         for i in range(date.n_fields - 1):
             assert date[i] == date2[i], 'Date of version is not consistent'
 
-    rev = 's%s' % rev
+    rev = 's{0!s}'.format(rev)
     if (not date or not tag or not rev) and not path:
         raise ParseError
     return (tag, rev, date, hsh)
@@ -297,7 +295,7 @@ def getversion_git(path=None):
         e = tag.find('\n', s)
         tag = tag[(s + 6):e]
         t = tag.strip().split('/')
-        tag = '[%s] %s' % (t[0][:-1], '-'.join(t[3:]))
+        tag = '[{0!s}] {1!s}'.format(t[0][:-1], '-'.join(t[3:]))
     with subprocess.Popen([cmd, '--no-pager',
                            'log', '-1',
                            '--pretty=format:"%ad|%an|%h|%H|%d"'
@@ -313,7 +311,7 @@ def getversion_git(path=None):
                           cwd=_program_dir,
                           stdout=subprocess.PIPE).stdout as stdout:
         rev = stdout.read()
-    rev = 'g%s' % len(rev.splitlines())
+    rev = 'g{0!s}'.format(len(rev.splitlines()))
     hsh = info[3]  # also stored in '.git/refs/heads/master'
     if (not date or not tag or not rev) and not path:
         raise ParseError
@@ -411,7 +409,7 @@ def getfileversion(filename):
         stat = os.stat(fn)
         mtime = datetime.datetime.fromtimestamp(stat.st_mtime).isoformat(' ')
     if mtime and __version__:
-        return u'%s %s %s' % (filename, __version__[5:-1][:7], mtime)
+        return u'{0!s} {1!s} {2!s}'.format(filename, __version__[5:-1][:7], mtime)
     else:
         return None
 

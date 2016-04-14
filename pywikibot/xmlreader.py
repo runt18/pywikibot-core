@@ -139,42 +139,42 @@ class XmlDump(object):
 
     def _parse_only_latest(self, event, elem):
         """Parser that yields only the latest revision."""
-        if event == "end" and elem.tag == "{%s}page" % self.uri:
+        if event == "end" and elem.tag == "{{{0!s}}}page".format(self.uri):
             self._headers(elem)
-            revision = elem.find("{%s}revision" % self.uri)
+            revision = elem.find("{{{0!s}}}revision".format(self.uri))
             yield self._create_revision(revision)
             elem.clear()
             self.root.clear()
 
     def _parse_all(self, event, elem):
         """Parser that yields all revisions."""
-        if event == "start" and elem.tag == "{%s}page" % self.uri:
+        if event == "start" and elem.tag == "{{{0!s}}}page".format(self.uri):
             self._headers(elem)
-        if event == "end" and elem.tag == "{%s}revision" % self.uri:
+        if event == "end" and elem.tag == "{{{0!s}}}revision".format(self.uri):
             yield self._create_revision(elem)
             elem.clear()
             self.root.clear()
 
     def _headers(self, elem):
         """Extract headers from XML chunk."""
-        self.title = elem.findtext("{%s}title" % self.uri)
-        self.ns = elem.findtext("{%s}ns" % self.uri)
-        self.pageid = elem.findtext("{%s}id" % self.uri)
-        self.restrictions = elem.findtext("{%s}restrictions" % self.uri)
-        self.isredirect = elem.findtext("{%s}redirect" % self.uri) is not None
+        self.title = elem.findtext("{{{0!s}}}title".format(self.uri))
+        self.ns = elem.findtext("{{{0!s}}}ns".format(self.uri))
+        self.pageid = elem.findtext("{{{0!s}}}id".format(self.uri))
+        self.restrictions = elem.findtext("{{{0!s}}}restrictions".format(self.uri))
+        self.isredirect = elem.findtext("{{{0!s}}}redirect".format(self.uri)) is not None
         self.editRestriction, self.moveRestriction = parseRestrictions(
             self.restrictions)
 
     def _create_revision(self, revision):
         """Create a Single revision."""
-        revisionid = revision.findtext("{%s}id" % self.uri)
-        timestamp = revision.findtext("{%s}timestamp" % self.uri)
-        comment = revision.findtext("{%s}comment" % self.uri)
-        contributor = revision.find("{%s}contributor" % self.uri)
-        ipeditor = contributor.findtext("{%s}ip" % self.uri)
-        username = ipeditor or contributor.findtext("{%s}username" % self.uri)
+        revisionid = revision.findtext("{{{0!s}}}id".format(self.uri))
+        timestamp = revision.findtext("{{{0!s}}}timestamp".format(self.uri))
+        comment = revision.findtext("{{{0!s}}}comment".format(self.uri))
+        contributor = revision.find("{{{0!s}}}contributor".format(self.uri))
+        ipeditor = contributor.findtext("{{{0!s}}}ip".format(self.uri))
+        username = ipeditor or contributor.findtext("{{{0!s}}}username".format(self.uri))
         # could get comment, minor as well
-        text = revision.findtext("{%s}text" % self.uri)
+        text = revision.findtext("{{{0!s}}}text".format(self.uri))
         return XmlEntry(title=self.title,
                         ns=self.ns,
                         id=self.pageid,

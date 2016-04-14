@@ -240,7 +240,7 @@ def dh_constVal(value, ind, match):
         if value == ind:
             return match
         else:
-            raise ValueError("unknown value %d" % value)
+            raise ValueError("unknown value {0:d}".format(value))
 
 
 def alwaysTrue(x):
@@ -314,7 +314,7 @@ _romanNumbers = ['-', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX',
 def intToRomanNum(i):
     """Convert integer to roman numeral."""
     if i >= len(_romanNumbers):
-        raise IndexError(u'Roman value %i is not defined' % i)
+        raise IndexError(u'Roman value {0:d} is not defined'.format(i))
     return _romanNumbers[i]
 
 
@@ -353,7 +353,7 @@ _digitDecoders = {
 
 # Allows to search for '(%%)|(%d)|(%R)|...", and allows one digit 1-9 to set
 # the size of zero-padding for numbers
-_reParameters = re.compile(u'|'.join(u'(%%[1-9]?%s)' % s
+_reParameters = re.compile(u'|'.join(u'(%[1-9]?{0!s})'.format(s)
                                      for s in _digitDecoders))
 
 # A map of   sitecode+pattern  to  (re matching object and corresponding
@@ -394,12 +394,12 @@ def escapePattern2(pattern):
                 else:
                     if len(s) == 3:
                         # enforce mandatory field size
-                        newPattern += u'([%s]{%s})' % (dec[0], s[1])
+                        newPattern += u'([{0!s}]{{{1!s}}})'.format(dec[0], s[1])
                         # add the number of required digits as the last (4th)
                         # part of the tuple
                         dec += (int(s[1]),)
                     else:
-                        newPattern += u'([%s]+)' % dec[0]
+                        newPattern += u'([{0!s}]+)'.format(dec[0])
 
                     decoders.append(dec)
                     # All encoders produce a string
@@ -466,7 +466,7 @@ def dh(value, pattern, encf, decf, filter=None):
         # This will be called from outside as well as recursivelly to verify
         # parsed value
         if filter and not filter(value):
-            raise ValueError("value %i is not allowed" % value)
+            raise ValueError("value {0:d} is not allowed".format(value))
 
         params = encf(value)
 
@@ -476,8 +476,7 @@ def dh(value, pattern, encf, decf, filter=None):
         if type(params) in _listTypes:
             if len(params) != len(decoders):
                 raise AssertionError(
-                    "parameter count (%d) does not match decoder count (%d)"
-                    % (len(params), len(decoders)))
+                    "parameter count ({0:d}) does not match decoder count ({1:d})".format(len(params), len(decoders)))
             # convert integer parameters into their textual representation
             params = [MakeParameter(decoders[i], params[i])
                       for i in range(len(params))]
@@ -485,8 +484,7 @@ def dh(value, pattern, encf, decf, filter=None):
         else:
             if 1 != len(decoders):
                 raise AssertionError(
-                    "A single parameter does not match %d decoders."
-                    % len(decoders))
+                    "A single parameter does not match {0:d} decoders.".format(len(decoders)))
             # convert integer parameter into its textual representation
             return strPattern % MakeParameter(decoders[0], params)
 
@@ -1970,16 +1968,16 @@ def addFmt1(lang, isMnthOfYear, patterns):
 
     """
     if len(patterns) != 12:
-        raise AssertionError(u'pattern %s does not have 12 elements' % lang)
+        raise AssertionError(u'pattern {0!s} does not have 12 elements'.format(lang))
 
     for i in range(12):
         if patterns[i] is not None:
             if isMnthOfYear:
                 formats[yrMnthFmts[i]][lang] = eval(
-                    u'lambda v: dh_mnthOfYear(v, u"%s")' % patterns[i])
+                    u'lambda v: dh_mnthOfYear(v, u"{0!s}")'.format(patterns[i]))
             else:
                 formats[dayMnthFmts[i]][lang] = eval(
-                    u'lambda v: dh_dayOfMnth(v, u"%s")' % patterns[i])
+                    u'lambda v: dh_dayOfMnth(v, u"{0!s}")'.format(patterns[i]))
 
 
 def addFmt2(lang, isMnthOfYear, pattern, makeUpperCase=None):
@@ -2128,12 +2126,12 @@ addFmt2('ml', False, u"%s %%d")
 addFmt2('ms', False, u"%%d %s", True)
 addFmt2('nap', False, u"%%d 'e %s", False)
 addFmt2('nds', False, u"%%d. %s", True)
-addFmt1('nl', False, [u"%%d %s" % v
+addFmt1('nl', False, [u"%d {0!s}".format(v)
                       for v in [u"januari", u"februari", u"maart", u"april",
                                 u"mei", u"juni", u"juli", u"augustus",
                                 u"september", u"oktober", u"november",
                                 u"december"]])
-addFmt1('nn', False, [u"%%d. %s" % v
+addFmt1('nn', False, [u"%d. {0!s}".format(v)
                       for v in [u"januar", u"februar", u"mars", u"april",
                                 u"mai", u"juni", u"juli", u"august",
                                 u"september", u"oktober", u"november",
@@ -2246,7 +2244,7 @@ addFmt1('fr', True, [u"Janvier %d", u"Février %d", u"Mars %d", u"Avril %d",
                      u"Décembre %d"])
 addFmt2('he', True, u"%s %%d", True)
 addFmt2('it', True, u"Attualità/Anno %%d - %s", True)
-addFmt1('ja', True, [u"「最近の出来事」%%d年%d月" % mm for mm in range(1, 13)])
+addFmt1('ja', True, [u"「最近の出来事」%d年{0:d}月".format(mm) for mm in range(1, 13)])
 addFmt2('ka', True, u"%s, %%d")
 addFmt1('ko', True, [u"%d년 1월", u"%d년 2월", u"%d년 3월", u"%d년 4월",
                      u"%d년 5월", u"%d년 6월", u"%d년 7월", u"%d년 8월",

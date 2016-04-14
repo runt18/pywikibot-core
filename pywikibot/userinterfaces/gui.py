@@ -224,7 +224,7 @@ class TextEditor(ScrolledText):
                     if not idx:
                         break
                     # index right after the end of the occurrence
-                    lastidx = '%s+%dc' % (idx, len(s))
+                    lastidx = '{0!s}+{1:d}c'.format(idx, len(s))
                     # tag the whole occurrence (start included, stop excluded)
                     self.tag_add('found', idx, lastidx)
                     # prepare to search for next occurrence
@@ -251,7 +251,7 @@ class TextEditor(ScrolledText):
         if lineno <= 0:
             self.bell()
             return "break"
-        self.mark_set("insert", "%d.0" % lineno)
+        self.mark_set("insert", "{0:d}.0".format(lineno))
         self.see("insert")
 
 
@@ -383,7 +383,7 @@ class EditBoxWindow(Tkinter.Frame):
             column = jumpIndex - (text[:jumpIndex].rfind('\n') + 1)
             # don't know how to place the caret, but scrolling to the right line
             # should already be helpful.
-            self.editbox.see('%d.%d' % (line, column))
+            self.editbox.see('{0:d}.{1:d}'.format(line, column))
         # wait for user to push a button which will destroy (close) the window
         self.parent.mainloop()
         return self.text
@@ -486,7 +486,7 @@ class Tkdialog(object):
         """Constructor."""
         self.root = Tkinter.Tk()
         # "%dx%d%+d%+d" % (width, height, xoffset, yoffset)
-        self.root.geometry("%ix%i+10-10" % (pywikibot.config.tkhorsize,
+        self.root.geometry("{0:d}x{1:d}+10-10".format(pywikibot.config.tkhorsize,
                                             pywikibot.config.tkvertsize))
 
         self.root.title(filename)

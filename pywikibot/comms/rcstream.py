@@ -82,14 +82,14 @@ class RcListenerThread(threading.Thread):
         self.total = total
         self.count = 0
 
-        debug('Opening connection to %r' % self, _logger)
+        debug('Opening connection to {0!r}'.format(self), _logger)
         self.client = socketIO_client.SocketIO(rchost, rcport)
 
         thread = self
 
         class RCListener(socketIO_client.BaseNamespace):
             def on_change(self, change):
-                debug('Received change %r' % change, _logger)
+                debug('Received change {0!r}'.format(change), _logger)
                 if not thread.running:
                     debug('Thread in shutdown mode; ignoring change.', _logger)
                     return
@@ -97,8 +97,7 @@ class RcListenerThread(threading.Thread):
                 thread.count += 1
                 thread.queue.put(change)
                 if thread.queue.qsize() > thread.warn_queue_length:
-                    warning('%r queue length exceeded %i'
-                            % (thread,
+                    warning('{0!r} queue length exceeded {1:d}'.format(thread,
                                thread.warn_queue_length),
                             _logger=_logger)
                     thread.warn_queue_length = thread.warn_queue_length + 100
@@ -108,14 +107,13 @@ class RcListenerThread(threading.Thread):
                     return
 
             def on_connect(self):
-                debug('Connected to %r; subscribing to %s'
-                      % (thread, thread.wikihost),
+                debug('Connected to {0!r}; subscribing to {1!s}'.format(thread, thread.wikihost),
                       _logger)
                 self.emit('subscribe', thread.wikihost)
-                debug('Subscribed to %s' % thread.wikihost, _logger)
+                debug('Subscribed to {0!s}'.format(thread.wikihost), _logger)
 
             def on_reconnect(self):
-                debug('Reconnected to %r' % (thread,), _logger)
+                debug('Reconnected to {0!r}'.format(thread), _logger)
                 self.on_connect()
 
         class GlobalListener(socketIO_client.BaseNamespace):
@@ -127,7 +125,7 @@ class RcListenerThread(threading.Thread):
 
     def __repr__(self):
         """Return representation."""
-        return "<rcstream for socketio://%s@%s:%s%s>" % (
+        return "<rcstream for socketio://{0!s}@{1!s}:{2!s}{3!s}>".format(
                self.wikihost, self.rchost, self.rcport, self.rcpath
         )
 
@@ -136,9 +134,9 @@ class RcListenerThread(threading.Thread):
         self.running = True
         while self.running:
             self.client.wait(seconds=0.1)
-        debug('Shut down event loop for %r' % self, _logger)
+        debug('Shut down event loop for {0!r}'.format(self), _logger)
         self.client.disconnect()
-        debug('Disconnected %r' % self, _logger)
+        debug('Disconnected {0!r}'.format(self), _logger)
         self.queue.put(None)
 
     def stop(self):
@@ -180,7 +178,7 @@ def rc_listener(wikihost, rchost, rcport=80, rcpath='/rc', total=None):
         total=total
     )
 
-    debug('Starting rcstream thread %r' % rc_thread,
+    debug('Starting rcstream thread {0!r}'.format(rc_thread),
           _logger)
     rc_thread.start()
 

@@ -172,7 +172,7 @@ class MockCachedRequestKeyTests(TestCase):
                 return "MockSite()"
 
             def __getattr__(self, attr):
-                raise Exception("Attribute %r not defined" % attr)
+                raise Exception("Attribute {0!r} not defined".format(attr))
 
         self.mocksite = MockSite()
         super(MockCachedRequestKeyTests, self).setUp()

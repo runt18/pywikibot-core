@@ -157,7 +157,7 @@ try:
         print("requests import problem: requests.__version__ does not exist.")
         requests = None
 except ImportError as e:
-    print("ImportError: %s" % e)
+    print("ImportError: {0!s}".format(e))
     requests = None
 
 if not requests:
@@ -220,7 +220,7 @@ def main():
             if os.path.exists(testpath):
                 filename = testpath
             else:
-                raise OSError("%s not found!" % filename)
+                raise OSError("{0!s} not found!".format(filename))
 
         # When both pwb.py and the filename to run are within the current
         # working directory:
@@ -244,8 +244,7 @@ def main():
             try:
                 __import__(file_package)
             except ImportError as e:
-                warn('Parent module %s not found: %s'
-                     % (file_package, e), ImportWarning)
+                warn('Parent module {0!s} not found: {1!s}'.format(file_package, e), ImportWarning)
 
         run_python_file(filename, [filename] + args, argvu, file_package)
         return True

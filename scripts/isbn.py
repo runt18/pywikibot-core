@@ -1205,8 +1205,7 @@ class ISBN(object):
                 publisherRanges = ranges[groupNumber]
                 break
         else:
-            raise InvalidIsbnException('ISBN %s: group number unknown.'
-                                       % self.code)
+            raise InvalidIsbnException('ISBN {0!s}: group number unknown.'.format(self.code))
 
         # Determine the publisher
         for (start, end) in publisherRanges:
@@ -1216,8 +1215,7 @@ class ISBN(object):
                 rest = rest[length:]
                 break
         else:
-            raise InvalidIsbnException('ISBN %s: publisher number unknown.'
-                                       % self.code)
+            raise InvalidIsbnException('ISBN {0!s}: publisher number unknown.'.format(self.code))
 
         # The rest is the item number and the 1-digit checksum.
         result += rest[:-1] + '-' + rest[-1]
@@ -1247,17 +1245,15 @@ class ISBN13(ISBN):
                 result.append(int(c))
             elif c != '-':
                 raise InvalidIsbnException(
-                    'The ISBN %s contains invalid characters.' % self.code)
+                    'The ISBN {0!s} contains invalid characters.'.format(self.code))
         return result
 
     def checkValidity(self):
         """Check validity of ISBN."""
         if len(self.digits()) != 13:
-            raise InvalidIsbnException('The ISBN %s is not 13 digits long.'
-                                       % self.code)
+            raise InvalidIsbnException('The ISBN {0!s} is not 13 digits long.'.format(self.code))
         if self.calculateChecksum() != self.digits()[-1]:
-            raise InvalidIsbnException('The ISBN checksum of %s is incorrect.'
-                                       % self.code)
+            raise InvalidIsbnException('The ISBN checksum of {0!s} is incorrect.'.format(self.code))
 
     def calculateChecksum(self):
         """
@@ -1294,7 +1290,7 @@ class ISBN10(ISBN):
                 result.append(c)
             elif c != '-':
                 raise InvalidIsbnException(
-                    'The ISBN %s contains invalid characters.' % self.code)
+                    'The ISBN {0!s} contains invalid characters.'.format(self.code))
         return result
 
     def checkChecksum(self):
@@ -1307,18 +1303,15 @@ class ISBN10(ISBN):
         lastDigit = self.digits()[-1]
         if not ((checksum == 10 and lastDigit in 'Xx') or
                 (lastDigit.isdigit() and checksum == int(lastDigit))):
-            raise InvalidIsbnException('The ISBN checksum of %s is incorrect.'
-                                       % self.code)
+            raise InvalidIsbnException('The ISBN checksum of {0!s} is incorrect.'.format(self.code))
 
     def checkValidity(self):
         """Check validity of ISBN."""
         if len(self.digits()) != 10:
-            raise InvalidIsbnException('The ISBN %s is not 10 digits long.'
-                                       % self.code)
+            raise InvalidIsbnException('The ISBN {0!s} is not 10 digits long.'.format(self.code))
         if 'X' in self.digits()[:-1] or 'x' in self.digits()[:-1]:
             raise InvalidIsbnException(
-                'ISBN %s: X is only allowed at the end of the ISBN.'
-                % self.code)
+                'ISBN {0!s}: X is only allowed at the end of the ISBN.'.format(self.code))
         self.checkChecksum()
 
     def toISBN13(self):
@@ -1351,8 +1344,7 @@ def getIsbn(code):
         try:
             i = ISBN10(code)
         except InvalidIsbnException as e10:
-            raise InvalidIsbnException(u'ISBN-13: %s / ISBN-10: %s'
-                                       % (e13, e10))
+            raise InvalidIsbnException(u'ISBN-13: {0!s} / ISBN-10: {1!s}'.format(e13, e10))
     return i
 
 
@@ -1513,21 +1505,16 @@ class IsbnBot(Bot):
             try:
                 self.userPut(page, page.text, new_text, summary=self.comment)
             except pywikibot.EditConflict:
-                pywikibot.output(u'Skipping %s because of edit conflict'
-                                 % page.title())
+                pywikibot.output(u'Skipping {0!s} because of edit conflict'.format(page.title()))
             except pywikibot.SpamfilterError as e:
                 pywikibot.output(
-                    u'Cannot change %s because of blacklist entry %s'
-                    % (page.title(), e.url))
+                    u'Cannot change {0!s} because of blacklist entry {1!s}'.format(page.title(), e.url))
             except pywikibot.LockedPage:
-                pywikibot.output(u'Skipping %s (locked page)'
-                                 % page.title())
+                pywikibot.output(u'Skipping {0!s} (locked page)'.format(page.title()))
         except pywikibot.NoPage:
-            pywikibot.output(u"Page %s does not exist"
-                             % page.title(asLink=True))
+            pywikibot.output(u"Page {0!s} does not exist".format(page.title(asLink=True)))
         except pywikibot.IsRedirectPage:
-            pywikibot.output(u"Page %s is a redirect; skipping."
-                             % page.title(asLink=True))
+            pywikibot.output(u"Page {0!s} is a redirect; skipping.".format(page.title(asLink=True)))
 
     def run(self):
         """Run the bot."""
@@ -1585,8 +1572,7 @@ class IsbnWikibaseBot(WikidataBot):
                         item.claims[self.isbn_13_prop_id].append(claim)
                     else:
                         item.claims[self.isbn_13_prop_id] = [claim]
-                    change_messages.append('Changing %s (%s) to %s (%s)' %
-                                           (self.isbn_10_prop_id, old_isbn,
+                    change_messages.append('Changing {0!s} ({1!s}) to {2!s} ({3!s})'.format(self.isbn_10_prop_id, old_isbn,
                                             self.isbn_13_prop_id, new_isbn))
                     continue
 
@@ -1596,8 +1582,7 @@ class IsbnWikibaseBot(WikidataBot):
                 assert new_isbn.startswith('ISBN '), 'ISBN should start with "ISBN"'
                 new_isbn = new_isbn[5:]
                 claim.setTarget(new_isbn)
-                change_messages.append('Changing %s (%s --> %s)' %
-                                       (self.isbn_10_prop_id, old_isbn,
+                change_messages.append('Changing {0!s} ({1!s} --> {2!s})'.format(self.isbn_10_prop_id, old_isbn,
                                         new_isbn))
 
         # -format is the only option that has any effect on ISBN13
@@ -1615,7 +1600,7 @@ class IsbnWikibaseBot(WikidataBot):
                 if old_isbn == new_isbn:
                     continue
                 change_messages.append(
-                    'Changing %s (%s --> %s)' % (self.isbn_13_prop_id,
+                    'Changing {0!s} ({1!s} --> {2!s})'.format(self.isbn_13_prop_id,
                                                  claim.getTarget(), new_isbn))
                 claim.setTarget(new_isbn)
 

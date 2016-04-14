@@ -210,7 +210,7 @@ class TestFamilyUrlRegex(PatchingTestCase):
             family = Family.load(family)
             for code in family.codes:
                 self.current_code = code
-                url = ('%s://%s%s/$1' % (family.protocol(code),
+                url = ('{0!s}://{1!s}{2!s}/$1'.format(family.protocol(code),
                                          family.hostname(code),
                                          family.path(code)))
                 # Families can switch off if they want to be detected using URL

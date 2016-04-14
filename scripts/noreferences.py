@@ -538,20 +538,18 @@ class NoReferencesBot(Bot):
 
         # Is there an existing section where we can add the references tag?
         for section in i18n.translate(self.site, referencesSections):
-            sectionR = re.compile(r'\r?\n=+ *%s *=+ *\r?\n' % section)
+            sectionR = re.compile(r'\r?\n=+ *{0!s} *=+ *\r?\n'.format(section))
             index = 0
             while index < len(oldText):
                 match = sectionR.search(oldText, index)
                 if match:
                     if textlib.isDisabled(oldText, match.start()):
                         pywikibot.output(
-                            'Existing  %s section is commented out, skipping.'
-                            % section)
+                            'Existing  {0!s} section is commented out, skipping.'.format(section))
                         index = match.end()
                     else:
                         pywikibot.output(
-                            'Adding references tag to existing %s section...\n'
-                            % section)
+                            'Adding references tag to existing {0!s} section...\n'.format(section))
                         newText = (
                             oldText[:match.end()] + u'\n' +
                             self.referencesText + u'\n' +
@@ -564,8 +562,7 @@ class NoReferencesBot(Bot):
         # Create a new section for the references tag
         for section in i18n.translate(self.site, placeBeforeSections):
             # Find out where to place the new section
-            sectionR = re.compile(r'\r?\n(?P<ident>=+) *%s *(?P=ident) *\r?\n'
-                                  % section)
+            sectionR = re.compile(r'\r?\n(?P<ident>=+) *{0!s} *(?P=ident) *\r?\n'.format(section))
             index = 0
             while index < len(oldText):
                 match = sectionR.search(oldText, index)
@@ -577,8 +574,7 @@ class NoReferencesBot(Bot):
                         index = match.end()
                     else:
                         pywikibot.output(
-                            u'Adding references section before %s section...\n'
-                            % section)
+                            u'Adding references section before {0!s} section...\n'.format(section))
                         index = match.start()
                         ident = match.group('ident')
                         return self.createReferenceSection(oldText, index,
@@ -595,7 +591,7 @@ class NoReferencesBot(Bot):
         # At the end, look at the length of the temp text. That's the position
         # where we'll insert the references section.
         catNamespaces = '|'.join(self.site.namespaces.CATEGORY)
-        categoryPattern = r'\[\[\s*(%s)\s*:[^\n]*\]\]\s*' % catNamespaces
+        categoryPattern = r'\[\[\s*({0!s})\s*:[^\n]*\]\]\s*'.format(catNamespaces)
         interwikiPattern = r'\[\[([a-zA-Z\-]+)\s?:([^\[\]\n]*)\]\]\s*'
         # won't work with nested templates
         # the negative lookahead assures that we'll match the last template
@@ -606,8 +602,7 @@ class NoReferencesBot(Bot):
         # so templatePattern must be fixed
         templatePattern = r'\r?\n{{((?!}}).)+?}}\s*'
         commentPattern = r'<!--((?!-->).)*?-->\s*'
-        metadataR = re.compile(r'(\r?\n)?(%s|%s|%s|%s)$'
-                               % (categoryPattern, interwikiPattern,
+        metadataR = re.compile(r'(\r?\n)?({0!s}|{1!s}|{2!s}|{3!s})$'.format(categoryPattern, interwikiPattern,
                                   templatePattern, commentPattern), re.DOTALL)
         tmpText = oldText
         while True:
@@ -626,9 +621,9 @@ class NoReferencesBot(Bot):
     def createReferenceSection(self, oldText, index, ident='=='):
         """Create a reference section and insert it into the given text."""
         if self.site.code in noTitleRequired:
-            newSection = u'\n%s\n' % (self.referencesText)
+            newSection = u'\n{0!s}\n'.format((self.referencesText))
         else:
-            newSection = u'\n%s %s %s\n%s\n' % (ident,
+            newSection = u'\n{0!s} {1!s} {2!s}\n{3!s}\n'.format(ident,
                                                 i18n.translate(
                                                     self.site,
                                                     referencesSections)[0],
@@ -642,39 +637,32 @@ class NoReferencesBot(Bot):
             try:
                 text = page.text
             except pywikibot.NoPage:
-                pywikibot.output(u"Page %s does not exist?!"
-                                 % page.title(asLink=True))
+                pywikibot.output(u"Page {0!s} does not exist?!".format(page.title(asLink=True)))
                 continue
             except pywikibot.IsRedirectPage:
-                pywikibot.output(u"Page %s is a redirect; skipping."
-                                 % page.title(asLink=True))
+                pywikibot.output(u"Page {0!s} is a redirect; skipping.".format(page.title(asLink=True)))
                 continue
             except pywikibot.LockedPage:
-                pywikibot.output(u"Page %s is locked?!"
-                                 % page.title(asLink=True))
+                pywikibot.output(u"Page {0!s} is locked?!".format(page.title(asLink=True)))
                 continue
             if page.isDisambig():
-                pywikibot.output(u"Page %s is a disambig; skipping."
-                                 % page.title(asLink=True))
+                pywikibot.output(u"Page {0!s} is a disambig; skipping.".format(page.title(asLink=True)))
                 continue
             if self.site.sitename == 'wikipedia:en' and page.isIpEdit():
                 pywikibot.output(
-                    u"Page %s is edited by IP. Possible vandalized"
-                    % page.title(asLink=True))
+                    u"Page {0!s} is edited by IP. Possible vandalized".format(page.title(asLink=True)))
                 continue
             if self.lacksReferences(text):
                 newText = self.addReferences(text)
                 try:
                     self.userPut(page, page.text, newText, summary=self.comment)
                 except pywikibot.EditConflict:
-                    pywikibot.output(u'Skipping %s because of edit conflict'
-                                     % page.title())
+                    pywikibot.output(u'Skipping {0!s} because of edit conflict'.format(page.title()))
                 except pywikibot.SpamfilterError as e:
                     pywikibot.output(
-                        u'Cannot change %s because of blacklist entry %s'
-                        % (page.title(), e.url))
+                        u'Cannot change {0!s} because of blacklist entry {1!s}'.format(page.title(), e.url))
                 except pywikibot.LockedPage:
-                    pywikibot.output(u'Skipping %s (locked page)' % page.title())
+                    pywikibot.output(u'Skipping {0!s} (locked page)'.format(page.title()))
 
 
 def main(*args):
@@ -715,7 +703,7 @@ def main(*args):
         except:
             pass
         else:
-            cat = pywikibot.Category(site, "%s:%s" % (
+            cat = pywikibot.Category(site, "{0!s}:{1!s}".format(
                 site.namespaces.CATEGORY, cat))
             gen = cat.articles(namespaces=genFactory.namespaces or [0])
     if gen:

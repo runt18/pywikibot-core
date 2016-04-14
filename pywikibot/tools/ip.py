@@ -35,7 +35,7 @@ if not ip_address or sys.version_info[0] < 3:
         if _ipaddr_version >= StrictVersion('2.1.10'):
             from ipaddr import IPAddress as ip_address
         else:
-            _ipaddr_e = ImportError('ipaddr %s is broken.' % _ipaddr_version)
+            _ipaddr_e = ImportError('ipaddr {0!s} is broken.'.format(_ipaddr_version))
 
 if ip_address and ip_address.__module__ == 'ipaddress':
     if sys.version_info[0] < 3:

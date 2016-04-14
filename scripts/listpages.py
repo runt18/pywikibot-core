@@ -149,7 +149,7 @@ class Formatter(object):
                 self.trs_title = page._link.ns_title(onsite=self.onsite)
             # Fallback if no corresponding namespace is found in onsite.
             except pywikibot.Error:
-                self.trs_title = u'%s:%s' % (default, page._link.title)
+                self.trs_title = u'{0!s}:{1!s}'.format(default, page._link.title)
 
     def output(self, num=None, fmt=1):
         """Output formatted string."""
@@ -219,7 +219,7 @@ def main(*args):
             base_dir = os.path.normpath(os.path.join(os.getcwd(), base_dir))
 
         if not os.path.exists(base_dir):
-            pywikibot.output(u'Directory "%s" does not exist.' % base_dir)
+            pywikibot.output(u'Directory "{0!s}" does not exist.'.format(base_dir))
             choice = pywikibot.input_yn(
                 u'Do you want to create it ("No" to continue without saving)?')
             if choice:
@@ -260,10 +260,10 @@ def main(*args):
                     pywikibot.output(err)
             if base_dir:
                 filename = os.path.join(base_dir, page.title(as_filename=True))
-                pywikibot.output(u'Saving %s to %s' % (page.title(), filename))
+                pywikibot.output(u'Saving {0!s} to {1!s}'.format(page.title(), filename))
                 with open(filename, mode='wb') as f:
                     f.write(page.text.encode(encoding))
-        pywikibot.output(u"%i page(s) found" % i)
+        pywikibot.output(u"{0:d} page(s) found".format(i))
         if page_target:
             page_target.text = '\n'.join(output_list)
             page_target.save(summary=summary)

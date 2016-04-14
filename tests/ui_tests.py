@@ -92,7 +92,7 @@ class Stream(object):
         patched_streams[self._original] = self._stream
 
     def __repr__(self):
-        return '<patched %s %r wrapping %r>' % (
+        return '<patched {0!s} {1!r} wrapping {2!r}>'.format(
             self._name, self._stream, self._original)
 
     def reset(self):
@@ -529,8 +529,7 @@ class WindowsTerminalTestCase(UITestCase):
             try:
                 cls._app = pywinauto.application.Application()
             except AttributeError as e2:
-                raise unittest.SkipTest('pywinauto Application failed: %s\n%s'
-                                        % (e1, e2))
+                raise unittest.SkipTest('pywinauto Application failed: {0!s}\n{1!s}'.format(e1, e2))
         super(WindowsTerminalTestCase, cls).setUpClass()
 
     @classmethod
@@ -547,15 +546,13 @@ class WindowsTerminalTestCase(UITestCase):
             window = cls._app.window_()
         except Exception as e:
             cls.tearDownProcess()
-            raise unittest.SkipTest('Windows package pywinauto could not locate window: %r'
-                                    % e)
+            raise unittest.SkipTest('Windows package pywinauto could not locate window: {0!r}'.format(e))
 
         try:
             window.TypeKeys('% {UP}{ENTER}%L{HOME}L{ENTER}', with_spaces=True)
         except Exception as e:
             cls.tearDownProcess()
-            raise unittest.SkipTest('Windows package pywinauto could not use window TypeKeys: %r'
-                                    % e)
+            raise unittest.SkipTest('Windows package pywinauto could not use window TypeKeys: {0!r}'.format(e))
 
     @classmethod
     def tearDownProcess(cls):

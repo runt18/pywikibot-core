@@ -861,8 +861,7 @@ class GeneratorFactory(object):
                 valid_ql = ['{0}: {1}'.format(*i) for
                             i in self.site.proofread_levels.items()]
                 valid_ql = ', '.join(valid_ql)
-                pywikibot.warning('Acceptable values for -ql are:\n    %s'
-                                  % valid_ql)
+                pywikibot.warning('Acceptable values for -ql are:\n    {0!s}'.format(valid_ql))
             self.qualityfilter_list = value
             return True
         elif arg in ('-onlyif', '-onlyifnot'):
@@ -1417,7 +1416,7 @@ def PageTitleFilterPageGenerator(generator, ignore_list):
     for page in generator:
         if is_ignored(page):
             if config.verbose_output:
-                pywikibot.output('Ignoring page %s' % page.title())
+                pywikibot.output('Ignoring page {0!s}'.format(page.title()))
         else:
             yield page
 
@@ -1438,14 +1437,13 @@ def RedirectFilterPageGenerator(generator, no_redirects=True,
             if not page.isRedirectPage():
                 yield page
             elif show_filtered:
-                pywikibot.output(u'%s is a redirect page. Skipping.' % page)
+                pywikibot.output(u'{0!s} is a redirect page. Skipping.'.format(page))
 
         else:
             if page.isRedirectPage():
                 yield page
             elif show_filtered:
-                pywikibot.output(u'%s is not a redirect page. Skipping.'
-                                 % page)
+                pywikibot.output(u'{0!s} is not a redirect page. Skipping.'.format(page))
 
 
 DuplicateFilterPageGenerator = filter_unique
@@ -1465,7 +1463,7 @@ class ItemClaimFilter(object):
         @rtype: bool
         """
         if not isinstance(page, pywikibot.ItemPage):
-            pywikibot.output(u'%s is not an ItemPage. Skipping.' % page)
+            pywikibot.output(u'{0!s} is not an ItemPage. Skipping.'.format(page))
             return False
         for page_claim in page.get()['claims'][prop]:
             if page_claim.target_equals(claim):
@@ -1523,8 +1521,7 @@ def SubpageFilterGenerator(generator, max_depth=0, show_filtered=False):
         else:
             if show_filtered:
                 pywikibot.output(
-                    'Page %s is a subpage that is too deep. Skipping.'
-                    % page)
+                    'Page {0!s} is a subpage that is too deep. Skipping.'.format(page))
 
 
 class RegexFilter(object):
@@ -1689,15 +1686,13 @@ def EdittimeFilterPageGenerator(generator,
             if last_edit < last_edit_start:
                 if show_filtered:
                     pywikibot.output(
-                        u'Last edit on %s was on %s.\nToo old. Skipping.'
-                        % (page, last_edit.isoformat()))
+                        u'Last edit on {0!s} was on {1!s}.\nToo old. Skipping.'.format(page, last_edit.isoformat()))
                 continue
 
             if last_edit > last_edit_end:
                 if show_filtered:
                     pywikibot.output(
-                        u'Last edit on %s was on %s.\nToo recent. Skipping.'
-                        % (page, last_edit.isoformat()))
+                        u'Last edit on {0!s} was on {1!s}.\nToo recent. Skipping.'.format(page, last_edit.isoformat()))
                 continue
 
         if do_first_edit:
@@ -1706,14 +1701,12 @@ def EdittimeFilterPageGenerator(generator,
             if first_edit < first_edit_start:
                 if show_filtered:
                     pywikibot.output(
-                        u'First edit on %s was on %s.\nToo old. Skipping.'
-                        % (page, first_edit.isoformat()))
+                        u'First edit on {0!s} was on {1!s}.\nToo old. Skipping.'.format(page, first_edit.isoformat()))
 
             if first_edit > first_edit_end:
                 if show_filtered:
                     pywikibot.output(
-                        u'First edit on %s was on %s.\nToo recent. Skipping.'
-                        % (page, first_edit.isoformat()))
+                        u'First edit on {0!s} was on {1!s}.\nToo recent. Skipping.'.format(page, first_edit.isoformat()))
                 continue
 
         yield page
@@ -1753,7 +1746,7 @@ def UserEditFilterGenerator(generator, username, timestamp=None, skip=False,
         if bool(contribs[username]) is not bool(skip):  # xor operation
             yield page
         elif show_filtered:
-            pywikibot.output(u'Skipping %s' % page.title(asLink=True))
+            pywikibot.output(u'Skipping {0!s}'.format(page.title(asLink=True)))
 
 
 def CombinedPageGenerator(generators):
@@ -1908,8 +1901,7 @@ def PreloadingItemGenerator(generator, groupsize=50):
             datasite = page.site.data_repository()
             if page.namespace() != datasite.item_namespace:
                 pywikibot.output(
-                    u'PreloadingItemGenerator skipping %s as it is not in %s'
-                    % (page, datasite.item_namespace))
+                    u'PreloadingItemGenerator skipping {0!s} as it is not in {1!s}'.format(page, datasite.item_namespace))
                 continue
 
             page = pywikibot.ItemPage(datasite, page.title())
@@ -1993,13 +1985,13 @@ def WikibaseItemFilterPageGenerator(generator, has_item=True,
             if not has_item:
                 if show_filtered:
                     pywikibot.output(
-                        '%s has a wikidata item.  Skipping.' % page)
+                        '{0!s} has a wikidata item.  Skipping.'.format(page))
                 continue
         else:
             if has_item:
                 if show_filtered:
                     pywikibot.output(
-                        '%s doesn\'t have a wikidata item.  Skipping.' % page)
+                        '{0!s} doesn\'t have a wikidata item.  Skipping.'.format(page))
                 continue
 
         yield page
@@ -2299,8 +2291,8 @@ def UntaggedPageGenerator(untaggedProject, limit=500, site=None):
     if lang == 'commons':
         wiki = 'wikifam=commons.wikimedia.org'
     else:
-        wiki = 'wikilang=%s&wikifam=.%s' % (lang, project)
-    link = '%s&%s&max=%d&order=img_timestamp' % (URL, wiki, limit)
+        wiki = 'wikilang={0!s}&wikifam=.{1!s}'.format(lang, project)
+    link = '{0!s}&{1!s}&max={2:d}&order=img_timestamp'.format(URL, wiki, limit)
     results = re.findall(REGEXP, http.fetch(link))
     if not results:
         raise pywikibot.Error(
@@ -2393,8 +2385,8 @@ class YahooSearchPageGenerator(object):
     def __iter__(self):
         """Iterate results."""
         # restrict query to local site
-        localQuery = '%s site:%s' % (self.query, self.site.hostname())
-        base = 'http://%s%s' % (self.site.hostname(),
+        localQuery = '{0!s} site:{1!s}'.format(self.query, self.site.hostname())
+        base = 'http://{0!s}{1!s}'.format(self.site.hostname(),
                                 self.site.article_path)
         for url in self.queryYahoo(localQuery):
             if url[:len(base)] == base:
@@ -2461,8 +2453,8 @@ class GoogleSearchPageGenerator(object):
     def __iter__(self):
         """Iterate results."""
         # restrict query to local site
-        localQuery = '%s site:%s' % (self.query, self.site.hostname())
-        base = 'http://%s%s' % (self.site.hostname(),
+        localQuery = '{0!s} site:{1!s}'.format(self.query, self.site.hostname())
+        base = 'http://{0!s}{1!s}'.format(self.site.hostname(),
                                 self.site.article_path)
         for url in self.queryGoogle(localQuery):
             if url[:len(base)] == base:
@@ -2511,7 +2503,7 @@ def MySQLPageGenerator(query, site=None, verbose=None):
             namespace = site.namespace(int(namespaceNumber))
             pageName = pageName.decode(site.encoding())
             if namespace:
-                pageTitle = '%s:%s' % (namespace, pageName)
+                pageTitle = '{0!s}:{1!s}'.format(namespace, pageName)
             else:
                 pageTitle = pageName
             page = pywikibot.Page(site, pageTitle)
@@ -2583,10 +2575,10 @@ def YearPageGenerator(start=1, end=2050, site=None):
     """
     if site is None:
         site = pywikibot.Site()
-    pywikibot.output(u"Starting with year %i" % start)
+    pywikibot.output(u"Starting with year {0:d}".format(start))
     for i in range(start, end + 1):
         if i % 100 == 0:
-            pywikibot.output(u'Preparing %i...' % i)
+            pywikibot.output(u'Preparing {0:d}...'.format(i))
         # There is no year 0
         if i != 0:
             current_year = date.formatYear(site.lang, i)
@@ -2606,7 +2598,7 @@ def DayPageGenerator(startMonth=1, endMonth=12, site=None, year=2000):
         site = pywikibot.Site()
     fd = date.FormatDate(site)
     firstPage = pywikibot.Page(site, fd(startMonth, 1))
-    pywikibot.output(u"Starting with %s" % firstPage.title(asLink=True))
+    pywikibot.output(u"Starting with {0!s}".format(firstPage.title(asLink=True)))
     for month in range(startMonth, endMonth + 1):
         for day in range(1, calendar.monthrange(year, month)[1] + 1):
             yield pywikibot.Page(pywikibot.Link(fd(month, day), site))
@@ -2654,12 +2646,12 @@ def WikidataQueryPageGenerator(query, site=None):
 
     if not is_repo:
         # limit the results to those with sitelinks to target site
-        query += ' link[%s]' % site.dbName()
+        query += ' link[{0!s}]'.format(site.dbName())
     wd_queryset = wdquery.QuerySet(query)
 
     wd_query = wdquery.WikidataQuery(cacheMaxAge=0)
     data = wd_query.query(wd_queryset)
-    pywikibot.output(u'retrieved %d items' % data[u'status'][u'items'])
+    pywikibot.output(u'retrieved {0:d} items'.format(data[u'status'][u'items']))
     items_pages = (pywikibot.ItemPage(repo, 'Q{0}'.format(item))
                    for item in data[u'items'])
     if is_repo:
@@ -2715,7 +2707,7 @@ def WikibaseSearchItemPageGenerator(text, language=None, total=None, site=None):
     repo = site.data_repository()
 
     data = repo.search_entities(text, language, limit=total)
-    pywikibot.output(u'retrieved %d items' % len(list(data)))
+    pywikibot.output(u'retrieved {0:d} items'.format(len(list(data))))
     for item in data:
         yield pywikibot.ItemPage(repo, item['id'])
 

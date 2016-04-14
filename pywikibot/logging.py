@@ -197,7 +197,7 @@ def exception(msg=None, decoder=None, newline=True, tb=False, **kwargs):
         exc_info = 1
     else:
         exc_info = sys.exc_info()
-        msg = u'%s: %s' % (repr(exc_info[1]).split('(')[0],
+        msg = u'{0!s}: {1!s}'.format(repr(exc_info[1]).split('(')[0],
                            unicode(exc_info[1]).strip())
     if tb:
         kwargs['exc_info'] = exc_info

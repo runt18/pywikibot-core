@@ -136,7 +136,7 @@ class ImageTransferBot(object):
         """
         sourceSite = sourceImagePage.site
         url = sourceImagePage.fileUrl().encode('utf-8')
-        pywikibot.output(u"URL should be: %s" % url)
+        pywikibot.output(u"URL should be: {0!s}".format(url))
         # localize the text that should be printed on the image description page
         try:
             description = sourceImagePage.get()
@@ -146,8 +146,8 @@ class ImageTransferBot(object):
                 for old, new in licenseTemplates[
                         (sourceSite.sitename,
                          self.targetSite.sitename)].items():
-                    new = '{{%s}}' % new
-                    old = re.compile('{{%s}}' % old)
+                    new = '{{{{{0!s}}}}}'.format(new)
+                    old = re.compile('{{{{{0!s}}}}}'.format(old))
                     description = textlib.replaceExcept(description, old, new,
                                                         ['comment', 'math',
                                                          'nowiki', 'pre'])
@@ -190,8 +190,7 @@ class ImageTransferBot(object):
                    sourceSite.family.name in config.usernames and \
                    sourceSite.lang in config.usernames[sourceSite.family.name]:
                     # add the nowCommons template.
-                    pywikibot.output(u'Adding nowCommons template to %s'
-                                     % sourceImagePage.title())
+                    pywikibot.output(u'Adding nowCommons template to {0!s}'.format(sourceImagePage.title()))
                     sourceImagePage.put(sourceImagePage.get() + '\n\n' +
                                         nowCommonsTemplate[sourceSite.lang]
                                         % targetFilename,
@@ -202,8 +201,7 @@ class ImageTransferBot(object):
         for i in range(len(imagelist)):
             image = imagelist[i]
             print("-" * 60)
-            pywikibot.output(u"%s. Found image: %s"
-                             % (i, image.title(asLink=True)))
+            pywikibot.output(u"{0!s}. Found image: {1!s}".format(i, image.title(asLink=True)))
             try:
                 # Show the image description page's contents
                 pywikibot.output(image.get())
@@ -213,12 +211,11 @@ class ImageTransferBot(object):
                 # to upload anyway, using another name.
                 try:
                     # Maybe the image is on the target site already
-                    targetTitle = '%s:%s' % (self.targetSite.namespaces.FILE,
+                    targetTitle = '{0!s}:{1!s}'.format(self.targetSite.namespaces.FILE,
                                              image.title().split(':', 1)[1])
                     targetImage = pywikibot.Page(self.targetSite, targetTitle)
                     targetImage.get()
-                    pywikibot.output(u"Image with this name is already on %s."
-                                     % self.targetSite)
+                    pywikibot.output(u"Image with this name is already on {0!s}.".format(self.targetSite))
                     print("-" * 60)
                     pywikibot.output(targetImage.get())
                     sys.exit()

@@ -403,8 +403,7 @@ class DryRequest(CachedRequest):
 
     def submit(self):
         """Prevented method."""
-        raise Exception(u'DryRequest rejecting request: %r'
-                        % self._params)
+        raise Exception(u'DryRequest rejecting request: {0!r}'.format(self._params))
 
 
 class DrySite(pywikibot.site.APISite):
@@ -453,8 +452,7 @@ class DrySite(pywikibot.site.APISite):
 
     def version(self):
         """Dummy version, with warning to show the callers context."""
-        warn('%r returning version 1.24; override if unsuitable.'
-             % self, DrySiteNote, stacklevel=2)
+        warn('{0!r} returning version 1.24; override if unsuitable.'.format(self), DrySiteNote, stacklevel=2)
         return '1.24'
 
     def image_repository(self):
@@ -848,14 +846,14 @@ def execute(command, data_in=None, timeout=0, error=None):
                            not isinstance(v, str)]
             if unicode_env:
                 raise TypeError(
-                    '%s: unicode in os.environ: %r' % (e, unicode_env))
+                    '{0!s}: unicode in os.environ: {1!r}'.format(e, unicode_env))
 
             child_unicode_env = [(k, v) for k, v in env.items()
                                  if not isinstance(k, str) or
                                  not isinstance(v, str)]
             if child_unicode_env:
                 raise TypeError(
-                    '%s: unicode in child env: %r' % (e, child_unicode_env))
+                    '{0!s}: unicode in child env: {1!r}'.format(e, child_unicode_env))
         raise
 
     if data_in is not None:
@@ -907,10 +905,9 @@ def execute_pwb(args, data_in=None, timeout=0, error=None, overrides=None):
     if overrides:
         command.append('-c')
         overrides = '; '.join(
-            '%s = %s' % (key, value) for key, value in overrides.items())
+            '{0!s} = {1!s}'.format(key, value) for key, value in overrides.items())
         command.append(
-            'import pwb; import pywikibot; %s; pwb.main()'
-            % overrides)
+            'import pwb; import pywikibot; {0!s}; pwb.main()'.format(overrides))
     else:
         command.append(_pwb_py)
 

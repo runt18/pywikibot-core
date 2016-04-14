@@ -187,12 +187,10 @@ class SandboxBot(Bot):
             wait = False
             now = time.strftime("%d %b %Y %H:%M:%S (UTC)", time.gmtime())
             for sandboxPage in self.generator:
-                pywikibot.output(u'Preparing to process sandbox page %s'
-                                 % sandboxPage.title(asLink=True))
+                pywikibot.output(u'Preparing to process sandbox page {0!s}'.format(sandboxPage.title(asLink=True)))
                 if sandboxPage.isRedirectPage():
                     pywikibot.warning(
-                        u'%s is a redirect page, cleaning it anyway'
-                        % sandboxPage.title(asLink=True))
+                        u'{0!s} is a redirect page, cleaning it anyway'.format(sandboxPage.title(asLink=True)))
                 try:
                     text = sandboxPage.text
                     if not self.getOption('text'):
@@ -229,10 +227,8 @@ class SandboxBot(Bot):
                                              u'sandbox cleaned.')
                         else:  # wait for the rest
                             pywikibot.output(
-                                u'Sandbox edited %.1f minutes ago...'
-                                % (edit_delta.seconds / 60.0))
-                            pywikibot.output(u'Sleeping for %d minutes.'
-                                             % (delta.seconds // 60))
+                                u'Sandbox edited {0:.1f} minutes ago...'.format((edit_delta.seconds / 60.0)))
+                            pywikibot.output(u'Sleeping for {0:d} minutes.'.format((delta.seconds // 60)))
                             time.sleep(delta.seconds)
                             wait = True
                 except pywikibot.EditConflict:
@@ -247,11 +243,9 @@ class SandboxBot(Bot):
                 return
             elif not wait:
                 if self.getOption('hours') < 1.0:
-                    pywikibot.output('\nSleeping %s minutes, now %s'
-                                     % ((self.getOption('hours') * 60), now))
+                    pywikibot.output('\nSleeping {0!s} minutes, now {1!s}'.format((self.getOption('hours') * 60), now))
                 else:
-                    pywikibot.output('\nSleeping %s hours, now %s'
-                                     % (self.getOption('hours'), now))
+                    pywikibot.output('\nSleeping {0!s} hours, now {1!s}'.format(self.getOption('hours'), now))
                 time.sleep(self.getOption('hours') * 60 * 60)
 
 

@@ -271,8 +271,7 @@ class FeaturedBot(pywikibot.Bot):
                 try:
                     site = self.site.fromDBName(key)
                 except pywikibot.SiteDefinitionError:
-                    pywikibot.output('"%s" is not a valid site. Skipping...'
-                                     % key)
+                    pywikibot.output('"{0!s}" is not a valid site. Skipping...'.format(key))
                 else:
                     if site.family == self.site.family:
                         yield site
@@ -322,17 +321,15 @@ class FeaturedBot(pywikibot.Bot):
             f = open(self.filename, "rb")
             self.cache = pickle.load(f)
             f.close()
-            pywikibot.output(u'Cache file %s found with %d items.'
-                             % (self.filename, len(self.cache)))
+            pywikibot.output(u'Cache file {0!s} found with {1:d} items.'.format(self.filename, len(self.cache)))
         except IOError:
-            pywikibot.output(u'Cache file %s not found.' % self.filename)
+            pywikibot.output(u'Cache file {0!s} not found.'.format(self.filename))
 
     def writecache(self):
         if self.getOption('count'):
             return
         if not self.getOption('nocache') is True:
-            pywikibot.output(u'Writing %d items to cache file %s.'
-                             % (len(self.cache), self.filename))
+            pywikibot.output(u'Writing {0:d} items to cache file {1!s}.'.format(len(self.cache), self.filename))
             with open(self.filename, "wb") as f:
                 pickle.dump(self.cache, f, protocol=config.pickle_protocol)
         self.cache = dict()
@@ -340,12 +337,11 @@ class FeaturedBot(pywikibot.Bot):
     def run(self):
         for task in self.tasks:
             self.run_task(task)
-        pywikibot.output(u'%d pages written.' % self._save_counter)
+        pywikibot.output(u'{0:d} pages written.'.format(self._save_counter))
 
     def run_task(self, task):
         if not self.hastemplate(task):
-            pywikibot.output(u'\nNOTE: %s articles are not implemented at %s.'
-                             % (task, self.site))
+            pywikibot.output(u'\nNOTE: {0!s} articles are not implemented at {1!s}.'.format(task, self.site))
             return
 
         self.readcache(task)
@@ -353,7 +349,7 @@ class FeaturedBot(pywikibot.Bot):
             try:
                 self.treat(site, task)
             except KeyboardInterrupt:
-                pywikibot.output('\nQuitting %s treat...' % task)
+                pywikibot.output('\nQuitting {0!s} treat...'.format(task))
                 break
         self.writecache()
 
@@ -372,8 +368,7 @@ class FeaturedBot(pywikibot.Bot):
             method = info[code][0]
         except KeyError:
             pywikibot.error(
-                u'language %s doesn\'t has %s category source.'
-                % (code, task))
+                u'language {0!s} doesn\'t has {1!s} category source.'.format(code, task))
             return
         name = info[code][1]
         # hide #-sorted items on en-wiki
@@ -397,11 +392,11 @@ class FeaturedBot(pywikibot.Bot):
                 continue
 
             if u"/" in p.title() and p.namespace() != 0:
-                pywikibot.output(u"%s is a subpage" % p.title())
+                pywikibot.output(u"{0!s} is a subpage".format(p.title()))
                 continue
 
             if p.title() in cache:
-                pywikibot.output(u"(cached) %s -> %s" % (p.title(),
+                pywikibot.output(u"(cached) {0!s} -> {1!s}".format(p.title(),
                                                          cache[p.title()]))
                 continue
             yield p
@@ -421,28 +416,22 @@ class FeaturedBot(pywikibot.Bot):
 
         if not ourpage:
             if not quiet:
-                pywikibot.output(u"%s -> no corresponding page in %s"
-                                 % (page.title(), oursite))
+                pywikibot.output(u"{0!s} -> no corresponding page in {1!s}".format(page.title(), oursite))
         elif ourpage.section():
-            pywikibot.output(u"%s -> our page is a section link: %s"
-                             % (page.title(), ourpage.title()))
+            pywikibot.output(u"{0!s} -> our page is a section link: {1!s}".format(page.title(), ourpage.title()))
         elif not ourpage.exists():
-            pywikibot.output(u"%s -> our page doesn't exist: %s"
-                             % (page.title(), ourpage.title()))
+            pywikibot.output(u"{0!s} -> our page doesn't exist: {1!s}".format(page.title(), ourpage.title()))
         else:
             if ourpage.isRedirectPage():
                 ourpage = ourpage.getRedirectTarget()
 
-            pywikibot.output(u"%s -> corresponding page is %s"
-                             % (page.title(), ourpage.title()))
+            pywikibot.output(u"{0!s} -> corresponding page is {1!s}".format(page.title(), ourpage.title()))
             if ourpage.namespace() != 0:
-                pywikibot.output(u"%s -> not in the main namespace, skipping"
-                                 % page.title())
+                pywikibot.output(u"{0!s} -> not in the main namespace, skipping".format(page.title()))
             elif ourpage.isRedirectPage():
-                pywikibot.output(u"%s -> double redirect, skipping" % page.title())
+                pywikibot.output(u"{0!s} -> double redirect, skipping".format(page.title()))
             elif not ourpage.exists():
-                pywikibot.output(u"%s -> page doesn't exist, skipping"
-                                 % ourpage.title())
+                pywikibot.output(u"{0!s} -> page doesn't exist, skipping".format(ourpage.title()))
             else:
                 backpage = None
                 for link in ourpage.iterlanglinks():
@@ -450,7 +439,7 @@ class FeaturedBot(pywikibot.Bot):
                         backpage = pywikibot.Page(link)
                         break
                 if not backpage:
-                    pywikibot.output(u"%s -> no back interwiki ref" % page.title())
+                    pywikibot.output(u"{0!s} -> no back interwiki ref".format(page.title()))
                 elif backpage == page:
                     # everything is ok
                     yield ourpage
@@ -461,11 +450,9 @@ class FeaturedBot(pywikibot.Bot):
                         yield ourpage
                     else:
                         pywikibot.output(
-                            u"%s -> back interwiki ref target is redirect to %s"
-                            % (page.title(), backpage.title()))
+                            u"{0!s} -> back interwiki ref target is redirect to {1!s}".format(page.title(), backpage.title()))
                 else:
-                    pywikibot.output(u"%s -> back interwiki ref target is %s"
-                                     % (page.title(), backpage.title()))
+                    pywikibot.output(u"{0!s} -> back interwiki ref target is {1!s}".format(page.title(), backpage.title()))
 
     def getTemplateList(self, code, task):
         add_templates = []
@@ -534,8 +521,7 @@ class FeaturedBot(pywikibot.Bot):
                 source = source.getRedirectTarget()
 
             if not source.exists():
-                pywikibot.output(u"source page doesn't exist: %s"
-                                 % source)
+                pywikibot.output(u"source page doesn't exist: {0!s}".format(source))
                 continue
 
             for dest in self.findTranslated(source, tosite):
@@ -546,9 +532,8 @@ class FeaturedBot(pywikibot.Bot):
         """Place or remove the Link_GA/FA template on/from a page."""
         def compile_link(site, templates):
             """Compile one link template list."""
-            findtemplate = '(%s)' % '|'.join(templates)
-            return re.compile(r"\{\{%s\|%s\}\}"
-                              % (findtemplate.replace(u' ', u'[ _]'),
+            findtemplate = '({0!s})'.format('|'.join(templates))
+            return re.compile(r"\{{\{{{0!s}\|{1!s}\}}\}}".format(findtemplate.replace(u' ', u'[ _]'),
                                  site.code), re.IGNORECASE)
 
         tosite = dest.site
@@ -568,20 +553,19 @@ class FeaturedBot(pywikibot.Bot):
                 # insert just before interwiki
                 if (not interactive or
                     pywikibot.input_yn(
-                        u'Connecting %s -> %s. Proceed?'
-                        % (source.title(), dest.title()),
+                        u'Connecting {0!s} -> {1!s}. Proceed?'.format(source.title(), dest.title()),
                         default=False, automatic_quit=False)):
                     if self.getOption('side'):
                         # Placing {{Link FA|xx}} right next to
                         # corresponding interwiki
                         text = (text[:m1.end()] +
-                                u" {{%s|%s}}" % (add_tl[0], fromsite.code) +
+                                u" {{{{{0!s}|{1!s}}}}}".format(add_tl[0], fromsite.code) +
                                 text[m1.end():])
                     else:
                         # Moving {{Link FA|xx}} to top of interwikis
                         iw = textlib.getLanguageLinks(text, tosite)
                         text = textlib.removeLanguageLinks(text, tosite)
-                        text += u"%s{{%s|%s}}%s" % (config.LS, add_tl[0],
+                        text += u"{0!s}{{{{{1!s}|{2!s}}}}}{3!s}".format(config.LS, add_tl[0],
                                                     fromsite.code, config.LS)
                         text = textlib.replaceLanguageLinks(text,
                                                             iw, tosite)
@@ -591,8 +575,7 @@ class FeaturedBot(pywikibot.Bot):
                 if (changed or  # Don't force the user to say "Y" twice
                     not interactive or
                     pywikibot.input_yn(
-                        u'Connecting %s -> %s. Proceed?'
-                        % (source.title(), dest.title()),
+                        u'Connecting {0!s} -> {1!s}. Proceed?'.format(source.title(), dest.title()),
                         default=False, automatic_quit=False)):
                     text = re.sub(re_Link_remove, '', text)
                     changed = True
@@ -605,8 +588,7 @@ class FeaturedBot(pywikibot.Bot):
                 dest.put(text, comment)
                 self._save_counter += 1
             except pywikibot.LockedPage:
-                pywikibot.output(u'Page %s is locked!'
-                                 % dest.title())
+                pywikibot.output(u'Page {0!s} is locked!'.format(dest.title()))
             except pywikibot.PageNotSaved:
                 pywikibot.output(u"Page not saved")
 

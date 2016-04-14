@@ -157,14 +157,13 @@ class XmlDumpTemplatePageGenerator(XMLDumpPageGenerator):
         for template in self.templates:
             templatePattern = template.title(withNamespace=False)
             if mysite.namespaces[10].case == 'first-letter':
-                templatePattern = '[%s%s]%s' % (templatePattern[0].upper(),
+                templatePattern = '[{0!s}{1!s}]{2!s}'.format(templatePattern[0].upper(),
                                                 templatePattern[0].lower(),
                                                 templatePattern[1:])
             templatePattern = re.sub(' ', '[_ ]', templatePattern)
             templatePatterns.append(templatePattern)
         templateRegex = re.compile(
-            r'\{\{ *([mM][sS][gG]:)?(?:%s) *(?P<parameters>\|[^}]+|) *}}'
-            % '|'.join(templatePatterns))
+            r'\{{\{{ *([mM][sS][gG]:)?(?:{0!s}) *(?P<parameters>\|[^}}]+|) *}}}}'.format('|'.join(templatePatterns)))
 
         super(XmlDumpTemplatePageGenerator, self).__init__(
             xmlfilename, site=mysite, text_predicate=templateRegex.search)
@@ -228,23 +227,23 @@ class TemplateRobot(ReplaceBot):
 
             if self.getOption('subst') and self.getOption('remove'):
                 replacements.append((templateRegex,
-                                     r'{{subst:%s\g<parameters>}}' % new))
+                                     r'{{{{subst:{0!s}\g<parameters>}}}}'.format(new)))
                 exceptions['inside-tags'] = ['ref', 'gallery']
             elif self.getOption('subst'):
                 replacements.append((templateRegex,
-                                     r'{{subst:%s\g<parameters>}}' % old))
+                                     r'{{{{subst:{0!s}\g<parameters>}}}}'.format(old)))
                 exceptions['inside-tags'] = ['ref', 'gallery']
             elif self.getOption('remove'):
                 replacements.append((templateRegex, ''))
             else:
                 template = pywikibot.Page(self.site, new, ns=10)
                 if not template.exists():
-                    pywikibot.warning(u'Template "%s" does not exist.' % new)
+                    pywikibot.warning(u'Template "{0!s}" does not exist.'.format(new))
                     if not pywikibot.input_yn('Do you want to proceed anyway?',
                                               default=False, automatic_quit=False):
                         continue
                 replacements.append((templateRegex,
-                                     r'{{%s\g<parameters>}}' % new))
+                                     r'{{{{{0!s}\g<parameters>}}}}'.format(new)))
 
         super(TemplateRobot, self).__init__(
             generator, replacements, exceptions,

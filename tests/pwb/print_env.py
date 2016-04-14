@@ -20,7 +20,7 @@ for k, v in sorted(os.environ.items()):
     # This only appears in subprocesses
     if k in ['PYWIKIBOT2_DIR_PWB']:
         continue
-    print("%r: %r" % (k, v))
+    print("{0!r}: {1!r}".format(k, v))
 
 print('sys.path:')
 for path in sys.path:

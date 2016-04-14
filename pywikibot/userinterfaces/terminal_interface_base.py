@@ -49,7 +49,7 @@ colors = [
     'white',
 ]
 
-colorTagR = re.compile('\03{(?P<name>%s|previous)}' % '|'.join(colors))
+colorTagR = re.compile('\03{{(?P<name>{0!s}|previous)}}'.format('|'.join(colors)))
 
 
 class UI(object):
@@ -204,8 +204,7 @@ class UI(object):
                     # transliteration was successful. The replacement
                     # could consist of multiple letters.
                     # mark the transliterated letters in yellow.
-                    transliteratedText += '\03{lightyellow}%s\03{previous}' \
-                                          % transliterated
+                    transliteratedText += '\03{{lightyellow}}{0!s}\03{{previous}}'.format(transliterated)
                     # memorize if we replaced a single letter by multiple
                     # letters.
                     if len(transliterated) > 0:
@@ -260,7 +259,7 @@ class UI(object):
             question = question[:-1]
             end_marker = '?'
         if default:
-            question = question + ' (default: %s)' % default
+            question = question + ' (default: {0!s})'.format(default)
         question = question + end_marker
         if force:
             self.output(question + '\n')

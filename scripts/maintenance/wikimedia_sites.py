@@ -47,7 +47,7 @@ exceptions = ['www']
 def update_family(families):
     """Update family files."""
     for family in families or familiesDict.keys():
-        pywikibot.output('\nChecking family %s:' % family)
+        pywikibot.output('\nChecking family {0!s}:'.format(family))
 
         original = Family.load(family).languages_by_size
         obsolete = Family.load(family).obsolete
@@ -66,8 +66,7 @@ def update_family(families):
         # put the missing languages to the right place
         missing = original != new and set(original) - set(new)
         if missing:
-            pywikibot.output(u"WARNING: ['%s'] not listed at wikistats."
-                             % "', '".join(missing))
+            pywikibot.output(u"WARNING: ['{0!s}'] not listed at wikistats.".format("', '".join(missing)))
             index = {}
             for code in missing:
                 index[original.index(code)] = code
@@ -84,15 +83,15 @@ def update_family(families):
             line = ' ' * 11
             for code in new:
                 if len(line) + len(code) <= 76:
-                    line += u" '%s'," % code
+                    line += u" '{0!s}',".format(code)
                 else:
-                    text += u'%s\r\n' % line
+                    text += u'{0!s}\r\n'.format(line)
                     line = ' ' * 11
-                    line += u" '%s'," % code
-            text += u'%s\r\n' % line
+                    line += u" '{0!s}',".format(code)
+            text += u'{0!s}\r\n'.format(line)
             text += u'        ]'
             pywikibot.output(text)
-            family_file_name = 'pywikibot/families/%s_family.py' % family
+            family_file_name = 'pywikibot/families/{0!s}_family.py'.format(family)
             family_file = codecs.open(family_file_name, 'r', 'utf8')
             family_text = family_file.read()
             old = re.findall(r'(?msu)^ {8}self.languages_by_size.+?\]',

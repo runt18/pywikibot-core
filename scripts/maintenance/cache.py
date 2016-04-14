@@ -129,11 +129,10 @@ class CacheEntry(api.CachedRequest):
         end = self.key.index(')')
 
         if not end:
-            raise ParseError('End of Site() keyword not found: %s' % self.key)
+            raise ParseError('End of Site() keyword not found: {0!s}'.format(self.key))
 
         if 'Site' not in self.key[0:start]:
-            raise ParseError('Site() keyword not found at start of key: %s'
-                             % self.key)
+            raise ParseError('Site() keyword not found at start of key: {0!s}'.format(self.key))
 
         site = self.key[0:end + 1]
         if site[0:5] == 'Site(':
@@ -156,20 +155,17 @@ class CacheEntry(api.CachedRequest):
 
             end = self.key.index(')', start + 5)
             if not end:
-                raise ParseError('End of User() keyword not found: %s'
-                                 % self.key)
+                raise ParseError('End of User() keyword not found: {0!s}'.format(self.key))
             username = self.key[start:end]
         elif self.key[start:start + 12] == 'LoginStatus(':
             end = self.key.index(')', start + 12)
             if not end:
-                raise ParseError('End of LoginStatus() keyword not found: %s'
-                                 % self.key)
+                raise ParseError('End of LoginStatus() keyword not found: {0!s}'.format(self.key))
             login_status = self.key[start:end + 1]
         # If the key does not contain User(..) or LoginStatus(..),
         # it must be the old key format which only contains Site and params
         elif self.key[start:start + 3] != "[('":
-            raise ParseError('Keyword after Site not recognised: %s...'
-                             % self.key)
+            raise ParseError('Keyword after Site not recognised: {0!s}...'.format(self.key))
 
         start = end + 1
 
@@ -188,8 +184,7 @@ class CacheEntry(api.CachedRequest):
             raise ParseError('No Site')
         self.site = eval(site)
         if login_status:
-            self.site._loginstatus = eval('LoginStatus.%s'
-                                          % login_status[12:-1])
+            self.site._loginstatus = eval('LoginStatus.{0!s}'.format(login_status[12:-1]))
         if username:
             self.site._username = [username, username]
         if not params:
@@ -227,7 +222,7 @@ def process_entries(cache_path, func, use_accesstime=None, output_func=None,
         cache_path = os.path.join(pywikibot.config2.base_dir, 'apicache')
 
     if not os.path.exists(cache_path):
-        pywikibot.error('%s: no such file or directory' % cache_path)
+        pywikibot.error('{0!s}: no such file or directory'.format(cache_path))
         return
 
     if os.path.isdir(cache_path):
@@ -263,16 +258,14 @@ def process_entries(cache_path, func, use_accesstime=None, output_func=None,
         try:
             entry.parse_key()
         except ParseError:
-            pywikibot.error(u'Problems parsing %s with key %s'
-                            % (entry.filename, entry.key))
+            pywikibot.error(u'Problems parsing {0!s} with key {1!s}'.format(entry.filename, entry.key))
             pywikibot.exception()
             continue
 
         try:
             entry._rebuild()
         except Exception as e:
-            pywikibot.error(u'Problems loading %s with key %s, %r'
-                            % (entry.filename, entry.key, entry._parsed_key))
+            pywikibot.error(u'Problems loading {0!s} with key {1!s}, {2!r}'.format(entry.filename, entry.key, entry._parsed_key))
             pywikibot.exception(e, tb=True)
             continue
 
@@ -444,7 +437,7 @@ def main():
 
     for cache_path in cache_paths:
         if len(cache_paths) > 1:
-            pywikibot.output(u'Processing %s' % cache_path)
+            pywikibot.output(u'Processing {0!s}'.format(cache_path))
         process_entries(cache_path, filter_func, output_func=output_func,
                         action_func=action_func)
 

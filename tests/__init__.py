@@ -60,7 +60,7 @@ def create_path_func(base_func, subpath):
 join_root_path.path = 'root'
 join_tests_path = create_path_func(join_root_path, 'tests')
 join_cache_path = create_path_func(join_tests_path,
-                                   'apicache-py%d' % PYTHON_VERSION[0])
+                                   'apicache-py{0:d}'.format(PYTHON_VERSION[0]))
 join_data_path = create_path_func(join_tests_path, 'data')
 join_pages_path = create_path_func(join_tests_path, 'pages')
 
@@ -203,16 +203,13 @@ def collector(loader=unittest.loader.defaultTestLoader):
     # cause the loader to fallback to its own
     # discover() ordering of unit tests.
     if disabled_test_modules:
-        print('Disabled test modules (to run: python -m unittest ...):\n  %s'
-              % ', '.join(disabled_test_modules))
+        print('Disabled test modules (to run: python -m unittest ...):\n  {0!s}'.format(', '.join(disabled_test_modules)))
 
     if extra_test_modules:
-        print('Extra test modules (run after library, before scripts):\n  %s'
-              % ', '.join(extra_test_modules))
+        print('Extra test modules (run after library, before scripts):\n  {0!s}'.format(', '.join(extra_test_modules)))
 
     if disabled_tests:
-        print('Skipping tests (to run: python -m unittest ...):\n  %r'
-              % disabled_tests)
+        print('Skipping tests (to run: python -m unittest ...):\n  {0!r}'.format(disabled_tests))
 
     modules = [module
                for module in test_modules
@@ -261,7 +258,7 @@ CachedRequest._get_cache_dir = classmethod(
 # frequently in code paths resulting from mishandled server problems.
 if config.max_retries > 2:
     if 'PYWIKIBOT_TEST_QUIET' not in os.environ:
-        print('tests: max_retries reduced from %d to 1' % config.max_retries)
+        print('tests: max_retries reduced from {0:d} to 1'.format(config.max_retries))
     config.max_retries = 1
 
 cache_misses = 0

@@ -902,7 +902,7 @@ class Family(object):
             fam = config.family
 
         assert all(x in NAME_CHARACTERS for x in fam), \
-            'Name of family %s must be ASCII characters and digits' % fam
+            'Name of family {0!s} must be ASCII characters and digits'.format(fam)
 
         if fam in Family._families:
             return Family._families[fam]
@@ -923,15 +923,14 @@ class Family(object):
                 warnings.simplefilter("ignore", RuntimeWarning)
                 mod = imp.load_source(fam, config.family_files[fam])
         except (ImportError, KeyError):
-            raise UnknownFamily(u'Family %s does not exist' % fam)
+            raise UnknownFamily(u'Family {0!s} does not exist'.format(fam))
         cls = mod.Family()
         if cls.name != fam:
-            warn(u'Family name %s does not match family module name %s'
-                 % (cls.name, fam), FamilyMaintenanceWarning)
+            warn(u'Family name {0!s} does not match family module name {1!s}'.format(cls.name, fam), FamilyMaintenanceWarning)
         # Family 'name' and the 'langs' codes must be ascii, and the
         # codes must be lower-case due to the Site loading algorithm.
         if not all(x in NAME_CHARACTERS for x in cls.name):
-            warn(u'Family name %s contains non-ascii characters' % cls.name,
+            warn(u'Family name {0!s} contains non-ascii characters'.format(cls.name),
                  FamilyMaintenanceWarning)
         # FIXME: wikisource uses code '-' for www.wikisource.org
         if not all(all(x in CODE_CHARACTERS for x in code) and
@@ -971,8 +970,7 @@ class Family(object):
             return self.linktrails[fallback]
         else:
             raise KeyError(
-                "ERROR: linktrail in language %(language_code)s unknown"
-                % {'language_code': code})
+                "ERROR: linktrail in language {language_code!s} unknown".format(**{'language_code': code}))
 
     def _category_redirects(self, code, fallback='_default'):
         """Return list of category redirect templates."""
@@ -1026,8 +1024,7 @@ class Family(object):
             return self.disambiguationTemplates[fallback]
         else:
             raise KeyError(
-                "ERROR: title for disambig template in language %s unknown"
-                % code)
+                "ERROR: title for disambig template in language {0!s} unknown".format(code))
 
     # Methods
     def protocol(self, code):
@@ -1108,15 +1105,15 @@ class Family(object):
 
     def path(self, code):
         """Return path to index.php."""
-        return '%s/index.php' % self.scriptpath(code)
+        return '{0!s}/index.php'.format(self.scriptpath(code))
 
     def querypath(self, code):
         """Return path to query.php."""
-        return '%s/query.php' % self.scriptpath(code)
+        return '{0!s}/query.php'.format(self.scriptpath(code))
 
     def apipath(self, code):
         """Return path to api.php."""
-        return '%s/api.php' % self.scriptpath(code)
+        return '{0!s}/api.php'.format(self.scriptpath(code))
 
     @deprecated('APISite.article_path')
     def nicepath(self, code):
@@ -1130,12 +1127,12 @@ class Family(object):
     @deprecated_args(name='title')
     def get_address(self, code, title):
         """Return the path to title using index.php with redirects disabled."""
-        return '%s?title=%s&redirect=no' % (self.path(code), title)
+        return '{0!s}?title={1!s}&redirect=no'.format(self.path(code), title)
 
     @deprecated('APISite.nice_get_address(title)')
     def nice_get_address(self, code, title):
         """DEPRECATED: Return the nice path to title using index.php."""
-        return '%s%s' % (self.nicepath(code), title)
+        return '{0!s}{1!s}'.format(self.nicepath(code), title)
 
     def interface(self, code):
         """
@@ -1145,8 +1142,7 @@ class Family(object):
         """
         if code in self.interwiki_removals:
             if code in self.codes:
-                pywikibot.warn('Interwiki removal %s is in %s codes'
-                               % (code, self))
+                pywikibot.warn('Interwiki removal {0!s} is in {1!s} codes'.format(code, self))
             return 'RemovedSite'
 
         return config.site_interface
@@ -1230,7 +1226,7 @@ class Family(object):
 
     def dbName(self, code):
         """Return the name of the MySQL database."""
-        return '%s%s' % (code, self.name)
+        return '{0!s}{1!s}'.format(code, self.name)
 
     # Which version of MediaWiki is used?
     @deprecated('APISite.version()')
@@ -1321,7 +1317,7 @@ class Family(object):
         return self.name
 
     def __repr__(self):
-        return 'Family("%s")' % self.name
+        return 'Family("{0!s}")'.format(self.name)
 
     def shared_image_repository(self, code):
         """Return the shared image repository, if any."""
@@ -1453,7 +1449,7 @@ class SubdomainFamily(Family):
             codes = codes + self.test_codes
 
         self.langs = dict(
-            (code, '%s.%s' % (code, self.domain)) for code in codes)
+            (code, '{0!s}.{1!s}'.format(code, self.domain)) for code in codes)
 
         super(SubdomainFamily, self).__init__()
 
@@ -1463,8 +1459,7 @@ class SubdomainFamily(Family):
         if hasattr(self, 'languages_by_size'):
             return self.languages_by_size
         raise NotImplementedError(
-            'Family %s needs property "languages_by_size" or "codes"'
-            % self.name)
+            'Family {0!s} needs property "languages_by_size" or "codes"'.format(self.name))
 
     @property
     def domains(self):
@@ -1579,7 +1574,7 @@ class WikimediaFamily(Family):
             return 'wikimedia.org'
 
         raise NotImplementedError(
-            'Family %s needs to define property \'domain\'' % self.name)
+            'Family {0!s} needs to define property \'domain\''.format(self.name))
 
     @property
     def interwiki_removals(self):

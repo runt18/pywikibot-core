@@ -87,8 +87,8 @@ def _oauth_login(site):
     login_manager.login()
     identity = login_manager.identity
     if identity is None:
-        pywikibot.error('Invalid OAuth info for %(site)s.' %
-                        {'site': site})
+        pywikibot.error('Invalid OAuth info for {site!s}.'.format(**
+                        {'site': site}))
     elif site.username() != identity['username']:
         pywikibot.error('Logged in on %(site)s via OAuth as %(wrong)s, '
                         'but expect as %(right)s'
@@ -104,9 +104,9 @@ def _oauth_login(site):
                             'consumer': consumer_key})
         pywikibot.output('NOTE: To use OAuth, you need to copy the '
                          'following line to your user-config.py:')
-        pywikibot.output('authenticate[\'%(hostname)s\'] = %(oauth_token)s' %
+        pywikibot.output('authenticate[\'{hostname!s}\'] = {oauth_token!s}'.format(**
                          {'hostname': site.hostname(),
-                          'oauth_token': oauth_token})
+                          'oauth_token': oauth_token}))
 
 
 def main(*args):

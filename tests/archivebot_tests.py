@@ -58,8 +58,7 @@ class TestArchiveBot(TestCase):
         self.assertIsInstance(talk.threads, list)
         self.assertGreaterEqual(
             len(talk.threads), THREADS[code],
-            u'%d Threads found on %s,\n%d or more expected'
-            % (len(talk.threads), talk, THREADS[code]))
+            u'{0:d} Threads found on {1!s},\n{2:d} or more expected'.format(len(talk.threads), talk, THREADS[code]))
 
         for thread in talk.threads:
             self.assertIsInstance(thread, archivebot.DiscussionThread)
@@ -75,7 +74,7 @@ class TestArchiveBot(TestCase):
                 self.assertIsInstance(thread.timestamp, datetime)
             except AssertionError:
                 if thread.code not in self.expected_failures:
-                    pywikibot.output('code %s: %s' % (thread.code, thread.content))
+                    pywikibot.output('code {0!s}: {1!s}'.format(thread.code, thread.content))
                 raise
 
     expected_failures = ['ar', 'pdc', 'th']

@@ -49,8 +49,7 @@ class TestIPBase(TestCase):
         except AssertionError:
             self.fail += 1
             self.errors.append(
-                '"%s" match should be %s - not OK'
-                % (IP, result))
+                '"{0!s}" match should be {1!s} - not OK'.format(IP, result))
 
     def _run_tests(self):
         """Test various IP."""

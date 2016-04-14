@@ -57,8 +57,7 @@ class TestValidTemplateMeta(MetaTestCaseClass):
 
         # create test methods for package messages processed by unittest
         if not i18n.messages_available():
-            raise unittest.SkipTest("i18n messages package '%s' not available."
-                                    % i18n._messages_package_name)
+            raise unittest.SkipTest("i18n messages package '{0!s}' not available.".format(i18n._messages_package_name))
 
         site = pywikibot.Site(dct['code'], dct['family'])
         codes = site.family.languages_by_size
@@ -67,7 +66,7 @@ class TestValidTemplateMeta(MetaTestCaseClass):
             keys = i18n.twget_keys(package)
             for code in codes:
                 current_site = pywikibot.Site(code, dct['family'])
-                test_name = ("test_%s_%s" % (package, code)).replace('-', '_')
+                test_name = ("test_{0!s}_{1!s}".format(package, code)).replace('-', '_')
                 cls.add_method(
                     dct, test_name, test_method(current_site),
                     doc_suffix='{0} and language {1}'.format(
@@ -102,8 +101,7 @@ class TestSites(TestCase):
             keys = i18n.twget_keys(package)
             for key in keys:
                 self.assertIn(key, languages,
-                              "'%s' - json key '%s' is not a site language"
-                              % (package, key))
+                              "'{0!s}' - json key '{1!s}' is not a site language".format(package, key))
 
 
 if __name__ == '__main__':

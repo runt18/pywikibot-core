@@ -111,7 +111,7 @@ class TestLogentriesMeta(MetaTestCaseClass):
 
         # create test methods for the support logtype classes
         for logtype in LogEntryFactory._logtypes:
-            cls.add_method(dct, 'test_%sEntry' % logtype.title(),
+            cls.add_method(dct, 'test_{0!s}Entry'.format(logtype.title()),
                            test_method(logtype))
 
         return super(TestLogentriesMeta, cls).__new__(cls, name, bases, dct)

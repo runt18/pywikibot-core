@@ -73,8 +73,8 @@ class Hunk(object):
         self.b_rng = (first[3], last[4])
 
         self.header = self.get_header()
-        self.diff_plain_text = u'%s\n%s' % (self.header, self.diff_plain_text)
-        self.diff_text = u'%s' % self.diff_text
+        self.diff_plain_text = u'{0!s}\n{1!s}'.format(self.header, self.diff_plain_text)
+        self.diff_text = u'{0!s}'.format(self.diff_text)
 
         self.reviewed = self.PENDING
 
@@ -185,8 +185,7 @@ class Hunk(object):
     def __repr__(self):
         """Return a reconstructable representation."""
         # TODO
-        return '%s(a, b, %s)' \
-               % (self.__class__.__name__, self.group)
+        return '{0!s}(a, b, {1!s})'.format(self.__class__.__name__, self.group)
 
 
 class _SuperHunk(Sequence):
@@ -507,7 +506,7 @@ class PatchManager(object):
                         '{0} -> {1}'.format(answer, help_msg[answer])
                         for answer in answers)))
             else:
-                assert False, '%s is not a valid option' % choice
+                assert False, '{0!s} is not a valid option'.format(choice)
 
     def apply(self):
         """Apply changes. If there are undecided changes, ask to review."""

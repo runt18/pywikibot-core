@@ -108,8 +108,7 @@ if not PY2:
 
 # User interface initialization
 # search for user interface module in the 'userinterfaces' subdirectory
-uiModule = __import__("pywikibot.userinterfaces.%s_interface"
-                      % config.userinterface,
+uiModule = __import__("pywikibot.userinterfaces.{0!s}_interface".format(config.userinterface),
                       fromlist=['UI'])
 ui = uiModule.UI()
 pywikibot.argvu = ui.argvu()
@@ -245,7 +244,7 @@ def init_handlers(strm=None):
         if config.logfilename:
             logfile = config.datafilepath("logs", config.logfilename)
         else:
-            logfile = config.datafilepath("logs", "%s-bot.log" % moduleName)
+            logfile = config.datafilepath("logs", "{0!s}-bot.log".format(moduleName))
         file_handler = RotatingFileHandler(filename=logfile,
                                            maxBytes=1024 * config.logfilesize,
                                            backupCount=config.logfilecount)
@@ -294,12 +293,12 @@ def writelogheader():
     log(u'COMMAND: {0}'.format(sys.argv))
 
     # script call time stamp
-    log(u'DATE: %s UTC' % str(datetime.datetime.utcnow()))
+    log(u'DATE: {0!s} UTC'.format(str(datetime.datetime.utcnow())))
 
     # new framework release/revision? (handleArgs needs to be called first)
     try:
-        log(u'VERSION: %s' %
-            version.getversion(online=config.log_pywiki_repo_version).strip())
+        log(u'VERSION: {0!s}'.format(
+            version.getversion(online=config.log_pywiki_repo_version).strip()))
     except version.ParseError:
         exception()
 
@@ -308,7 +307,7 @@ def writelogheader():
         log(u'SYSTEM: {0}'.format(os.uname()))
 
     # config file dir
-    log(u'CONFIG FILE DIR: %s' % pywikibot.config2.base_dir)
+    log(u'CONFIG FILE DIR: {0!s}'.format(pywikibot.config2.base_dir))
 
     all_modules = sys.modules.keys()
 
@@ -336,9 +335,9 @@ def writelogheader():
         if 'ver' not in info:
             info['ver'] = '??'
         if 'err' in info:
-            log(u'  %(name)s: %(err)s' % info)
+            log(u'  {name!s}: {err!s}'.format(**info))
         else:
-            log(u'  %(name)s (%(path)s) = %(ver)s' % info)
+            log(u'  {name!s} ({path!s}) = {ver!s}'.format(**info))
 
     # imported modules
     log(u'MODULES:')
@@ -352,7 +351,7 @@ def writelogheader():
             log(u'  {0} {1} {2}'.format(filename, ver[:7], mtime.isoformat(str(' '))))
 
     if config.log_pywiki_repo_version:
-        log(u'PYWIKI REPO VERSION: %s' % version.getversion_onlinerepo())
+        log(u'PYWIKI REPO VERSION: {0!s}'.format(version.getversion_onlinerepo()))
 
     log(u'=== ' * 14)
 
@@ -863,8 +862,7 @@ def handle_args(args=None, do_help=True):
             config.log = []
         elif option in ('-cosmeticchanges', '-cc'):
             config.cosmetic_changes = not config.cosmetic_changes
-            output(u'NOTE: option cosmetic_changes is %s\n'
-                   % config.cosmetic_changes)
+            output(u'NOTE: option cosmetic_changes is {0!s}\n'.format(config.cosmetic_changes))
         elif option == '-simulate':
             config.simulate = True
         #
@@ -934,12 +932,12 @@ def handle_args(args=None, do_help=True):
         m = re.search(r"\$Id"
                       r": (\w+) \$", pywikibot.__version__)
         if m:
-            pywikibot.output(u'Pywikibot r%s' % m.group(1))
+            pywikibot.output(u'Pywikibot r{0!s}'.format(m.group(1)))
         else:
             # Version ID not available on SVN repository.
             # Maybe this information should be imported from version.py
             pywikibot.output(u'Pywikibot SVN repository')
-        pywikibot.output(u'Python %s' % sys.version)
+        pywikibot.output(u'Python {0!s}'.format(sys.version))
 
     if do_help:
         showHelp()
@@ -988,7 +986,7 @@ Global arguments available for all bots:
 -help             Show this help text.
 
 -log              Enable the log file, using the default filename
-                  '%s-bot.log'
+                  '{0!s}-bot.log'
                   Logs will be stored in the logs subdirectory.
 
 -log:xyz          Enable the log file, using 'xyz' as the filename.
@@ -1021,9 +1019,9 @@ Global arguments available for all bots:
 -<config var>:n   You may use all given numeric config variables as option and
                   modify it with command line.
 
-''' % module_name
+'''.format(module_name)
     try:
-        module = __import__('%s' % module_name)
+        module = __import__('{0!s}'.format(module_name))
         helpText = module.__doc__
         if PY2 and isinstance(helpText, bytes):
             helpText = helpText.decode('utf-8')
@@ -1033,7 +1031,7 @@ Global arguments available for all bots:
         pywikibot.stdout(helpText)  # output to STDOUT
     except Exception:
         if module_name:
-            pywikibot.stdout(u'Sorry, no help available for %s' % module_name)
+            pywikibot.stdout(u'Sorry, no help available for {0!s}'.format(module_name))
         pywikibot.log('showHelp:', exc_info=True)
     pywikibot.stdout(globalHelp)
 
@@ -1088,7 +1086,7 @@ def writeToCommandLogFile():
     """
     modname = calledModuleName()
     # put quotation marks around all parameters
-    args = [modname] + [u'"%s"' % s for s in pywikibot.argvu[1:]]
+    args = [modname] + [u'"{0!s}"'.format(s) for s in pywikibot.argvu[1:]]
     command_log_filename = config.datafilepath('logs', 'commands.log')
     try:
         command_log_file = codecs.open(command_log_filename, 'a', 'utf-8')
@@ -1096,8 +1094,7 @@ def writeToCommandLogFile():
         command_log_file = codecs.open(command_log_filename, 'w', 'utf-8')
     # add a timestamp in ISO 8601 formulation
     isoDate = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-    command_log_file.write('%s r%s Python %s '
-                           % (isoDate, version.getversiondict()['rev'],
+    command_log_file.write('{0!s} r{1!s} Python {2!s} '.format(isoDate, version.getversiondict()['rev'],
                               sys.version.split()[0]))
     s = u' '.join(args)
     command_log_file.write(s + os.linesep)
@@ -1169,8 +1166,7 @@ class BaseBot(object):
             self.options[opt] = kwargs[opt]
 
         for opt in receivedOptions - validOptions:
-            pywikibot.warning(u'%s is not a valid option. It was ignored.'
-                              % opt)
+            pywikibot.warning(u'{0!s} is not a valid option. It was ignored.'.format(opt))
 
     def getOption(self, option):
         """
@@ -1181,7 +1177,7 @@ class BaseBot(object):
         try:
             return self.options.get(option, self.availableOptions[option])
         except KeyError:
-            raise pywikibot.Error(u'%s is not a valid bot option.' % option)
+            raise pywikibot.Error(u'{0!s} is not a valid bot option.'.format(option))
 
     @property
     def current_page(self):
@@ -1203,7 +1199,7 @@ class BaseBot(object):
         """
         if page != self._current_page:
             self._current_page = page
-            msg = u'Working on %r' % page.title()
+            msg = u'Working on {0!r}'.format(page.title())
             if config.colorized_output:
                 log(msg)
                 stdout(color_format('\n\n>>> {lightpurple}{0}{default} <<<',
@@ -1260,8 +1256,7 @@ class BaseBot(object):
         @rtype: bool
         """
         if oldtext == newtext:
-            pywikibot.output(u'No changes were needed on %s'
-                             % page.title(asLink=True))
+            pywikibot.output(u'No changes were needed on {0!s}'.format(page.title(asLink=True)))
             return
 
         self.current_page = page
@@ -1272,7 +1267,7 @@ class BaseBot(object):
             pywikibot.showDiff(oldtext, newtext)
 
         if 'summary' in kwargs:
-            pywikibot.output(u'Edit summary: %s' % kwargs['summary'])
+            pywikibot.output(u'Edit summary: {0!s}'.format(kwargs['summary']))
 
         page.text = newtext
         return self._save_page(page, page.save, **kwargs)
@@ -1311,24 +1306,19 @@ class BaseBot(object):
             if not ignore_save_related_errors:
                 raise
             if isinstance(e, pywikibot.EditConflict):
-                pywikibot.output(u'Skipping %s because of edit conflict'
-                                 % page.title())
+                pywikibot.output(u'Skipping {0!s} because of edit conflict'.format(page.title()))
             elif isinstance(e, pywikibot.SpamfilterError):
                 pywikibot.output(
-                    u'Cannot change %s because of blacklist entry %s'
-                    % (page.title(), e.url))
+                    u'Cannot change {0!s} because of blacklist entry {1!s}'.format(page.title(), e.url))
             elif isinstance(e, pywikibot.LockedPage):
-                pywikibot.output(u'Skipping %s (locked page)'
-                                 % page.title())
+                pywikibot.output(u'Skipping {0!s} (locked page)'.format(page.title()))
             else:
                 pywikibot.error(
-                    u'Skipping %s because of a save related error: %s'
-                    % (page.title(), e))
+                    u'Skipping {0!s} because of a save related error: {1!s}'.format(page.title(), e))
         except pywikibot.ServerError as e:
             if not ignore_server_errors:
                 raise
-            pywikibot.error(u'Server Error while processing %s: %s'
-                            % (page.title(), e))
+            pywikibot.error(u'Server Error while processing {0!s}: {1!s}'.format(page.title(), e))
         else:
             return True
         return False
@@ -1356,16 +1346,13 @@ class BaseBot(object):
             else:
                 seconds = delta.seconds + delta.days * 86400
             if delta.days:
-                pywikibot.output("Execution time: %d days, %d seconds"
-                                 % (delta.days, delta.seconds))
+                pywikibot.output("Execution time: {0:d} days, {1:d} seconds".format(delta.days, delta.seconds))
             else:
-                pywikibot.output("Execution time: %d seconds" % delta.seconds)
+                pywikibot.output("Execution time: {0:d} seconds".format(delta.seconds))
             if self._treat_counter:
-                pywikibot.output("Read operation time: %d seconds"
-                                 % (seconds / self._treat_counter))
+                pywikibot.output("Read operation time: {0:d} seconds".format((seconds / self._treat_counter)))
             if self._save_counter:
-                pywikibot.output("Write operation time: %d seconds"
-                                 % (seconds / self._save_counter))
+                pywikibot.output("Write operation time: {0:d} seconds".format((seconds / self._save_counter)))
 
         # exc_info contains exception from self.run() while terminating
         exc_info = sys.exc_info()
@@ -1377,8 +1364,7 @@ class BaseBot(object):
 
     def treat(self, page):
         """Process one page (Abstract method)."""
-        raise NotImplementedError('Method %s.treat() not implemented.'
-                                  % self.__class__.__name__)
+        raise NotImplementedError('Method {0!s}.treat() not implemented.'.format(self.__class__.__name__))
 
     def init_page(self, page):
         """Return whether treat should be executed for the page."""
@@ -1388,8 +1374,7 @@ class BaseBot(object):
         """Process all pages in generator."""
         self._start_ts = pywikibot.Timestamp.now()
         if not hasattr(self, 'generator'):
-            raise NotImplementedError('Variable %s.generator not set.'
-                                      % self.__class__.__name__)
+            raise NotImplementedError('Variable {0!s}.generator not set.'.format(self.__class__.__name__))
 
         maxint = 0
         if PY2:
@@ -1419,14 +1404,14 @@ class BaseBot(object):
                         'Python 3 should be used to process very large batches'
                         % (self.__class__.__name__, sys.maxint))
         except QuitKeyboardInterrupt:
-            pywikibot.output('\nUser quit %s bot run...' %
-                             self.__class__.__name__)
+            pywikibot.output('\nUser quit {0!s} bot run...'.format(
+                             self.__class__.__name__))
         except KeyboardInterrupt:
             if config.verbose_output:
                 raise
             else:
-                pywikibot.output('\nKeyboardInterrupt during %s bot run...' %
-                                 self.__class__.__name__)
+                pywikibot.output('\nKeyboardInterrupt during {0!s} bot run...'.format(
+                                 self.__class__.__name__))
         finally:
             self.exit()
 
@@ -1457,7 +1442,7 @@ class Bot(BaseBot):
         if not self._site:
             warning('Bot.site was not set before being retrieved.')
             self.site = pywikibot.Site()
-            warning('Using the default site: %s' % self.site)
+            warning('Using the default site: {0!s}'.format(self.site))
         return self._site
 
     @site.setter
@@ -1473,15 +1458,13 @@ class Bot(BaseBot):
             return
 
         if site not in self._sites:
-            log(u'LOADING SITE %s VERSION: %s'
-                % (site, site.version()))
+            log(u'LOADING SITE {0!s} VERSION: {1!s}'.format(site, site.version()))
 
             self._sites.add(site)
             if len(self._sites) == 2:
-                log('%s uses multiple sites' % self.__class__.__name__)
+                log('{0!s} uses multiple sites'.format(self.__class__.__name__))
         if self._site and self._site != site:
-            log('%s: changing site from %s to %s'
-                % (self.__class__.__name__, self._site, site))
+            log('{0!s}: changing site from {1!s} to {2!s}'.format(self.__class__.__name__, self._site, site))
         self._site = site
 
     def run(self):
@@ -1498,8 +1481,7 @@ class Bot(BaseBot):
                 '%s.__init__ set the Bot.site property; this is only needed '
                 'when the Bot accesses many sites.' % self.__class__.__name__)
         else:
-            log('Bot is managing the %s.site property in run()'
-                % self.__class__.__name__)
+            log('Bot is managing the {0!s}.site property in run()'.format(self.__class__.__name__))
         super(Bot, self).run()
 
     def init_page(self, page):
@@ -1617,8 +1599,7 @@ class CurrentPageBot(BaseBot):
 
     def treat_page(self):
         """Process one page (Abstract method)."""
-        raise NotImplementedError('Method %s.treat_page() not implemented.'
-                                  % self.__class__.__name__)
+        raise NotImplementedError('Method {0!s}.treat_page() not implemented.'.format(self.__class__.__name__))
 
     def treat(self, page):
         """Set page to current page and treat that page."""
@@ -1794,7 +1775,7 @@ class WikidataBot(Bot):
         self.repo = self.site.data_repository()
         if self.repo is None:
             raise pywikibot.exceptions.WikiBaseError(
-                '%s is not connected to a data repository' % self.site)
+                '{0!s} is not connected to a data repository'.format(self.site))
 
     def cacheSources(self):
         """
@@ -1823,8 +1804,7 @@ class WikidataBot(Bot):
         for page in self.site.search(property_name, total=1, namespaces=ns):
             page = pywikibot.PropertyPage(self.site.data_repository(),
                                           page.title())
-            pywikibot.output(u"Assuming that %s property is %s." %
-                             (property_name, page.id))
+            pywikibot.output(u"Assuming that {0!s} property is {1!s}.".format(property_name, page.id))
             return page.id
         return pywikibot.input(u'Property %s was not found. Please enter the '
                                u'property ID (e.g. P123) of it:'
@@ -1862,7 +1842,7 @@ class WikidataBot(Bot):
             pywikibot.output(json.dumps(diff, indent=4, sort_keys=True))
 
         if 'summary' in kwargs:
-            pywikibot.output(u'Change summary: %s' % kwargs['summary'])
+            pywikibot.output(u'Change summary: {0!s}'.format(kwargs['summary']))
 
         # TODO async in editEntity should actually have some effect (bug T86074)
         # TODO PageSaveRelatedErrors should be actually raised in editEntity
@@ -1887,15 +1867,14 @@ class WikidataBot(Bot):
     def run(self):
         """Process all pages in generator."""
         if not hasattr(self, 'generator'):
-            raise NotImplementedError('Variable %s.generator not set.'
-                                      % self.__class__.__name__)
+            raise NotImplementedError('Variable {0!s}.generator not set.'.format(self.__class__.__name__))
 
         treat_missing_item = hasattr(self, 'treat_missing_item')
 
         try:
             for page in self.generator:
                 if not page.exists():
-                    pywikibot.output('%s doesn\'t exist.' % page)
+                    pywikibot.output('{0!s} doesn\'t exist.'.format(page))
                 # FIXME: Hack because 'is_data_repository' doesn't work if
                 #        site is the APISite. See T85483
                 data_site = page.site.data_repository()
@@ -1919,18 +1898,18 @@ class WikidataBot(Bot):
                 if not item:
                     if not treat_missing_item:
                         pywikibot.output(
-                            '%s doesn\'t have a wikidata item.' % page)
+                            '{0!s} doesn\'t have a wikidata item.'.format(page))
                         # TODO: Add an option to create the item
                         continue
                 self.treat(page, item)
         except QuitKeyboardInterrupt:
-            pywikibot.output('\nUser quit %s bot run...' %
-                             self.__class__.__name__)
+            pywikibot.output('\nUser quit {0!s} bot run...'.format(
+                             self.__class__.__name__))
         except KeyboardInterrupt:
             if config.verbose_output:
                 raise
             else:
-                pywikibot.output('\nKeyboardInterrupt during %s bot run...' %
-                                 self.__class__.__name__)
+                pywikibot.output('\nKeyboardInterrupt during {0!s} bot run...'.format(
+                                 self.__class__.__name__))
         except Exception as e:
             pywikibot.exception(msg=e, tb=True)

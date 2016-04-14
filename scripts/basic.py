@@ -82,18 +82,16 @@ class BasicBot(SingleSiteBot):
 
         if not self.userPut(page, page.text, text, summary=self.summary,
                             ignore_save_related_errors=True):
-            pywikibot.output(u'Page %s not saved.' % page.title(asLink=True))
+            pywikibot.output(u'Page {0!s} not saved.'.format(page.title(asLink=True)))
 
     def load(self, page):
         """Load the text of the given page."""
         try:
             text = page.get()
         except pywikibot.NoPage:
-            pywikibot.output(u"Page %s does not exist; skipping."
-                             % page.title(asLink=True))
+            pywikibot.output(u"Page {0!s} does not exist; skipping.".format(page.title(asLink=True)))
         except pywikibot.IsRedirectPage:
-            pywikibot.output(u"Page %s is a redirect; skipping."
-                             % page.title(asLink=True))
+            pywikibot.output(u"Page {0!s} is a redirect; skipping.".format(page.title(asLink=True)))
         else:
             return text
         return None

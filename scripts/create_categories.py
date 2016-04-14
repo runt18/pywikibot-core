@@ -61,7 +61,7 @@ class CreateCategoriesBot(Bot):
         title = page.title(withNamespace=False)
 
         newpage = pywikibot.Category(pywikibot.Site('commons', 'commons'),
-                                     '%s %s' % (self.basename, title))
+                                     '{0!s} {1!s}'.format(self.basename, title))
         newtext = (u'[[Category:%(parent)s|%(title)s]]\n'
                    u'[[Category:%(title)s]]\n'
                    % {'parent': self.parent, 'title': title})
@@ -71,14 +71,14 @@ class CreateCategoriesBot(Bot):
             try:
                 self.userPut(newpage, '', newtext, summary=self.comment)
             except pywikibot.EditConflict:
-                pywikibot.output(u'Skipping %s due to edit conflict' % newpage.title())
+                pywikibot.output(u'Skipping {0!s} due to edit conflict'.format(newpage.title()))
             except pywikibot.ServerError:
-                pywikibot.output(u'Skipping %s due to server error' % newpage.title())
+                pywikibot.output(u'Skipping {0!s} due to server error'.format(newpage.title()))
             except pywikibot.PageNotSaved as error:
-                pywikibot.output(u'Error putting page: %s' % error.args)
+                pywikibot.output(u'Error putting page: {0!s}'.format(error.args))
         else:
             # FIXME: Add overwrite option
-            pywikibot.output(u'%s already exists, skipping' % newpage.title())
+            pywikibot.output(u'{0!s} already exists, skipping'.format(newpage.title()))
 
 
 def main(*args):

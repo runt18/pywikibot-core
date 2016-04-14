@@ -440,8 +440,7 @@ class XmlDumpReplacePageGenerator(object):
             try:
                 if not self.skipping:
                     pywikibot.output(
-                        u'To resume, use "-xmlstart:%s" on the command line.'
-                        % entry.title)
+                        u'To resume, use "-xmlstart:{0!s}" on the command line.'.format(entry.title))
             except NameError:
                 pass
 
@@ -685,18 +684,16 @@ class ReplaceRobot(Bot):
         for page in self.generator:
             if self.isTitleExcepted(page.title()):
                 pywikibot.output(
-                    u'Skipping %s because the title is on the exceptions list.'
-                    % page.title(asLink=True))
+                    u'Skipping {0!s} because the title is on the exceptions list.'.format(page.title(asLink=True)))
                 continue
             try:
                 # Load the page's text from the wiki
                 original_text = page.get(get_redirect=True)
                 if not page.canBeEdited():
-                    pywikibot.output(u"You can't edit page %s"
-                                     % page.title(asLink=True))
+                    pywikibot.output(u"You can't edit page {0!s}".format(page.title(asLink=True)))
                     continue
             except pywikibot.NoPage:
-                pywikibot.output(u'Page %s not found' % page.title(asLink=True))
+                pywikibot.output(u'Page {0!s} not found'.format(page.title(asLink=True)))
                 continue
             applied = set()
             new_text = original_text
@@ -714,8 +711,7 @@ class ReplaceRobot(Bot):
                     if not self.recursive:
                         break
                 if new_text == original_text:
-                    pywikibot.output(u'No changes were necessary in %s'
-                                     % page.title(asLink=True))
+                    pywikibot.output(u'No changes were necessary in {0!s}'.format(page.title(asLink=True)))
                     break
                 if hasattr(self, 'addedCat'):
                     # Fetch only categories in wikitext, otherwise the others will
@@ -750,8 +746,7 @@ class ReplaceRobot(Bot):
                     try:
                         original_text = page.get(get_redirect=True, force=True)
                     except pywikibot.NoPage:
-                        pywikibot.output(u'Page %s has been deleted.'
-                                         % page.title())
+                        pywikibot.output(u'Page {0!s} has been deleted.'.format(page.title()))
                         break
                     new_text = original_text
                     continue
@@ -763,8 +758,7 @@ class ReplaceRobot(Bot):
                               callback=self._count_changes, quiet=True)
                 while not self._pending_processed_titles.empty():
                     proc_title, res = self._pending_processed_titles.get()
-                    pywikibot.output('Page %s%s saved'
-                                     % (proc_title, '' if res else ' not'))
+                    pywikibot.output('Page {0!s}{1!s} saved'.format(proc_title, '' if res else ' not'))
                 # choice must be 'N'
                 break
             if self.getOption('always') and new_text != original_text:
@@ -773,23 +767,18 @@ class ReplaceRobot(Bot):
                     page.save(summary=self.generate_summary(applied),
                               callback=self._count_changes, quiet=True)
                 except pywikibot.EditConflict:
-                    pywikibot.output(u'Skipping %s because of edit conflict'
-                                     % (page.title(),))
+                    pywikibot.output(u'Skipping {0!s} because of edit conflict'.format(page.title()))
                 except pywikibot.SpamfilterError as e:
                     pywikibot.output(
-                        u'Cannot change %s because of blacklist entry %s'
-                        % (page.title(), e.url))
+                        u'Cannot change {0!s} because of blacklist entry {1!s}'.format(page.title(), e.url))
                 except pywikibot.LockedPage:
-                    pywikibot.output(u'Skipping %s (locked page)'
-                                     % (page.title(),))
+                    pywikibot.output(u'Skipping {0!s} (locked page)'.format(page.title()))
                 except pywikibot.PageNotSaved as error:
-                    pywikibot.output(u'Error putting page: %s'
-                                     % (error.args,))
+                    pywikibot.output(u'Error putting page: {0!s}'.format(error.args))
                 if self._pending_processed_titles.qsize() > 50:
                     while not self._pending_processed_titles.empty():
                         proc_title, res = self._pending_processed_titles.get()
-                        pywikibot.output('Page %s%s saved'
-                                         % (proc_title, '' if res else ' not'))
+                        pywikibot.output('Page {0!s}{1!s} saved'.format(proc_title, '' if res else ' not'))
 
 
 def prepareRegexForMySQL(pattern):
@@ -986,7 +975,7 @@ def main(*args):
             single_summary = i18n.twtranslate(
                 site, 'replace-replacing',
                 {'description':
-                 ' (-%s +%s)' % (replacement.old, replacement.new)}
+                 ' (-{0!s} +{1!s})'.format(replacement.old, replacement.new)}
             )
         replacements.append(replacement)
 
@@ -996,8 +985,7 @@ def main(*args):
         try:
             fix = fixes.fixes[fix_name]
         except KeyError:
-            pywikibot.output(u'Available predefined fixes are: %s'
-                             % ', '.join(fixes.fixes.keys()))
+            pywikibot.output(u'Available predefined fixes are: {0!s}'.format(', '.join(fixes.fixes.keys())))
             if not fixes.user_fixes_loaded:
                 pywikibot.output('The user fixes file could not be found: '
                                  '{0}'.format(fixes.filename))
@@ -1092,22 +1080,22 @@ def main(*args):
         gen = XmlDumpReplacePageGenerator(xmlFilename, xmlStart,
                                           replacements, exceptions, site)
     elif useSql:
-        whereClause = 'WHERE (%s)' % ' OR '.join(
-            ["old_text RLIKE '%s'" % prepareRegexForMySQL(old_regexp.pattern)
-             for (old_regexp, new_text) in replacements])
+        whereClause = 'WHERE ({0!s})'.format(' OR '.join(
+            ["old_text RLIKE '{0!s}'".format(prepareRegexForMySQL(old_regexp.pattern))
+             for (old_regexp, new_text) in replacements]))
         if exceptions:
-            exceptClause = 'AND NOT (%s)' % ' OR '.join(
-                ["old_text RLIKE '%s'" % prepareRegexForMySQL(exc.pattern)
-                 for exc in exceptions])
+            exceptClause = 'AND NOT ({0!s})'.format(' OR '.join(
+                ["old_text RLIKE '{0!s}'".format(prepareRegexForMySQL(exc.pattern))
+                 for exc in exceptions]))
         else:
             exceptClause = ''
         query = u"""
 SELECT page_namespace, page_title
 FROM page
 JOIN text ON (page_id = old_id)
-%s
-%s
-LIMIT 200""" % (whereClause, exceptClause)
+{0!s}
+{1!s}
+LIMIT 200""".format(whereClause, exceptClause)
         gen = pagegenerators.MySQLPageGenerator(query)
 
     gen = genFactory.getCombinedGenerator(gen)
@@ -1126,7 +1114,7 @@ LIMIT 200""" % (whereClause, exceptClause)
     # Explicitly call pywikibot.stopme().
     # It will make sure the callback is triggered before replace.py is unloaded.
     pywikibot.stopme()
-    pywikibot.output(u'\n%s pages changed.' % bot.changed_pages)
+    pywikibot.output(u'\n{0!s} pages changed.'.format(bot.changed_pages))
 
 
 if __name__ == "__main__":

@@ -326,8 +326,7 @@ class LinkChecker(object):
         if not self.serverEncoding:
             try:
                 pywikibot.output(
-                    u'Contacting server %s to find out its default encoding...'
-                    % self.host)
+                    u'Contacting server {0!s} to find out its default encoding...'.format(self.host))
                 conn = self.getConnection()
                 conn.request('HEAD', '/', None, self.header)
                 self.response = conn.getresponse()
@@ -387,10 +386,10 @@ class LinkChecker(object):
         conn = self.getConnection()
         try:
             if useHEAD:
-                conn.request('HEAD', '%s%s' % (self.path, self.query), None,
+                conn.request('HEAD', '{0!s}{1!s}'.format(self.path, self.query), None,
                              self.header)
             else:
-                conn.request('GET', '%s%s' % (self.path, self.query), None,
+                conn.request('GET', '{0!s}{1!s}'.format(self.path, self.query), None,
                              self.header)
             self.response = conn.getresponse()
             # read the server's encoding, in case we need it later
@@ -418,8 +417,7 @@ class LinkChecker(object):
                     self.changeUrl(redirTarget)
                     return True
                 elif redirTarget.startswith('/'):
-                    self.changeUrl(u'%s://%s%s'
-                                   % (self.protocol, self.host, redirTarget))
+                    self.changeUrl(u'{0!s}://{1!s}{2!s}'.format(self.protocol, self.host, redirTarget))
                     return True
                 else:  # redirect to relative position
                     # cut off filename
@@ -433,8 +431,7 @@ class LinkChecker(object):
                             # change /foo/bar/ to /foo/
                             directory = directory[:-1]
                             directory = directory[:directory.rindex('/') + 1]
-                    self.changeUrl('%s://%s%s%s'
-                                   % (self.protocol, self.host, directory,
+                    self.changeUrl('{0!s}://{1!s}{2!s}{3!s}'.format(self.protocol, self.host, directory,
                                       redirTarget))
                     return True
         else:
@@ -449,10 +446,10 @@ class LinkChecker(object):
         try:
             wasRedirected = self.resolveRedirect(useHEAD=useHEAD)
         except UnicodeError as error:
-            return False, u'Encoding Error: %s (%s)' % (
+            return False, u'Encoding Error: {0!s} ({1!s})'.format(
                 error.__class__.__name__, error)
         except httplib.error as error:
-            return False, u'HTTP Error: %s' % error.__class__.__name__
+            return False, u'HTTP Error: {0!s}'.format(error.__class__.__name__)
         except socket.error as error:
             # https://docs.python.org/2/library/socket.html :
             # socket.error :
@@ -471,7 +468,7 @@ class LinkChecker(object):
             # TODO: decode msg. On Linux, it's encoded in UTF-8.
             # How is it encoded in Windows? Or can we somehow just
             # get the English message?
-            return False, u'Socket Error: %s' % repr(msg)
+            return False, u'Socket Error: {0!s}'.format(repr(msg))
         if wasRedirected:
             if self.url in self.redirectChain:
                 if useHEAD:
@@ -485,10 +482,10 @@ class LinkChecker(object):
                         HTTPignore=self.HTTPignore)
                     return redirChecker.check(useHEAD=False)
                 else:
-                    urlList = ['[%s]' % url
+                    urlList = ['[{0!s}]'.format(url)
                                for url in self.redirectChain + [self.url]]
                     return (False,
-                            u'HTTP Redirect Loop: %s' % ' -> '.join(urlList))
+                            u'HTTP Redirect Loop: {0!s}'.format(' -> '.join(urlList)))
             elif len(self.redirectChain) >= 19:
                 if useHEAD:
                     # Some servers don't seem to handle HEAD requests properly,
@@ -501,11 +498,10 @@ class LinkChecker(object):
                         HTTPignore=self.HTTPignore)
                     return redirChecker.check(useHEAD=False)
                 else:
-                    urlList = ['[%s]' % url
+                    urlList = ['[{0!s}]'.format(url)
                                for url in self.redirectChain + [self.url]]
                     return (False,
-                            u'Long Chain of Redirects: %s'
-                            % ' -> '.join(urlList))
+                            u'Long Chain of Redirects: {0!s}'.format(' -> '.join(urlList)))
             else:
                 redirChecker = LinkChecker(self.url, self.redirectChain,
                                            self.serverEncoding,
@@ -515,23 +511,22 @@ class LinkChecker(object):
             try:
                 conn = self.getConnection()
             except httplib.error as error:
-                return False, u'HTTP Error: %s' % error.__class__.__name__
+                return False, u'HTTP Error: {0!s}'.format(error.__class__.__name__)
             try:
-                conn.request('GET', '%s%s'
-                             % (self.path, self.query), None, self.header)
+                conn.request('GET', '{0!s}{1!s}'.format(self.path, self.query), None, self.header)
             except socket.error as error:
-                return False, u'Socket Error: %s' % repr(error[1])
+                return False, u'Socket Error: {0!s}'.format(repr(error[1]))
             try:
                 self.response = conn.getresponse()
             except Exception as error:
-                return False, u'Error: %s' % error
+                return False, u'Error: {0!s}'.format(error)
             # read the server's encoding, in case we need it later
             self.readEncodingFromResponse(self.response)
             # site down if the server status is between 400 and 499
             alive = self.response.status not in range(400, 500)
             if self.response.status in self.HTTPignore:
                 alive = False
-            return alive, '%s %s' % (self.response.status, self.response.reason)
+            return alive, '{0!s} {1!s}'.format(self.response.status, self.response.reason)
 
 
 class LinkCheckThread(threading.Thread):
@@ -558,7 +553,7 @@ class LinkCheckThread(threading.Thread):
             'Connection': 'keep-alive',
         }
         # identification for debugging purposes
-        self.setName((u'%s - %s' % (page.title(), url)).encode('utf-8',
+        self.setName((u'{0!s} - {1!s}'.format(page.title(), url)).encode('utf-8',
                                                                'replace'))
         self.HTTPignore = HTTPignore
         self.day = day
@@ -575,8 +570,7 @@ class LinkCheckThread(threading.Thread):
                                        'weblinkchecker-badurl_msg',
                                        {'URL': self.url})
         except:
-            pywikibot.output('Exception while processing URL %s in page %s'
-                             % (self.url, self.page.title()))
+            pywikibot.output('Exception while processing URL {0!s} in page {1!s}'.format(self.url, self.page.title()))
             raise
         if (r.status_code == requests.codes.ok and
                 str(r.status_code) not in self.HTTPignore):
@@ -585,11 +579,9 @@ class LinkCheckThread(threading.Thread):
             message = '{0} {1}'.format(r.status_code, r.reason)
         if ok:
             if self.history.setLinkAlive(self.url):
-                pywikibot.output('*Link to %s in [[%s]] is back alive.'
-                                 % (self.url, self.page.title()))
+                pywikibot.output('*Link to {0!s} in [[{1!s}]] is back alive.'.format(self.url, self.page.title()))
         else:
-            pywikibot.output('*[[%s]] links to %s - %s.'
-                             % (self.page.title(), self.url, message))
+            pywikibot.output('*[[{0!s}]] links to {1!s} - {2!s}.'.format(self.page.title(), self.url, message))
             self.history.setLinkDead(self.url, message, self.page,
                                      config.weblink_dead_days)
 
@@ -627,7 +619,7 @@ class History(object):
             self.site = site
         self.semaphore = threading.Semaphore()
         self.datfilename = pywikibot.config.datafilepath(
-            'deadlinks', 'deadlinks-%s-%s.dat' % (self.site.family.name, self.site.code))
+            'deadlinks', 'deadlinks-{0!s}-{1!s}.dat'.format(self.site.family.name, self.site.code))
         # Count the number of logged links, so that we can insert captions
         # from time to time
         self.logCount = 0
@@ -641,24 +633,23 @@ class History(object):
     def log(self, url, error, containingPage, archiveURL):
         """Log an error report to a text file in the deadlinks subdirectory."""
         if archiveURL:
-            errorReport = u'* %s ([%s archive])\n' % (url, archiveURL)
+            errorReport = u'* {0!s} ([{1!s} archive])\n'.format(url, archiveURL)
         else:
-            errorReport = u'* %s\n' % url
+            errorReport = u'* {0!s}\n'.format(url)
         for (pageTitle, date, error) in self.historyDict[url]:
             # ISO 8601 formulation
             isoDate = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(date))
-            errorReport += "** In [[%s]] on %s, %s\n" % (pageTitle, isoDate,
+            errorReport += "** In [[{0!s}]] on {1!s}, {2!s}\n".format(pageTitle, isoDate,
                                                          error)
         pywikibot.output(u"** Logging link for deletion.")
         txtfilename = pywikibot.config.datafilepath('deadlinks',
-                                                    'results-%s-%s.txt'
-                                                    % (self.site.family.name,
+                                                    'results-{0!s}-{1!s}.txt'.format(self.site.family.name,
                                                        self.site.lang))
         txtfile = codecs.open(txtfilename, 'a', 'utf-8')
         self.logCount += 1
         if self.logCount % 30 == 0:
             # insert a caption
-            txtfile.write('=== %s ===\n' % containingPage.title()[:3])
+            txtfile.write('=== {0!s} ===\n'.format(containingPage.title()[:3]))
         txtfile.write(errorReport)
         txtfile.close()
 
@@ -799,19 +790,17 @@ class DeadLinkReportThread(threading.Thread):
                 i = 1
                 count = u''
                 # Check if there is already such a caption on the talk page.
-                while re.search('= *%s%s *=' % (caption, count),
+                while re.search('= *{0!s}{1!s} *='.format(caption, count),
                                 content) is not None:
                     i += 1
                     count = u' ' + str(i)
                 caption += count
-                content += '\n\n== %s ==\n\n%s\n\n%s%s--~~~~' % \
-                           (caption,
+                content += '\n\n== {0!s} ==\n\n{1!s}\n\n{2!s}{3!s}--~~~~'.format(caption,
                             i18n.twtranslate(containingPage.site,
                                              'weblinkchecker-report'),
                             errorReport,
                             archiveMsg)
-                comment = u'[[%s#%s|→]] %s' % \
-                          (talkPage.title(), caption,
+                comment = u'[[{0!s}#{1!s}|→]] {2!s}'.format(talkPage.title(), caption,
                            i18n.twtranslate(containingPage.site,
                                             'weblinkchecker-summary'))
                 try:
@@ -922,7 +911,7 @@ def main(*args):
     HTTPignore = []
 
     if isinstance(memento_client, ImportError):
-        warn('memento_client not imported: %s' % memento_client, ImportWarning)
+        warn('memento_client not imported: {0!s}'.format(memento_client), ImportWarning)
 
     # Process global args and prepare generator args parser
     local_args = pywikibot.handle_args(args)
@@ -986,8 +975,7 @@ def main(*args):
                     pywikibot.output(u'Interrupted.')
                     break
             if countLinkCheckThreads() > 0:
-                pywikibot.output(u'Remaining %i threads will be killed.'
-                                 % countLinkCheckThreads())
+                pywikibot.output(u'Remaining {0:d} threads will be killed.'.format(countLinkCheckThreads()))
                 # Threads will die automatically because they are daemonic.
             if bot.history.reportThread:
                 bot.history.reportThread.shutdown()
